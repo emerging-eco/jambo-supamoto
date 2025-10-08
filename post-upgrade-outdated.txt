@@ -1,0 +1,15 @@
+yarn outdated v1.22.22
+(node:43185) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+info Color legend : 
+ "<red>"    : Major Update backward-incompatible updates 
+ "<yellow>" : Minor Update backward-compatible features 
+ "<green>"  : Patch Update backward-compatible bug fixes
+Package                    Current Wanted Latest Package Type    URL                                                        
+@netlify/plugin-lighthouse 2.1.3   2.1.3  6.0.3  devDependencies https://github.com/netlify/netlify-plugin-lighthouse#readme
+@netlify/plugin-nextjs     4.7.1   4.7.1  5.13.5 devDependencies https://opennext.js.org/netlify                            
+next                       12.1.6  12.1.6 15.5.4 dependencies    https://nextjs.org                                         
+react                      18.1.0  18.1.0 19.2.0 dependencies    https://react.dev/                                         
+react-dom                  18.1.0  18.1.0 19.2.0 dependencies    https://react.dev/                                         
+typescript                 4.7.2   4.7.2  5.9.3  devDependencies https://www.typescriptlang.org/                            
+Done in 3.90s.
