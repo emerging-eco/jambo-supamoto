@@ -1,0 +1,72 @@
+yarn run v1.22.22
+$ next build
+info  - Loaded env from /Users/alwynvanwyk/Workspaces/ecs/jambo-supamoto/.env
+warn  - You have enabled experimental feature(s).
+warn  - Experimental features are not covered by semver, and may cause unexpected or broken application behavior. Use them at your own risk.
+
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+Browserslist: caniuse-lite is outdated. Please run:
+  npx browserslist@latest --update-db
+  Why you should do it regularly: https://github.com/browserslist/browserslist#browsers-data-updating
+info  - Skipping validation of types...
+
+./pages/account/index.tsx
+43:6  Warning: React Hook useEffect has missing dependencies: 'hideKado', 'kadoVisible', and 'showKado'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./components/BottomSheet/BottomSheet.tsx
+43:6  Warning: React Hook useEffect has a missing dependency: 'backDropHandler'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./components/ChainSelector/ChainSelector.tsx
+27:6  Warning: React Hook useEffect has a missing dependency: 'currentChainId'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+33:6  Warning: React Hook useEffect has a missing dependency: 'hideChainSelect'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./components/CountdownTimer/CountdownTimer.tsx
+19:6  Warning: React Hook useEffect has a missing dependency: 'targetDate'. Either include it or remove the dependency array. If 'setTimeRemaining' needs the current value of 'targetDate', you can also switch to useReducer instead of useState and read 'targetDate' in the reducer.  react-hooks/exhaustive-deps
+
+./components/KadoModal/KadoModal.tsx
+135:5  Warning: React Hook useEffect has a missing dependency: 'generateKadoUrl'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./components/Proposal/Proposal.tsx
+60:6  Warning: React Hook useEffect has missing dependencies: 'fetchProposalVote', 'proposalId', and 'status'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./components/SignX/SignX.tsx
+41:6  Warning: React Hook useEffect has a missing dependency: 'deeplink'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./components/TokenList/TokenList.tsx
+33:6  Warning: React Hook useEffect has missing dependencies: 'wallet.balances?.data', 'wallet.delegations?.data', and 'wallet.unbondingDelegations?.data'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./components/TokenSelector/TokenSelector.tsx
+28:6  Warning: React Hook useEffect has missing dependencies: 'onChange', 'options', and 'value'. Either include them or remove the dependency array. If 'onChange' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./components/ValidatorListItem/ValidatorListItem.tsx
+40:6  Warning: React Hook useEffect has missing dependencies: 'updateValidatorAvatar', 'validator.address', 'validator.avatarUrl', and 'validator.identity'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules
+info  - Creating an optimized production build...
+warn  - You are using the experimental Edge Runtime with `experimental.runtime`.
+Browserslist: caniuse-lite is outdated. Please run:
+  npx browserslist@latest --update-db
+  Why you should do it regularly: https://github.com/browserslist/browserslist#browsers-data-updating
+info  - Compiled successfully
+info  - Collecting page data...
+
+> Build error occurred
+ReferenceError: document is not defined
+    at createTag (/Users/alwynvanwyk/Workspaces/ecs/jambo-supamoto/node_modules/lottie-web/build/player/lottie_light.js:30:5)
+    at /Users/alwynvanwyk/Workspaces/ecs/jambo-supamoto/node_modules/lottie-web/build/player/lottie_light.js:1316:20
+    at /Users/alwynvanwyk/Workspaces/ecs/jambo-supamoto/node_modules/lottie-web/build/player/lottie_light.js:1323:6
+    at /Users/alwynvanwyk/Workspaces/ecs/jambo-supamoto/node_modules/lottie-web/build/player/lottie_light.js:1540:4
+    at /Users/alwynvanwyk/Workspaces/ecs/jambo-supamoto/node_modules/lottie-web/build/player/lottie_light.js:2:83
+    at Object.<anonymous> (/Users/alwynvanwyk/Workspaces/ecs/jambo-supamoto/node_modules/lottie-web/build/player/lottie_light.js:5:3)
+    at Module._compile (node:internal/modules/cjs/loader:1760:14)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module._load (node:internal/modules/cjs/loader:1299:12) {
+  type: 'ReferenceError'
+}
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
