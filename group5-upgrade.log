@@ -1,0 +1,37 @@
+yarn upgrade v1.22.22
+(node:40707) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[1/4] Resolving packages...
+warning @ixo/impactxclient-sdk > @cosmjs/crypto@0.32.4: This uses elliptic for cryptographic operations, which contains several security-relevant bugs. To what degree this affects your application is something you need to carefully investigate. See https://github.com/cosmos/cosmjs/issues/1708 for further pointers. Starting with version 0.34.0 the cryptographic library has been replaced. However, private keys might still be at risk.
+warning @ixo/impactxclient-sdk > @cosmjs/amino > @cosmjs/crypto@0.32.4: This uses elliptic for cryptographic operations, which contains several security-relevant bugs. To what degree this affects your application is something you need to carefully investigate. See https://github.com/cosmos/cosmjs/issues/1708 for further pointers. Starting with version 0.34.0 the cryptographic library has been replaced. However, private keys might still be at risk.
+warning @ixo/impactxclient-sdk > @cosmjs/cosmwasm-stargate > @cosmjs/crypto@0.32.4: This uses elliptic for cryptographic operations, which contains several security-relevant bugs. To what degree this affects your application is something you need to carefully investigate. See https://github.com/cosmos/cosmjs/issues/1708 for further pointers. Starting with version 0.34.0 the cryptographic library has been replaced. However, private keys might still be at risk.
+warning @ixo/impactxclient-sdk > @cosmjs/proto-signing > @cosmjs/crypto@0.32.4: This uses elliptic for cryptographic operations, which contains several security-relevant bugs. To what degree this affects your application is something you need to carefully investigate. See https://github.com/cosmos/cosmjs/issues/1708 for further pointers. Starting with version 0.34.0 the cryptographic library has been replaced. However, private keys might still be at risk.
+warning @ixo/impactxclient-sdk > @cosmjs/tendermint-rpc > @cosmjs/crypto@0.32.4: This uses elliptic for cryptographic operations, which contains several security-relevant bugs. To what degree this affects your application is something you need to carefully investigate. See https://github.com/cosmos/cosmjs/issues/1708 for further pointers. Starting with version 0.34.0 the cryptographic library has been replaced. However, private keys might still be at risk.
+[2/4] Fetching packages...
+warning bare-fs@4.4.7: The engine "bare" appears to be invalid.
+warning bare-os@3.6.2: The engine "bare" appears to be invalid.
+[3/4] Linking dependencies...
+warning "eslint-config-next > @typescript-eslint/eslint-plugin@8.46.0" has incorrect peer dependency "typescript@>=4.8.4 <6.0.0".
+warning "eslint-config-next > @typescript-eslint/parser@8.46.0" has incorrect peer dependency "typescript@>=4.8.4 <6.0.0".
+warning "eslint-config-next > @typescript-eslint/eslint-plugin > @typescript-eslint/type-utils@8.46.0" has incorrect peer dependency "typescript@>=4.8.4 <6.0.0".
+warning "eslint-config-next > @typescript-eslint/eslint-plugin > @typescript-eslint/utils@8.46.0" has incorrect peer dependency "typescript@>=4.8.4 <6.0.0".
+warning "eslint-config-next > @typescript-eslint/eslint-plugin > ts-api-utils@2.1.0" has incorrect peer dependency "typescript@>=4.8.4".
+warning "eslint-config-next > @typescript-eslint/parser > @typescript-eslint/typescript-estree@8.46.0" has incorrect peer dependency "typescript@>=4.8.4 <6.0.0".
+warning "eslint-config-next > @typescript-eslint/parser > @typescript-eslint/typescript-estree > @typescript-eslint/project-service@8.46.0" has incorrect peer dependency "typescript@>=4.8.4 <6.0.0".
+warning "eslint-config-next > @typescript-eslint/parser > @typescript-eslint/typescript-estree > @typescript-eslint/tsconfig-utils@8.46.0" has incorrect peer dependency "typescript@>=4.8.4 <6.0.0".
+[4/4] Rebuilding all packages...
+success Saved lockfile.
+success Saved 8 new dependencies.
+info Direct dependencies
+├─ @ixo/impactxclient-sdk@2.4.2
+└─ @ixo/signx-sdk@1.2.0
+info All dependencies
+├─ @cosmjs/cosmwasm-stargate@0.32.4
+├─ @cosmjs/json-rpc@0.32.4
+├─ @cosmjs/socket@0.32.4
+├─ @ixo/impactxclient-sdk@2.4.2
+├─ @ixo/signx-sdk@1.2.0
+├─ bip39-light@1.0.7
+├─ libsodium-sumo@0.7.15
+└─ libsodium-wrappers-sumo@0.7.15
+Done in 13.24s.
