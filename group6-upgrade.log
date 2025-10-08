@@ -1,0 +1,71 @@
+yarn upgrade v1.22.22
+(node:41526) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[1/4] Resolving packages...
+warning @web3modal/standalone@2.4.3: This package has been deprecated in favor of @walletconnect/modal. Please read more at https://docs.walletconnect.com
+warning @web3modal/standalone > @web3modal/core@2.4.3: Web3Modal is now Reown AppKit. Please follow the upgrade guide at https://docs.reown.com/appkit/upgrade/from-w3m-to-reown
+warning @web3modal/standalone > @web3modal/ui@2.4.3: Web3Modal is now Reown AppKit. Please follow the upgrade guide at https://docs.reown.com/appkit/upgrade/from-w3m-to-reown
+warning @web3modal/standalone > @web3modal/ui > @web3modal/core@2.4.3: Web3Modal is now Reown AppKit. Please follow the upgrade guide at https://docs.reown.com/appkit/upgrade/from-w3m-to-reown
+warning @web3modal/standalone > @web3modal/ui > motion > @motionone/vue@10.16.4: Motion One for Vue is deprecated. Use Oku Motion instead https://oku-ui.com/motion
+[2/4] Fetching packages...
+warning bare-fs@4.4.7: The engine "bare" appears to be invalid.
+warning bare-os@3.6.2: The engine "bare" appears to be invalid.
+[3/4] Linking dependencies...
+warning "eslint-config-next > @typescript-eslint/eslint-plugin@8.46.0" has incorrect peer dependency "typescript@>=4.8.4 <6.0.0".
+warning "eslint-config-next > @typescript-eslint/parser@8.46.0" has incorrect peer dependency "typescript@>=4.8.4 <6.0.0".
+warning "eslint-config-next > @typescript-eslint/eslint-plugin > @typescript-eslint/type-utils@8.46.0" has incorrect peer dependency "typescript@>=4.8.4 <6.0.0".
+warning "eslint-config-next > @typescript-eslint/eslint-plugin > @typescript-eslint/utils@8.46.0" has incorrect peer dependency "typescript@>=4.8.4 <6.0.0".
+warning "eslint-config-next > @typescript-eslint/eslint-plugin > ts-api-utils@2.1.0" has incorrect peer dependency "typescript@>=4.8.4".
+warning "eslint-config-next > @typescript-eslint/parser > @typescript-eslint/typescript-estree@8.46.0" has incorrect peer dependency "typescript@>=4.8.4 <6.0.0".
+warning "eslint-config-next > @typescript-eslint/parser > @typescript-eslint/typescript-estree > @typescript-eslint/project-service@8.46.0" has incorrect peer dependency "typescript@>=4.8.4 <6.0.0".
+warning "eslint-config-next > @typescript-eslint/parser > @typescript-eslint/typescript-estree > @typescript-eslint/tsconfig-utils@8.46.0" has incorrect peer dependency "typescript@>=4.8.4 <6.0.0".
+warning " > @keplr-wallet/types@0.12.279" has unmet peer dependency "starknet@^7".
+warning "@keplr-wallet/cosmos > @keplr-wallet/crypto@0.12.279" has unmet peer dependency "bitcoinjs-lib@^6".
+warning "@keplr-wallet/cosmos > @keplr-wallet/crypto@0.12.279" has unmet peer dependency "starknet@^7".
+warning " > @keplr-wallet/wc-client@0.12.279" has unmet peer dependency "starknet@^7".
+warning "@keplr-wallet/wc-client > @keplr-wallet/provider@0.12.279" has unmet peer dependency "starknet@^7".
+warning Workspaces can only be enabled in private projects.
+[4/4] Rebuilding all packages...
+success Saved lockfile.
+warning Workspaces can only be enabled in private projects.
+success Saved 33 new dependencies.
+info Direct dependencies
+├─ @keplr-wallet/cosmos@0.12.279
+├─ @keplr-wallet/wc-client@0.12.279
+├─ @walletconnect/sign-client@2.22.1
+└─ @web3modal/standalone@2.4.3
+info All dependencies
+├─ @adraffy/ens-normalize@1.11.1
+├─ @keplr-wallet/common@0.12.279
+├─ @keplr-wallet/cosmos@0.12.279
+├─ @keplr-wallet/proto-types@0.12.279
+├─ @keplr-wallet/provider@0.12.279
+├─ @keplr-wallet/router@0.12.279
+├─ @keplr-wallet/simple-fetch@0.12.279
+├─ @keplr-wallet/unit@0.12.279
+├─ @keplr-wallet/wc-client@0.12.279
+├─ @motionone/svelte@10.16.4
+├─ @motionone/vue@10.16.4
+├─ @msgpack/msgpack@3.1.2
+├─ @scure/bip32@1.7.0
+├─ @scure/bip39@1.6.0
+├─ @walletconnect/core@2.22.1
+├─ @walletconnect/jsonrpc-provider@1.0.14
+├─ @walletconnect/jsonrpc-ws-connection@1.0.16
+├─ @walletconnect/sign-client@2.22.1
+├─ @walletconnect/window-metadata@1.0.1
+├─ @web3modal/standalone@2.4.3
+├─ @web3modal/ui@2.4.3
+├─ abitype@1.1.1
+├─ blakejs@1.2.1
+├─ ecpair@2.1.0
+├─ es-toolkit@1.39.3
+├─ eventemitter3@5.0.1
+├─ lit@2.7.5
+├─ motion@10.16.2
+├─ ox@0.9.3
+├─ proxy-compare@2.5.1
+├─ qrcode@1.5.3
+├─ randombytes@2.1.0
+└─ valtio@1.10.5
+Done in 19.39s.
