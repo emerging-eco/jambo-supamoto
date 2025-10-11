@@ -28,6 +28,9 @@ export enum STEPS {
   distribution_MsgWithdrawDelegatorReward = 'distribution_MsgWithdrawDelegatorReward',
   gov_MsgVote = 'gov_MsgVote',
   gov_MsgSubmitProposal = 'gov_MsgSubmitProposal',
+  customer_form_entry = 'customer_form_entry',
+  customer_form_review = 'customer_form_review',
+  customer_claim_result = 'customer_claim_result',
 }
 
 export type STEP = {
@@ -142,6 +145,18 @@ export const steps: { [key in STEPS]: STEP } = {
     id: STEPS.gov_MsgSubmitProposal,
     name: 'Review and sign',
   },
+  [STEPS.customer_form_entry]: {
+    id: STEPS.customer_form_entry,
+    name: 'Enter Customer Details',
+  },
+  [STEPS.customer_form_review]: {
+    id: STEPS.customer_form_review,
+    name: 'Review Details',
+  },
+  [STEPS.customer_claim_result]: {
+    id: STEPS.customer_claim_result,
+    name: 'Submission Result',
+  },
 };
 
 export type ReviewStepsTypes =
@@ -208,6 +223,23 @@ interface Review_and_sign {
   done: boolean;
 }
 
+interface Customer_form_entry {
+  surveyData?: Record<string, any>;
+}
+
+interface Customer_form_review {
+  confirmed?: boolean;
+  apiResponse?: any;
+  success?: boolean;
+  error?: string;
+}
+
+interface Customer_claim_result {
+  success?: boolean;
+  message?: string;
+  errorDetails?: string;
+}
+
 export type AllStepDataTypes =
   | Get_receiver_address
   | Get_receiver_addresses
@@ -221,7 +253,10 @@ export type AllStepDataTypes =
   | Define_proposal_title
   | Define_proposal_description
   | Define_proposal_deposit
-  | Review_and_sign;
+  | Review_and_sign
+  | Customer_form_entry
+  | Customer_form_review
+  | Customer_claim_result;
 
 export type StepDataType<T> = T extends STEPS.kado_buy_crypto
   ? Kado_buy_crypto
@@ -265,4 +300,10 @@ export type StepDataType<T> = T extends STEPS.kado_buy_crypto
   ? Review_and_sign
   : T extends STEPS.gov_MsgSubmitProposal
   ? Review_and_sign
+  : T extends STEPS.customer_form_entry
+  ? Customer_form_entry
+  : T extends STEPS.customer_form_review
+  ? Customer_form_review
+  : T extends STEPS.customer_claim_result
+  ? Customer_claim_result
   : never;

@@ -29,6 +29,9 @@ class MyDocument extends Document {
           <link rel='preconnect' href='https://fonts.gstatic.com' crossOrigin='true' />
           <link href={config.fontUrl} rel='stylesheet' />
           <style>{`:root { --font-family-name: ${config.fontName}; }`}</style>
+
+          {/* SurveyJS CSS */}
+          <link rel='stylesheet' href='/survey-core.css' />
         </Head>
 
         <body>

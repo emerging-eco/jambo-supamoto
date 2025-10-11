@@ -21,6 +21,9 @@ import ShortTextInput from '@steps/ShortTextInput';
 import LongTextInput from '@steps/LongTextInput';
 import ProposalDeposit from '@steps/ProposalDeposit';
 import KadoBuyCrypto from '@steps/KadoBuyCrypto';
+import CustomerFormEntry from '@steps/CustomerFormEntry';
+import CustomerFormReview from '@steps/CustomerFormReview';
+import CustomerClaimResult from '@steps/CustomerClaimResult';
 
 type ActionPageProps = {
   actionData: ACTION;
@@ -237,6 +240,35 @@ const ActionExecution: NextPage<ActionPageProps> = ({ actionData }) => {
             steps={action!.steps}
             header={action?.name}
             message={step.id}
+          />
+        );
+      case STEPS.customer_form_entry:
+        return (
+          <CustomerFormEntry
+            onSuccess={handleOnNext<STEPS.customer_form_entry>}
+            onBack={handleBack}
+            data={step.data as StepDataType<STEPS.customer_form_entry>}
+            header={action?.name}
+          />
+        );
+      case STEPS.customer_form_review:
+        return (
+          <CustomerFormReview
+            onSuccess={handleOnNext<STEPS.customer_form_review>}
+            onBack={handleBack}
+            formData={
+              (action?.steps.find((s) => s.id === STEPS.customer_form_entry)?.data as StepDataType<STEPS.customer_form_entry>)
+                ?.surveyData || {}
+            }
+            header={action?.name}
+          />
+        );
+      case STEPS.customer_claim_result:
+        return (
+          <CustomerClaimResult
+            onSuccess={handleOnNext<STEPS.customer_claim_result>}
+            data={step.data as StepDataType<STEPS.customer_claim_result>}
+            header={action?.name}
           />
         );
       default:

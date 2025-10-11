@@ -3,6 +3,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import '@styles/globals.scss';
 import '@styles/variables.scss';
+import '@styles/survey.scss';
 import { ToastContainer } from '@components/Toast/Toast';
 import { WalletProvider } from '@contexts/wallet';
 import { ChainProvider } from '@contexts/chain';

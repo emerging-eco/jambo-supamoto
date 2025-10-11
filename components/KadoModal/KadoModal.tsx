@@ -221,27 +221,27 @@ const KadoModal: FC<ModalProps> = ({
     if (primaryColor && validateColor(primaryColor)) {
       url += '&primaryColor=' + cleanColorString(primaryColor);
     } else {
-      url += '&primaryColor=' + cleanColorString(getCSSVariable('--primary-color') || '#1db3d3');
+      url += '&primaryColor=' + cleanColorString(getCSSVariable('--primary-color') || '#F58203');
     }
     if (secondaryColor && validateColor(secondaryColor)) {
       url += '&secondaryColor=' + cleanColorString(secondaryColor);
     } else {
-      url += '&secondaryColor=' + cleanColorString(getCSSVariable('--secondary-color') || '#1297b4');
+      url += '&secondaryColor=' + cleanColorString(getCSSVariable('--secondary-color') || '#365425');
     }
     if (successColor && validateColor(successColor)) {
       url += '&successColor=' + cleanColorString(successColor);
     } else {
-      url += '&successColor=' + cleanColorString(getCSSVariable('--success-color') || '#22c55e');
+      url += '&successColor=' + cleanColorString(getCSSVariable('--success-color') || '#336021');
     }
     if (warningColor && validateColor(warningColor)) {
       url += '&warningColor=' + cleanColorString(warningColor);
     } else {
-      url += '&warningColor=' + cleanColorString(getCSSVariable('--warning-color') || '#fc9a63');
+      url += '&warningColor=' + cleanColorString(getCSSVariable('--warning-color') || '#FBA928');
     }
     if (errorColor && validateColor(errorColor)) {
       url += '&errorColor=' + cleanColorString(errorColor);
     } else {
-      url += '&errorColor=' + cleanColorString(getCSSVariable('--error-color') || '#a11c43');
+      url += '&errorColor=' + cleanColorString(getCSSVariable('--error-color') || '#B30000');
     }
     return url;
   }
