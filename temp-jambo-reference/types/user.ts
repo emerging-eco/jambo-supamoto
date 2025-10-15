@@ -5,11 +5,11 @@ export type USER = {
   algo?: string;
   ledgered?: boolean;
   did?: string;
-  chainId?: string;
+  network?: 'mainnet' | 'testnet' | 'devnet';
   matrix?: {
-    accessToken?: string;
-    userId?: string;
-    deviceId?: string;
-    baseUrl?: string;
+    accessToken: string;
+    userId: string;
+    roomId: string;
+    address: string;
   };
 };

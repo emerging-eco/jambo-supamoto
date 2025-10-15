@@ -70,6 +70,33 @@ export const WalletProvider = ({ children }: HTMLAttributes<HTMLDivElement>) => 
   const initializeWallets = async () => {
     try {
       const user = await initializeWallet(wallet.walletType, chainInfo as KEPLR_CHAIN_INFO_TYPE, wallet.user);
+
+      // Store Matrix credentials for SignX wallet
+      if (wallet.walletType === WALLET_TYPE.signX && user?.matrix) {
+        const { secureSave } = await import('@utils/storage');
+        const { cons } = await import('@constants/matrix');
+
+        // Validate matrix credentials exist
+        if (!user.matrix.accessToken || !user.matrix.userId) {
+          console.error('Matrix credentials incomplete:', user.matrix);
+          throw new Error(
+            'Data Vault credentials not found. Please ensure your IXO mobile app is properly configured with a Data Vault account.',
+          );
+        }
+
+        // Store matrix credentials in secure storage
+        secureSave(cons.secretKey.ACCESS_TOKEN, user.matrix.accessToken);
+        secureSave(cons.secretKey.USER_ID, user.matrix.userId);
+        if (user.matrix.deviceId) {
+          secureSave(cons.secretKey.DEVICE_ID, user.matrix.deviceId);
+        }
+        if (user.matrix.baseUrl) {
+          secureSave(cons.secretKey.BASE_URL, user.matrix.baseUrl);
+        }
+
+        console.log('Matrix credentials stored successfully');
+      }
+
       updateWallet({ user });
     } catch (error) {
       console.error('Initializing wallets error:', error);

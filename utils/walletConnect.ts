@@ -74,7 +74,7 @@ export const initializeWC = async (chainInfo: KEPLR_CHAIN_INFO_TYPE): Promise<US
           url: config.siteUrl ?? 'https://my.jambo.earth/',
           icons: [
             config?.siteUrl
-              ? `${config.siteUrl}/images/logo.png`
+              ? `${config.siteUrl}/images/logo.svg`
               : 'https://gblobscdn.gitbook.com/spaces%2F-LJJeCjcLrr53DcT1Ml7%2Favatar.png?alt=media',
           ],
         },

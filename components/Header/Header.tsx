@@ -51,7 +51,7 @@ export const SiteHeader: FC<SiteHeaderProps> = ({ displayLogo, displayName, name
     <div className={styles.row} onClick={onClick}>
       {displayLogo && (
         <div className={styles.logo}>
-          <Image alt='logo' src='/images/logo.png' layout='fill' priority />
+          <Image alt='logo' src='/images/logo.svg' layout='fill' priority />
         </div>
       )}
       {displayName && <h1 className={styles.name}>{name ?? siteName}</h1>}

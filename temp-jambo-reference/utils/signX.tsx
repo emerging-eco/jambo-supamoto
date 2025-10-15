@@ -6,24 +6,26 @@ import {
   SIGN_X_LOGIN_SUCCESS,
   SIGN_X_TRANSACT_ERROR,
   SIGN_X_TRANSACT_SUCCESS,
+  SIGN_X_DATA_ERROR,
+  SIGN_X_DATA_SUCCESS,
 } from '@ixo/signx-sdk';
 
 import * as Toast from '@components/Toast/Toast';
-import { TRX_FEE_OPTION, TRX_MSG } from 'types/transactions';
-import { USER } from 'types/user';
-import { WALLET } from 'types/wallet';
+import { TRX_FEE_OPTION, TRX_MSG } from '../types/transactions';
+import { USER } from '../types/user';
+import { WALLET } from '../types/wallet';
 import { renderModal } from '@components/Modal/Modal';
 import SignXModal from '@components/SignX/SignX';
-import { EVENT_LISTENER_TYPE } from '@constants/events';
-import { KEPLR_CHAIN_INFO_TYPE } from 'types/chain';
-import config from '@constants/config.json';
-import { SIGN_X_RELAYERS } from '@constants/urls';
+import { EVENT_LISTENER_TYPE } from '../constants/events';
+import { SIGN_X_RELAYERS } from '../constants/urls';
 
-let signXClient: SignX | undefined;
+const NETWORK: any = process.env.NEXT_PUBLIC_CHAIN_NETWORK as any;
+
+let signXClient: SignX;
 
 let signXInitializing = false;
 export const initializeSignX = async (
-  chainInfo: KEPLR_CHAIN_INFO_TYPE,
+  network: 'mainnet' | 'testnet' | 'devnet',
   walletUser?: USER,
 ): Promise<USER | undefined> => {
   if (signXInitializing) return;
@@ -31,30 +33,20 @@ export const initializeSignX = async (
 
   let removeModal: () => void;
   try {
-    // Handle chain mismatch gracefully - clear stale wallet data and continue
-    if (walletUser?.chainId && walletUser?.chainId !== chainInfo.chainId) {
-      console.warn('Chain ID mismatch detected. Clearing stale wallet data.');
-      // Dispatch logout event to clear stale data
-      const event = new Event(EVENT_LISTENER_TYPE.wallet_logout);
-      window.dispatchEvent(event);
-      // Return undefined to allow re-initialization with correct chain
-      return undefined;
-    }
-    if (!chainInfo || !chainInfo.chainId) throw new Error('No chain info found to initialize SignX');
-    if (chainInfo.chainName !== 'ixo') throw new Error('SignX only works on ixo chain');
+    if (!network) throw new Error('No network found to initialize SignX');
+    if (network !== NETWORK) throw new Error(`SignX only works on ${NETWORK}`);
 
     signXClient = new SignX({
-      endpoint: SIGN_X_RELAYERS[chainInfo.chainNetwork || 'mainnet'],
+      endpoint: SIGN_X_RELAYERS[NETWORK as 'devnet'],
       // endpoint: 'http://localhost:8000',
-      network: chainInfo.chainNetwork || 'mainnet',
-      sitename: config.siteName ?? 'JAMBO dApp',
+      network: NETWORK,
+      sitename: 'https://test.matrix.jambo',
     });
 
     // if user already has an address or pubkey, return
     if (walletUser?.address || walletUser?.pubKey) return walletUser;
 
     // get login data from client to display QR code and start polling
-    // matrix: true requests Matrix/Data Vault credentials from the mobile app
     const data = await signXClient.login({ pollingInterval: 1000, matrix: true });
 
     // callback for when modal is closed manually
@@ -63,6 +55,7 @@ export const initializeSignX = async (
     };
 
     removeModal = renderModal(
+      // @ts-ignore
       <SignXModal title='SignX Login' data={data} timeout={signXClient.timeout} transactSequence={1} />,
       onManualCloseModal,
     );
@@ -75,8 +68,7 @@ export const initializeSignX = async (
     });
     // removeModal();
 
-    // Extract matrix credentials from response payload
-    const matrix = eventData.data.matrix;
+    console.log({ eventData });
 
     return {
       name: eventData.data.name,
@@ -84,8 +76,8 @@ export const initializeSignX = async (
       pubKey: fromHex(eventData.data.pubKey),
       did: eventData.data.did,
       algo: eventData.data.algo,
-      chainId: chainInfo.chainId,
-      matrix,
+      network: network,
+      matrix: eventData.data.matrix,
     };
   } catch (e) {
     console.error('ERROR::initializeSignX::', e);
@@ -95,11 +87,9 @@ export const initializeSignX = async (
     signXInitializing = false;
     // @ts-ignore
     if (removeModal) removeModal();
-    // remove event listeners only if signXClient was initialized
-    if (signXClient) {
-      signXClient.removeAllListeners(SIGN_X_LOGIN_ERROR);
-      signXClient.removeAllListeners(SIGN_X_LOGIN_SUCCESS);
-    }
+    // remove event listeners
+    signXClient.removeAllListeners(SIGN_X_LOGIN_ERROR);
+    signXClient.removeAllListeners(SIGN_X_LOGIN_SUCCESS);
   }
 };
 
@@ -109,7 +99,7 @@ export const signXBroadCastMessage = async (
   memo = '',
   fee: TRX_FEE_OPTION,
   feeDenom: string,
-  chainInfo: KEPLR_CHAIN_INFO_TYPE,
+  network: 'mainnet' | 'testnet' | 'devnet',
   wallet: WALLET,
 ): Promise<string | null> => {
   if (signXBroadCastMessageBusy) return null;
@@ -122,8 +112,8 @@ export const signXBroadCastMessage = async (
   };
 
   try {
-    if (!chainInfo || !chainInfo.chainId) throw new Error('No chain info found');
-    if (chainInfo.chainName !== 'ixo') throw new Error('SignX only works on ixo chain');
+    if (!network) throw new Error('No network found to broadcast transaction');
+    if (network !== NETWORK) throw new Error(`SignX only works on ${NETWORK}`);
 
     if (!wallet.user) throw new Error('No user found to broadcast transaction');
     if (!signXClient) throw new Error('No signXClient found to broadcast transaction');
@@ -146,6 +136,7 @@ export const signXBroadCastMessage = async (
     }
 
     removeModal = renderModal(
+      // @ts-ignore
       <SignXModal
         title='SignX Transaction'
         data={data}
@@ -174,10 +165,67 @@ export const signXBroadCastMessage = async (
     if (removeModal) removeModal();
     // @ts-ignore
     if (onManualCloseModal) onManualCloseModal(false);
-    // remove event listeners only if signXClient exists
-    if (signXClient) {
-      signXClient.removeAllListeners(SIGN_X_TRANSACT_ERROR);
-      signXClient.removeAllListeners(SIGN_X_TRANSACT_SUCCESS);
+    // remove event listeners
+    signXClient.removeAllListeners(SIGN_X_TRANSACT_ERROR);
+    signXClient.removeAllListeners(SIGN_X_TRANSACT_SUCCESS);
+  }
+};
+
+let signXDDataPassBusy = false;
+export const signXDataPass = async (jsonData: any, type: string): Promise<any> => {
+  if (signXDDataPassBusy) return null;
+  signXDDataPassBusy = true;
+
+  let removeModal: () => void;
+  // callback for when modal is closed manually
+  let onManualCloseModal = (clearSession = true) => {
+    signXClient.stopPolling('Data Pass cancelled', SIGN_X_DATA_ERROR, clearSession);
+  };
+
+  try {
+    if (!signXClient) {
+      signXClient = new SignX({
+        endpoint: SIGN_X_RELAYERS[NETWORK as 'devnet'],
+        // endpoint: 'http://localhost:8000',
+        network: NETWORK,
+        sitename: 'https://playground.matrix.org',
+      });
     }
+
+    // get data pass data from client to start polling and display QR code for key passing
+    const data = await signXClient.dataPass({
+      data: jsonData,
+      type,
+    });
+    console.log({ data });
+
+    removeModal = renderModal(
+      // @ts-ignore
+      <SignXModal title='SignX Data Pass' data={data} timeout={signXClient.timeout} transactSequence={1} />,
+      onManualCloseModal,
+    );
+
+    // wait for data to be passed and handled and SignX to emit success or fail event
+    const eventData: any = await new Promise((resolve, reject) => {
+      const handleSuccess = (data: any) => resolve(data);
+      const handleError = (error: any) => reject(error);
+      signXClient.on(SIGN_X_DATA_SUCCESS, handleSuccess);
+      signXClient.on(SIGN_X_DATA_ERROR, handleError);
+    });
+
+    return eventData;
+  } catch (e: any) {
+    console.error('ERROR::signXDataPass::', e);
+    Toast.errorToast(`SignX Data Pass Failed: ${e.message}`);
+    return null;
+  } finally {
+    signXDDataPassBusy = false;
+    // @ts-ignore
+    if (removeModal) removeModal();
+    // @ts-ignore
+    if (onManualCloseModal) onManualCloseModal(false);
+    // remove event listeners
+    signXClient.removeAllListeners(SIGN_X_DATA_ERROR);
+    signXClient.removeAllListeners(SIGN_X_DATA_SUCCESS);
   }
 };

@@ -25,6 +25,8 @@ import CustomerFormEntry from '@steps/CustomerFormEntry';
 import CustomerFormReview from '@steps/CustomerFormReview';
 import CustomerClaimResult from '@steps/CustomerClaimResult';
 import ProclamationFormEntry from '@steps/ProclamationFormEntry';
+import ProclamationFormReview from '@steps/ProclamationFormReview';
+import ProclamationFormResult from '@steps/ProclamationFormResult';
 
 type ActionPageProps = {
   actionData: ACTION;
@@ -272,12 +274,32 @@ const ActionExecution: NextPage<ActionPageProps> = ({ actionData }) => {
             header={action?.name}
           />
         );
-      case STEPS.define_proposal_title:
+      case STEPS.proclamation_form_entry:
         return (
           <ProclamationFormEntry
-            onSuccess={handleOnNext<STEPS.define_proposal_title>}
+            onSuccess={handleOnNext<STEPS.proclamation_form_entry>}
             onBack={handleBack}
-            data={step.data as StepDataType<STEPS.define_proposal_title>}
+            data={step.data as StepDataType<STEPS.proclamation_form_entry>}
+            header={action?.name}
+          />
+        );
+      case STEPS.proclamation_form_review:
+        return (
+          <ProclamationFormReview
+            onSuccess={handleOnNext<STEPS.proclamation_form_review>}
+            onBack={handleBack}
+            formData={
+              (action?.steps.find((s) => s.id === STEPS.proclamation_form_entry)?.data as StepDataType<STEPS.proclamation_form_entry>)
+                ?.surveyData || {}
+            }
+            header={action?.name}
+          />
+        );
+      case STEPS.proclamation_form_result:
+        return (
+          <ProclamationFormResult
+            onSuccess={handleOnNext<STEPS.proclamation_form_result>}
+            data={step.data as StepDataType<STEPS.proclamation_form_result>}
             header={action?.name}
           />
         );

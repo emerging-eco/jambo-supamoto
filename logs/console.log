@@ -1,61 +1,64 @@
-localStorage
-Storage {theme: '"dark"', wallet: '{"walletType":"keplr","user":{"name":"jambo test",…k9mpsvxjtf2","algo":"secp256k1","ledgered":true}}', length: 2}theme: "\"dark\""wallet: "{\"walletType\":\"keplr\",\"user\":{\"name\":\"jambo test\",\"pubKey\":{\"0\":3,\"1\":47,\"2\":97,\"3\":222,\"4\":72,\"5\":130,\"6\":98,\"7\":119,\"8\":148,\"9\":66,\"10\":180,\"11\":51,\"12\":49,\"13\":13,\"14\":81,\"15\":28,\"16\":5,\"17\":99,\"18\":33,\"19\":14,\"20\":224,\"21\":75,\"22\":39,\"23\":170,\"24\":125,\"25\":95,\"26\":74,\"27\":135,\"28\":154,\"29\":95,\"30\":147,\"31\":101,\"32\":31},\"address\":\"ixo1hdmjm9ct4dg63ce7gx96ur53yhak9mpsvxjtf2\",\"algo\":\"secp256k1\",\"ledgered\":true}}"length: 2[[Prototype]]: Storage
+hook.js:608 Image with src "/images/actions/customer.svg" may not render properly with a parent using position:"static". Consider changing the parent style to position:"relative" with a width and height.
+overrideMethod @ hook.js:608
+warnOnce @ utils.js:311
+eval @ image.js:784
+Promise.then
+handleLoading @ image.js:746
+onLoad @ image.js:838
+callCallback @ react-dom.development.js:4161
+invokeGuardedCallbackDev @ react-dom.development.js:4210
+invokeGuardedCallback @ react-dom.development.js:4274
+invokeGuardedCallbackAndCatchFirstError @ react-dom.development.js:4288
+executeDispatch @ react-dom.development.js:9038
+processDispatchQueueItemsInOrder @ react-dom.development.js:9070
+processDispatchQueue @ react-dom.development.js:9083
+dispatchEventsForPlugins @ react-dom.development.js:9094
+eval @ react-dom.development.js:9285
+batchedUpdates$1 @ react-dom.development.js:26091
+batchedUpdates @ react-dom.development.js:3988
+dispatchEventForPluginEventSystem @ react-dom.development.js:9284
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ react-dom.development.js:6462
+dispatchEvent @ react-dom.development.js:6454
+hook.js:608 Image with src "/images/actions/1000-day-household.svg" may not render properly with a parent using position:"static". Consider changing the parent style to position:"relative" with a width and height.
+overrideMethod @ hook.js:608
+warnOnce @ utils.js:311
+eval @ image.js:784
+Promise.then
+handleLoading @ image.js:746
+onLoad @ image.js:838
+callCallback @ react-dom.development.js:4161
+invokeGuardedCallbackDev @ react-dom.development.js:4210
+invokeGuardedCallback @ react-dom.development.js:4274
+invokeGuardedCallbackAndCatchFirstError @ react-dom.development.js:4288
+executeDispatch @ react-dom.development.js:9038
+processDispatchQueueItemsInOrder @ react-dom.development.js:9070
+processDispatchQueue @ react-dom.development.js:9083
+dispatchEventsForPlugins @ react-dom.development.js:9094
+eval @ react-dom.development.js:9285
+batchedUpdates$1 @ react-dom.development.js:26091
+batchedUpdates @ react-dom.development.js:3988
+dispatchEventForPluginEventSystem @ react-dom.development.js:9284
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ react-dom.development.js:6462
+dispatchEvent @ react-dom.development.js:6454
 hot-dev-client.js:158 [Fast Refresh] rebuilding
-hot-dev-client.js:134 [Fast Refresh] done in 200ms
+hot-dev-client.js:134 [Fast Refresh] done in 324ms
+hot-dev-client.js:158 [Fast Refresh] rebuilding
+hot-dev-client.js:134 [Fast Refresh] done in 180ms
+wallet.tsx:97 Matrix credentials stored successfully
 localStorage
-Storage {theme: '"dark"', wallet: '{"walletType":"signX","user":{"name":"jambo test a…vxjtf2","algo":"secp256k1","chainId":"devnet-1"}}', length: 2}theme: "\"dark\""wallet: "{\"walletType\":\"signX\",\"user\":{\"name\":\"jambo test account\",\"address\":\"ixo1hdmjm9ct4dg63ce7gx96ur53yhak9mpsvxjtf2\",\"pubKey\":{\"0\":3,\"1\":47,\"2\":97,\"3\":222,\"4\":72,\"5\":130,\"6\":98,\"7\":119,\"8\":148,\"9\":66,\"10\":180,\"11\":51,\"12\":49,\"13\":13,\"14\":81,\"15\":28,\"16\":5,\"17\":99,\"18\":33,\"19\":14,\"20\":224,\"21\":75,\"22\":39,\"23\":170,\"24\":125,\"25\":95,\"26\":74,\"27\":135,\"28\":154,\"29\":95,\"30\":147,\"31\":101,\"32\":31},\"did\":\"did:ixo:ixo1hdmjm9ct4dg63ce7gx96ur53yhak9mpsvxjtf2\",\"algo\":\"secp256k1\",\"chainId\":\"devnet-1\"}}"length: 2[[Prototype]]: Storage
-CustomerFormReview.tsx:97 Submit button clicked!
-CustomerFormReview.tsx:103 No Matrix token found
-CustomerFormReview.tsx:107 SignX wallet detected - authenticating with address-based credentials...
-matrix.ts:268 SignX Matrix authentication starting for address: ixo1hdmjm9ct4dg63ce7gx96ur53yhak9mpsvxjtf2
-matrix.ts:275 Generated Matrix username: did-ixo-ixo1hdmjm9ct4dg63ce7gx96ur53yhak9mpsvxjtf2
-matrix.ts:140  POST https://devmx.ixo.earth/_matrix/client/v3/login 403 (Forbidden)
-fetch @ fetch.js:59
-eval @ fetch.js:283
-asyncGeneratorStep @ asyncToGenerator.js:7
-_next @ asyncToGenerator.js:21
-eval @ asyncToGenerator.js:26
-eval @ asyncToGenerator.js:18
-requestOtherUrl @ fetch.js:316
-request @ fetch.js:223
-eval @ fetch.js:143
-asyncGeneratorStep @ asyncToGenerator.js:7
-_next @ asyncToGenerator.js:21
-eval @ asyncToGenerator.js:26
-eval @ asyncToGenerator.js:18
-authedRequest @ fetch.js:164
-login @ client.js:6585
-_callee$ @ matrix.ts:140
-tryCatch @ runtime.js:45
-invoke @ runtime.js:274
-prototype.<computed> @ runtime.js:97
-asyncGeneratorStep @ matrix.ts:1
-_next @ matrix.ts:1
-eval @ matrix.ts:1
-eval @ matrix.ts:1
-_mxLogin @ matrix.ts:129
-mxLogin @ matrix.ts:129
-_callee$ @ matrix.ts:229
-tryCatch @ runtime.js:45
-invoke @ runtime.js:274
-prototype.<computed> @ runtime.js:97
-asyncGeneratorStep @ matrix.ts:1
-_next @ matrix.ts:1
-eval @ matrix.ts:1
-eval @ matrix.ts:1
-_loginOrRegisterMatrixAccount @ matrix.ts:218
-loginOrRegisterMatrixAccount @ matrix.ts:218
-_callee$ @ matrix.ts:278
-tryCatch @ runtime.js:45
-invoke @ runtime.js:274
-prototype.<computed> @ runtime.js:97
-asyncGeneratorStep @ matrix.ts:1
-_next @ matrix.ts:1
-eval @ matrix.ts:1
-eval @ matrix.ts:1
-_authenticateSignXWithMatrix @ matrix.ts:261
-authenticateSignXWithMatrix @ matrix.ts:261
-_callee$ @ CustomerFormReview.tsx:122
+Storage {62d01e48d5079982214beff5c8212c50cbf384b2da993fc1ca378a3541d4f866: 'U2FsdGVkX1/HTg01ur4cXXns52in9Yz/1iw56w7whj0WnAobwm…A8jI7ZLNGaCHMDg21DaoiQ7n/lQfEsrrFe86Wd/YhRNvYQQ==', 6b68d5611b1d3ba1381ee6bcba2944ba8ac6afa674c44dc0564f96dccb9c1b4c: 'U2FsdGVkX19MYp5kkIzJuc05mpxfLe8LNbNHkW9dwObpD/Oga9…DkUlvQA5TBioCyKe0VXZ8VOu0k2HxYSvYYgrRh0jyLomPWtD1', wallet: '{"walletType":"signX","user":{"name":"did-ixo-ixo1…hhazltcHN2eGp0ZjI_ByhnpvkQIQcwEEXhiHFz_3yE5Ft"}}}', length: 3}
+CustomerFormReview.tsx:194 Submit button clicked!
+CustomerFormReview.tsx:48 Performing blockchain claim submission...
+CustomerFormReview.tsx:58 Matrix token available: true
+CustomerFormReview.tsx:59 Form data: {ecs:customerId: 'CUST-1760541115006', schema:profileImage: Array(1)}
+CustomerFormReview.tsx:73 Customer Collection ID: 478
+CustomerFormReview.tsx:76  POST https://rpc.devnet.ixo.earth/ net::ERR_NAME_NOT_RESOLVED
+http @ http.js:47
+execute @ httpclient.js:24
+detectVersion @ tendermint34client.js:61
+connect @ tendermint34client.js:50
+createQueryClient @ index.js:18
+_callee$ @ CustomerFormReview.tsx:76
 tryCatch @ runtime.js:45
 invoke @ runtime.js:274
 prototype.<computed> @ runtime.js:97
@@ -63,7 +66,16 @@ asyncGeneratorStep @ CustomerFormReview.tsx:1
 _next @ CustomerFormReview.tsx:1
 eval @ CustomerFormReview.tsx:1
 eval @ CustomerFormReview.tsx:1
-handleSubmit @ CustomerFormReview.tsx:96
+performSubmission @ CustomerFormReview.tsx:47
+_callee$ @ CustomerFormReview.tsx:220
+tryCatch @ runtime.js:45
+invoke @ runtime.js:274
+prototype.<computed> @ runtime.js:97
+asyncGeneratorStep @ CustomerFormReview.tsx:1
+_next @ CustomerFormReview.tsx:1
+eval @ CustomerFormReview.tsx:1
+eval @ CustomerFormReview.tsx:1
+handleSubmit @ CustomerFormReview.tsx:193
 callCallback @ react-dom.development.js:4161
 invokeGuardedCallbackDev @ react-dom.development.js:4210
 invokeGuardedCallback @ react-dom.development.js:4274
@@ -79,189 +91,50 @@ dispatchEventForPluginEventSystem @ react-dom.development.js:9284
 dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ react-dom.development.js:6462
 dispatchEvent @ react-dom.development.js:6454
 dispatchDiscreteEvent @ react-dom.development.js:6427
-matrix.ts:231 Login failed, attempting registration: MatrixError: [403] Invalid username or password (https://devmx.ixo.earth/_matrix/client/v3/login)
-matrix.ts:175  POST https://devmx.ixo.earth/_matrix/client/v3/register 400 (Bad Request)
-fetch @ fetch.js:59
-eval @ fetch.js:283
-asyncGeneratorStep @ asyncToGenerator.js:7
-_next @ asyncToGenerator.js:21
-eval @ asyncToGenerator.js:26
-eval @ asyncToGenerator.js:18
-requestOtherUrl @ fetch.js:316
-request @ fetch.js:223
-registerRequest @ client.js:6539
-register @ client.js:6497
-_callee$ @ matrix.ts:175
-tryCatch @ runtime.js:45
-invoke @ runtime.js:274
-prototype.<computed> @ runtime.js:97
-asyncGeneratorStep @ matrix.ts:1
-_next @ matrix.ts:1
-eval @ matrix.ts:1
-eval @ matrix.ts:1
-_mxRegister @ matrix.ts:164
-mxRegister @ matrix.ts:164
-_callee$ @ matrix.ts:235
-tryCatch @ runtime.js:45
-invoke @ runtime.js:274
-prototype.<computed> @ runtime.js:97
-asyncGeneratorStep @ matrix.ts:1
-_throw @ matrix.ts:1
-Promise.then
-asyncGeneratorStep @ matrix.ts:1
-_next @ matrix.ts:1
-eval @ matrix.ts:1
-eval @ matrix.ts:1
-_loginOrRegisterMatrixAccount @ matrix.ts:218
-loginOrRegisterMatrixAccount @ matrix.ts:218
-_callee$ @ matrix.ts:278
-tryCatch @ runtime.js:45
-invoke @ runtime.js:274
-prototype.<computed> @ runtime.js:97
-asyncGeneratorStep @ matrix.ts:1
-_next @ matrix.ts:1
-eval @ matrix.ts:1
-eval @ matrix.ts:1
-_authenticateSignXWithMatrix @ matrix.ts:261
-authenticateSignXWithMatrix @ matrix.ts:261
-_callee$ @ CustomerFormReview.tsx:122
-tryCatch @ runtime.js:45
-invoke @ runtime.js:274
-prototype.<computed> @ runtime.js:97
-asyncGeneratorStep @ CustomerFormReview.tsx:1
-_next @ CustomerFormReview.tsx:1
-eval @ CustomerFormReview.tsx:1
-eval @ CustomerFormReview.tsx:1
-handleSubmit @ CustomerFormReview.tsx:96
-callCallback @ react-dom.development.js:4161
-invokeGuardedCallbackDev @ react-dom.development.js:4210
-invokeGuardedCallback @ react-dom.development.js:4274
-invokeGuardedCallbackAndCatchFirstError @ react-dom.development.js:4288
-executeDispatch @ react-dom.development.js:9038
-processDispatchQueueItemsInOrder @ react-dom.development.js:9070
-processDispatchQueue @ react-dom.development.js:9083
-dispatchEventsForPlugins @ react-dom.development.js:9094
-eval @ react-dom.development.js:9285
-batchedUpdates$1 @ react-dom.development.js:26091
-batchedUpdates @ react-dom.development.js:3988
-dispatchEventForPluginEventSystem @ react-dom.development.js:9284
-dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ react-dom.development.js:6462
-dispatchEvent @ react-dom.development.js:6454
-dispatchDiscreteEvent @ react-dom.development.js:6427
-matrix.ts:237 Registration failed: M_USER_IN_USE: MatrixError: [400] User ID already taken. (https://devmx.ixo.earth/_matrix/client/v3/register)
-    at parseErrorResponse (utils.js:91:12)
-    at eval (fetch.js:310:76)
-    at Generator.next (<anonymous>)
-    at asyncGeneratorStep (asyncToGenerator.js:7:17)
-    at _next (asyncToGenerator.js:21:9)
-overrideMethod @ hook.js:608
-window.console.error @ next-dev.js:53
-_callee$ @ matrix.ts:237
-tryCatch @ runtime.js:45
-invoke @ runtime.js:274
-prototype.<computed> @ runtime.js:97
-asyncGeneratorStep @ matrix.ts:1
-_throw @ matrix.ts:1
-Promise.then
-asyncGeneratorStep @ matrix.ts:1
-_throw @ matrix.ts:1
-Promise.then
-asyncGeneratorStep @ matrix.ts:1
-_next @ matrix.ts:1
-eval @ matrix.ts:1
-eval @ matrix.ts:1
-_loginOrRegisterMatrixAccount @ matrix.ts:218
-loginOrRegisterMatrixAccount @ matrix.ts:218
-_callee$ @ matrix.ts:278
-tryCatch @ runtime.js:45
-invoke @ runtime.js:274
-prototype.<computed> @ runtime.js:97
-asyncGeneratorStep @ matrix.ts:1
-_next @ matrix.ts:1
-eval @ matrix.ts:1
-eval @ matrix.ts:1
-_authenticateSignXWithMatrix @ matrix.ts:261
-authenticateSignXWithMatrix @ matrix.ts:261
-_callee$ @ CustomerFormReview.tsx:122
-tryCatch @ runtime.js:45
-invoke @ runtime.js:274
-prototype.<computed> @ runtime.js:97
-asyncGeneratorStep @ CustomerFormReview.tsx:1
-_next @ CustomerFormReview.tsx:1
-eval @ CustomerFormReview.tsx:1
-eval @ CustomerFormReview.tsx:1
-handleSubmit @ CustomerFormReview.tsx:96
-callCallback @ react-dom.development.js:4161
-invokeGuardedCallbackDev @ react-dom.development.js:4210
-invokeGuardedCallback @ react-dom.development.js:4274
-invokeGuardedCallbackAndCatchFirstError @ react-dom.development.js:4288
-executeDispatch @ react-dom.development.js:9038
-processDispatchQueueItemsInOrder @ react-dom.development.js:9070
-processDispatchQueue @ react-dom.development.js:9083
-dispatchEventsForPlugins @ react-dom.development.js:9094
-eval @ react-dom.development.js:9285
-batchedUpdates$1 @ react-dom.development.js:26091
-batchedUpdates @ react-dom.development.js:3988
-dispatchEventForPluginEventSystem @ react-dom.development.js:9284
-dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ react-dom.development.js:6462
-dispatchEvent @ react-dom.development.js:6454
-dispatchDiscreteEvent @ react-dom.development.js:6427
-matrix.ts:291 SignX Matrix authentication error: Error: Failed to login or register: MatrixError: [400] User ID already taken. (https://devmx.ixo.earth/_matrix/client/v3/register)
-    at _callee$ (matrix.ts:238:13)
+CustomerFormReview.tsx:181 Blockchain submission error: TypeError: Failed to fetch
+    at http (http.js:47:16)
+    at HttpClient.execute (httpclient.js:24:85)
+    at Tendermint34Client.detectVersion (tendermint34client.js:61:39)
+    at Tendermint34Client.connect (tendermint34client.js:50:37)
+    at createQueryClient (index.js:18:97)
+    at _callee$ (CustomerFormReview.tsx:76:50)
     at tryCatch (runtime.js:45:40)
     at Generator.invoke [as _invoke] (runtime.js:274:22)
-    at prototype.<computed> [as throw] (runtime.js:97:21)
-    at asyncGeneratorStep (matrix.ts:1:1)
-    at _throw (matrix.ts:1:1)
-overrideMethod @ hook.js:608
-window.console.error @ next-dev.js:53
-_callee$ @ matrix.ts:291
-tryCatch @ runtime.js:45
-invoke @ runtime.js:274
-prototype.<computed> @ runtime.js:97
-asyncGeneratorStep @ matrix.ts:1
-_throw @ matrix.ts:1
-Promise.then
-asyncGeneratorStep @ matrix.ts:1
-_next @ matrix.ts:1
-eval @ matrix.ts:1
-eval @ matrix.ts:1
-_authenticateSignXWithMatrix @ matrix.ts:261
-authenticateSignXWithMatrix @ matrix.ts:261
-_callee$ @ CustomerFormReview.tsx:122
-tryCatch @ runtime.js:45
-invoke @ runtime.js:274
-prototype.<computed> @ runtime.js:97
-asyncGeneratorStep @ CustomerFormReview.tsx:1
-_next @ CustomerFormReview.tsx:1
-eval @ CustomerFormReview.tsx:1
-eval @ CustomerFormReview.tsx:1
-handleSubmit @ CustomerFormReview.tsx:96
-callCallback @ react-dom.development.js:4161
-invokeGuardedCallbackDev @ react-dom.development.js:4210
-invokeGuardedCallback @ react-dom.development.js:4274
-invokeGuardedCallbackAndCatchFirstError @ react-dom.development.js:4288
-executeDispatch @ react-dom.development.js:9038
-processDispatchQueueItemsInOrder @ react-dom.development.js:9070
-processDispatchQueue @ react-dom.development.js:9083
-dispatchEventsForPlugins @ react-dom.development.js:9094
-eval @ react-dom.development.js:9285
-batchedUpdates$1 @ react-dom.development.js:26091
-batchedUpdates @ react-dom.development.js:3988
-dispatchEventForPluginEventSystem @ react-dom.development.js:9284
-dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ react-dom.development.js:6462
-dispatchEvent @ react-dom.development.js:6454
-dispatchDiscreteEvent @ react-dom.development.js:6427
-CustomerFormReview.tsx:128 SignX Matrix authentication failed: Error: Failed to authenticate SignX with Matrix: Failed to login or register: MatrixError: [400] User ID already taken. (https://devmx.ixo.earth/_matrix/client/v3/register)
-    at _callee$ (matrix.ts:292:11)
+    at prototype.<computed> [as next] (runtime.js:97:21)
+    at asyncGeneratorStep (CustomerFormReview.tsx:1:1)
+    at _next (CustomerFormReview.tsx:1:1)
+    at eval (CustomerFormReview.tsx:1:1)
+    at new Promise (<anonymous>)
+    at eval (CustomerFormReview.tsx:1:1)
+    at performSubmission (CustomerFormReview.tsx:47:26)
+    at _callee$ (CustomerFormReview.tsx:220:11)
     at tryCatch (runtime.js:45:40)
     at Generator.invoke [as _invoke] (runtime.js:274:22)
-    at prototype.<computed> [as throw] (runtime.js:97:21)
-    at asyncGeneratorStep (matrix.ts:1:1)
-    at _throw (matrix.ts:1:1)
+    at prototype.<computed> [as next] (runtime.js:97:21)
+    at asyncGeneratorStep (CustomerFormReview.tsx:1:1)
+    at _next (CustomerFormReview.tsx:1:1)
+    at eval (CustomerFormReview.tsx:1:1)
+    at new Promise (<anonymous>)
+    at eval (CustomerFormReview.tsx:1:1)
+    at handleSubmit (CustomerFormReview.tsx:193:21)
+    at HTMLUnknownElement.callCallback (react-dom.development.js:4161:14)
+    at Object.invokeGuardedCallbackDev (react-dom.development.js:4210:16)
+    at invokeGuardedCallback (react-dom.development.js:4274:31)
+    at invokeGuardedCallbackAndCatchFirstError (react-dom.development.js:4288:25)
+    at executeDispatch (react-dom.development.js:9038:3)
+    at processDispatchQueueItemsInOrder (react-dom.development.js:9070:7)
+    at processDispatchQueue (react-dom.development.js:9083:5)
+    at dispatchEventsForPlugins (react-dom.development.js:9094:3)
+    at eval (react-dom.development.js:9285:12)
+    at batchedUpdates$1 (react-dom.development.js:26091:12)
+    at batchedUpdates (react-dom.development.js:3988:12)
+    at dispatchEventForPluginEventSystem (react-dom.development.js:9284:3)
+    at dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay (react-dom.development.js:6462:5)
+    at dispatchEvent (react-dom.development.js:6454:5)
+    at dispatchDiscreteEvent (react-dom.development.js:6427:5)
 overrideMethod @ hook.js:608
 window.console.error @ next-dev.js:53
-_callee$ @ CustomerFormReview.tsx:128
+_callee$ @ CustomerFormReview.tsx:181
 tryCatch @ runtime.js:45
 invoke @ runtime.js:274
 prototype.<computed> @ runtime.js:97
@@ -272,7 +145,16 @@ asyncGeneratorStep @ CustomerFormReview.tsx:1
 _next @ CustomerFormReview.tsx:1
 eval @ CustomerFormReview.tsx:1
 eval @ CustomerFormReview.tsx:1
-handleSubmit @ CustomerFormReview.tsx:96
+performSubmission @ CustomerFormReview.tsx:47
+_callee$ @ CustomerFormReview.tsx:220
+tryCatch @ runtime.js:45
+invoke @ runtime.js:274
+prototype.<computed> @ runtime.js:97
+asyncGeneratorStep @ CustomerFormReview.tsx:1
+_next @ CustomerFormReview.tsx:1
+eval @ CustomerFormReview.tsx:1
+eval @ CustomerFormReview.tsx:1
+handleSubmit @ CustomerFormReview.tsx:193
 callCallback @ react-dom.development.js:4161
 invokeGuardedCallbackDev @ react-dom.development.js:4210
 invokeGuardedCallback @ react-dom.development.js:4274

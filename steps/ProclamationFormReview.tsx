@@ -20,24 +20,24 @@ import { signXBroadCastMessage } from '@utils/signX';
 import { initStargateClient, sendTransaction } from '@utils/client';
 import { TRX_FEE_OPTION } from 'types/transactions';
 
-type CustomerFormReviewProps = {
-  onSuccess: (data: StepDataType<STEPS.customer_form_review>) => void;
+type ProclamationFormReviewProps = {
+  onSuccess: (data: StepDataType<STEPS.proclamation_form_review>) => void;
   onBack?: () => void;
   formData: Record<string, any>;
   header?: string;
 };
 
-const SURVEY_URL = 'https://devmx.ixo.earth/_matrix/media/v3/download/devmx.ixo.earth/HJhNWZWdMIdKEysvAKJWDEQU';
+const SURVEY_URL = 'https://devmx.ixo.earth/_matrix/media/v3/download/devmx.ixo.earth/UWRpYxNSeMJeRmAgBIIFNkCq';
 
-const CustomerFormReview: FC<CustomerFormReviewProps> = ({ onSuccess, onBack, formData, header }) => {
+const ProclamationFormReview: FC<ProclamationFormReviewProps> = ({ onSuccess, onBack, formData, header }) => {
   const [submitting, setSubmitting] = useState(false);
   const { wallet } = useContext(WalletContext);
   const { chain } = useContext(ChainContext);
 
-  // Fetch same survey structure for display
+  // Fetch survey from Matrix media URL
   const { surveyData, loading, error } = useSurveyData(SURVEY_URL);
 
-  // Create read-only survey model
+  // Create survey model in display mode (read-only)
   const model = useSurveyModel({
     surveyData,
     initialData: formData,
@@ -45,7 +45,7 @@ const CustomerFormReview: FC<CustomerFormReviewProps> = ({ onSuccess, onBack, fo
   });
 
   const performSubmission = async () => {
-    console.log('Performing blockchain claim submission...');
+    console.log('Performing blockchain proclamation claim submission...');
     setSubmitting(true);
 
     try {
@@ -64,13 +64,13 @@ const CustomerFormReview: FC<CustomerFormReviewProps> = ({ onSuccess, onBack, fo
         accessToken: matrixAccessToken,
       });
 
-      // 3. Get customer collection ID from environment
-      const collectionId = process.env.NEXT_PUBLIC_CUSTOMER_COLLECTION_ID;
+      // 3. Get proclamation collection ID from environment
+      const collectionId = process.env.NEXT_PUBLIC_PROCLAMATION_COLLECTION_ID;
       if (!collectionId) {
-        throw new Error('Customer Collection ID not configured. Please set NEXT_PUBLIC_CUSTOMER_COLLECTION_ID environment variable.');
+        throw new Error('Proclamation Collection ID not configured. Please set NEXT_PUBLIC_PROCLAMATION_COLLECTION_ID environment variable.');
       }
 
-      console.log('Customer Collection ID:', collectionId);
+      console.log('Proclamation Collection ID:', collectionId);
 
       // 4. Fetch collection details from blockchain
       const queryClient = await createQueryClient(
@@ -88,7 +88,7 @@ const CustomerFormReview: FC<CustomerFormReviewProps> = ({ onSuccess, onBack, fo
       console.log('Collection found:', collection.id);
 
       // 5. Save claim data to Matrix bot (gets claim ID)
-      console.log('Saving claim data to Matrix bot...');
+      console.log('Saving proclamation claim data to Matrix bot...');
       const saveClaimResponse = await claimBotClient.claim.v1beta1.saveClaim(collectionId, JSON.stringify(formData));
 
       if (!saveClaimResponse.data.cid) {
@@ -135,7 +135,7 @@ const CustomerFormReview: FC<CustomerFormReviewProps> = ({ onSuccess, onBack, fo
         console.log('Using SignX wallet for broadcasting...');
         txHash = await signXBroadCastMessage(
           [message],
-          'Submit Customer Claim',
+          'Submit Proclamation Claim',
           'average' as TRX_FEE_OPTION,
           'uixo',
           chain,
@@ -157,7 +157,7 @@ const CustomerFormReview: FC<CustomerFormReviewProps> = ({ onSuccess, onBack, fo
         const result = await sendTransaction(client, wallet?.user?.address as string, {
           msgs: [message],
           chain_id: chain?.chainId as string,
-          memo: 'Submit Customer Claim',
+          memo: 'Submit Proclamation Claim',
           fee: 'average' as TRX_FEE_OPTION,
           feeDenom: 'uixo',
         });
@@ -253,7 +253,7 @@ const CustomerFormReview: FC<CustomerFormReviewProps> = ({ onSuccess, onBack, fo
       <Header header={header} />
 
       <main className={cls(utilsStyles.main, utilsStyles.columnJustifyCenter, styles.stepContainer)}>
-        <div className={styles.stepTitle}>Review Your Information</div>
+        <div className={styles.stepTitle}>Review Your Proclamation</div>
         <p className={styles.label} style={{ textAlign: 'center', marginBottom: '20px' }}>
           Please review the details below. Click "Back" to make changes or "Submit" to continue.
         </p>
@@ -270,5 +270,5 @@ const CustomerFormReview: FC<CustomerFormReviewProps> = ({ onSuccess, onBack, fo
   );
 };
 
-export default CustomerFormReview;
+export default ProclamationFormReview;
 

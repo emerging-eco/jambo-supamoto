@@ -34,8 +34,16 @@
       "id": "proclamation",
       "steps": [
         {
-          "id": "define_proposal_title",
-          "name": "Enter Text"
+          "id": "proclamation_form_entry",
+          "name": "Enter Details"
+        },
+        {
+          "id": "proclamation_form_review",
+          "name": "Review Details"
+        },
+        {
+          "id": "proclamation_form_result",
+          "name": "Submission Result"
         }
       ],
       "name": "1,000 Day Household",

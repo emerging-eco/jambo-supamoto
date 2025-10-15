@@ -31,6 +31,9 @@ export enum STEPS {
   customer_form_entry = 'customer_form_entry',
   customer_form_review = 'customer_form_review',
   customer_claim_result = 'customer_claim_result',
+  proclamation_form_entry = 'proclamation_form_entry',
+  proclamation_form_review = 'proclamation_form_review',
+  proclamation_form_result = 'proclamation_form_result',
 }
 
 export type STEP = {
@@ -157,6 +160,18 @@ export const steps: { [key in STEPS]: STEP } = {
     id: STEPS.customer_claim_result,
     name: 'Submission Result',
   },
+  [STEPS.proclamation_form_entry]: {
+    id: STEPS.proclamation_form_entry,
+    name: 'Enter Details',
+  },
+  [STEPS.proclamation_form_review]: {
+    id: STEPS.proclamation_form_review,
+    name: 'Review Details',
+  },
+  [STEPS.proclamation_form_result]: {
+    id: STEPS.proclamation_form_result,
+    name: 'Submission Result',
+  },
 };
 
 export type ReviewStepsTypes =
@@ -240,6 +255,23 @@ interface Customer_claim_result {
   errorDetails?: string;
 }
 
+interface Proclamation_form_entry {
+  surveyData?: Record<string, any>;
+}
+
+interface Proclamation_form_review {
+  confirmed?: boolean;
+  apiResponse?: any;
+  success?: boolean;
+  error?: string;
+}
+
+interface Proclamation_form_result {
+  success?: boolean;
+  message?: string;
+  errorDetails?: string;
+}
+
 export type AllStepDataTypes =
   | Get_receiver_address
   | Get_receiver_addresses
@@ -256,7 +288,10 @@ export type AllStepDataTypes =
   | Review_and_sign
   | Customer_form_entry
   | Customer_form_review
-  | Customer_claim_result;
+  | Customer_claim_result
+  | Proclamation_form_entry
+  | Proclamation_form_review
+  | Proclamation_form_result;
 
 export type StepDataType<T> = T extends STEPS.kado_buy_crypto
   ? Kado_buy_crypto
@@ -306,4 +341,10 @@ export type StepDataType<T> = T extends STEPS.kado_buy_crypto
   ? Customer_form_review
   : T extends STEPS.customer_claim_result
   ? Customer_claim_result
+  : T extends STEPS.proclamation_form_entry
+  ? Proclamation_form_entry
+  : T extends STEPS.proclamation_form_review
+  ? Proclamation_form_review
+  : T extends STEPS.proclamation_form_result
+  ? Proclamation_form_result
   : never;
