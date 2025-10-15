@@ -24,6 +24,7 @@ import KadoBuyCrypto from '@steps/KadoBuyCrypto';
 import CustomerFormEntry from '@steps/CustomerFormEntry';
 import CustomerFormReview from '@steps/CustomerFormReview';
 import CustomerClaimResult from '@steps/CustomerClaimResult';
+import ProclamationFormEntry from '@steps/ProclamationFormEntry';
 
 type ActionPageProps = {
   actionData: ACTION;
@@ -268,6 +269,15 @@ const ActionExecution: NextPage<ActionPageProps> = ({ actionData }) => {
           <CustomerClaimResult
             onSuccess={handleOnNext<STEPS.customer_claim_result>}
             data={step.data as StepDataType<STEPS.customer_claim_result>}
+            header={action?.name}
+          />
+        );
+      case STEPS.define_proposal_title:
+        return (
+          <ProclamationFormEntry
+            onSuccess={handleOnNext<STEPS.define_proposal_title>}
+            onBack={handleBack}
+            data={step.data as StepDataType<STEPS.define_proposal_title>}
             header={action?.name}
           />
         );

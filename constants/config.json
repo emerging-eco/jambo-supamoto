@@ -28,7 +28,7 @@
       ],
       "name": "Customer",
       "description": "Submit details of an existing customer",
-      "image": "eKXPPhewkJDLbE1bq1iboa.png"
+      "image": "customer.svg"
     },
     {
       "id": "proclamation",
@@ -38,9 +38,9 @@
           "name": "Enter Text"
         }
       ],
-      "name": "Proclamation",
-      "description": "Submit self-proclamation by customer to be 1,00-day household",
-      "image": "eKXPPhewkJDLbE1bq1iboa.png"
+      "name": "1,000 Day Household",
+      "description": "Submit self-proclamation by customer to be 1,000-day household",
+      "image": "1000-day-household.svg"
     }
   ]
 }

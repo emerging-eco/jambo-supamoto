@@ -19,7 +19,7 @@ import { KEPLR_CHAIN_INFO_TYPE } from 'types/chain';
 import config from '@constants/config.json';
 import { SIGN_X_RELAYERS } from '@constants/urls';
 
-let signXClient: SignX;
+let signXClient: SignX | undefined;
 
 let signXInitializing = false;
 export const initializeSignX = async (
@@ -31,8 +31,15 @@ export const initializeSignX = async (
 
   let removeModal: () => void;
   try {
-    if (walletUser?.chainId && walletUser?.chainId !== chainInfo.chainId)
-      throw new Error('Chains changed, please logout and login again');
+    // Handle chain mismatch gracefully - clear stale wallet data and continue
+    if (walletUser?.chainId && walletUser?.chainId !== chainInfo.chainId) {
+      console.warn('Chain ID mismatch detected. Clearing stale wallet data.');
+      // Dispatch logout event to clear stale data
+      const event = new Event(EVENT_LISTENER_TYPE.wallet_logout);
+      window.dispatchEvent(event);
+      // Return undefined to allow re-initialization with correct chain
+      return undefined;
+    }
     if (!chainInfo || !chainInfo.chainId) throw new Error('No chain info found to initialize SignX');
     if (chainInfo.chainName !== 'ixo') throw new Error('SignX only works on ixo chain');
 
@@ -83,9 +90,11 @@ export const initializeSignX = async (
     signXInitializing = false;
     // @ts-ignore
     if (removeModal) removeModal();
-    // remove event listeners
-    signXClient.removeAllListeners(SIGN_X_LOGIN_ERROR);
-    signXClient.removeAllListeners(SIGN_X_LOGIN_SUCCESS);
+    // remove event listeners only if signXClient was initialized
+    if (signXClient) {
+      signXClient.removeAllListeners(SIGN_X_LOGIN_ERROR);
+      signXClient.removeAllListeners(SIGN_X_LOGIN_SUCCESS);
+    }
   }
 };
 
@@ -160,8 +169,10 @@ export const signXBroadCastMessage = async (
     if (removeModal) removeModal();
     // @ts-ignore
     if (onManualCloseModal) onManualCloseModal(false);
-    // remove event listeners
-    signXClient.removeAllListeners(SIGN_X_TRANSACT_ERROR);
-    signXClient.removeAllListeners(SIGN_X_TRANSACT_SUCCESS);
+    // remove event listeners only if signXClient exists
+    if (signXClient) {
+      signXClient.removeAllListeners(SIGN_X_TRANSACT_ERROR);
+      signXClient.removeAllListeners(SIGN_X_TRANSACT_SUCCESS);
+    }
   }
 };

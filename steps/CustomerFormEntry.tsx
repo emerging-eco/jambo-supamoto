@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useCallback, useMemo } from 'react';
 import { Survey } from 'survey-react-ui';
 import { Model } from 'survey-core';
 import cls from 'classnames';
@@ -18,38 +18,49 @@ type CustomerFormEntryProps = {
   header?: string;
 };
 
-const SURVEY_URL = 'https://devmx.ixo.earth/_matrix/media/v3/download/devmx.ixo.earth/xpPfyzgHkigQPtXFuRRBLBwr';
+const SURVEY_URL = 'https://devmx.ixo.earth/_matrix/media/v3/download/devmx.ixo.earth/HJhNWZWdMIdKEysvAKJWDEQU';
 
 const CustomerFormEntry: FC<CustomerFormEntryProps> = ({ onSuccess, onBack, data, header }) => {
   // Fetch survey from Matrix media URL
   const { surveyData, loading, error } = useSurveyData(SURVEY_URL);
 
-  // Handle survey completion
-  const handleComplete = (sender: Model, options: any) => {
-    options.allowComplete = false; // Prevent default completion
-    onSuccess({ surveyData: sender.data });
-  };
+  // Handle survey completion - memoized to prevent re-creation
+  const handleComplete = useCallback(
+    (sender: Model, options: any) => {
+      options.allowComplete = false; // Prevent default completion
+      onSuccess({ surveyData: sender.data });
+    },
+    [onSuccess],
+  );
 
-  // Generate customer ID if not already present
-  const customerId = data?.surveyData?.['ecs:customerId'] || `CUST-${Date.now()}`;
+  // Generate customer ID once and memoize it
+  const customerId = useMemo(
+    () => data?.surveyData?.['ecs:customerId'] || `CUST-${Date.now()}`,
+    [data?.surveyData],
+  );
+
+  // Memoize initial data to prevent creating new object on every render
+  const initialData = useMemo(
+    () => ({
+      'ecs:customerId': customerId, // Pre-fill customer ID
+      ...data?.surveyData, // Preserve any existing data
+    }),
+    [customerId, data?.surveyData],
+  );
 
   // Create survey model with pre-filled data
   const model = useSurveyModel({
     surveyData,
     onComplete: handleComplete,
-    initialData: {
-      'ecs:customerId': customerId, // Pre-fill customer ID
-      'schema:gender': 'Female', // Pre-fill gender to enable conditional options
-      ...data?.surveyData, // Preserve any existing data
-    },
+    initialData,
     completeText: 'Continue',
   });
 
-  // Make Customer ID field editable after model is created
+  // Make Customer ID field editable after model is created (runs only once when model is first created)
   useEffect(() => {
     if (model) {
       const customerIdQuestion = model.getQuestionByName('ecs:customerId');
-      if (customerIdQuestion) {
+      if (customerIdQuestion && customerIdQuestion.readOnly) {
         customerIdQuestion.readOnly = false; // Allow editing
       }
     }
