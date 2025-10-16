@@ -19,6 +19,7 @@ import { createQueryClient } from '@ixo/impactxclient-sdk';
 import { signXBroadCastMessage } from '@utils/signX';
 import { initStargateClient, sendTransaction } from '@utils/client';
 import { TRX_FEE_OPTION } from 'types/transactions';
+import { getChainRpcUrl } from '@constants/rpc';
 
 type ProclamationFormReviewProps = {
   onSuccess: (data: StepDataType<STEPS.proclamation_form_review>) => void;
@@ -73,9 +74,10 @@ const ProclamationFormReview: FC<ProclamationFormReviewProps> = ({ onSuccess, on
       console.log('Proclamation Collection ID:', collectionId);
 
       // 4. Fetch collection details from blockchain
-      const queryClient = await createQueryClient(
-        process.env.NEXT_PUBLIC_CHAIN_RPC_URL || 'https://rpc.testnet.ixo.earth'
-      );
+      // Use RPC URL based on current chain network
+      const rpcUrl = getChainRpcUrl(chain?.chainNetwork);
+      console.log('Using RPC URL:', rpcUrl);
+      const queryClient = await createQueryClient(rpcUrl);
       const collectionResponse = await queryClient.ixo.claims.v1beta1.collection({
         id: collectionId,
       });
@@ -150,7 +152,7 @@ const ProclamationFormReview: FC<ProclamationFormReviewProps> = ({ onSuccess, on
         }
 
         const client = await initStargateClient(
-          process.env.NEXT_PUBLIC_CHAIN_RPC_URL || 'https://rpc.testnet.ixo.earth',
+          rpcUrl,
           offlineSigner
         );
 
