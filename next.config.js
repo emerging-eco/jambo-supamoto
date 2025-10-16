@@ -25,6 +25,7 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
+    unoptimized: true,
     domains: ['raw.githubusercontent.com', 'app.osmosis.zone', 's3.amazonaws.com'],
   },
 };

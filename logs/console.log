@@ -1,43 +1,132 @@
+hook.js:608 Image with src "/images/actions/customer.svg" may not render properly with a parent using position:"static". Consider changing the parent style to position:"relative" with a width and height.
+overrideMethod @ hook.js:608
+warnOnce @ utils.js:311
+eval @ image.js:784
+Promise.then
+handleLoading @ image.js:746
+onLoad @ image.js:838
+callCallback @ react-dom.development.js:4161
+invokeGuardedCallbackDev @ react-dom.development.js:4210
+invokeGuardedCallback @ react-dom.development.js:4274
+invokeGuardedCallbackAndCatchFirstError @ react-dom.development.js:4288
+executeDispatch @ react-dom.development.js:9038
+processDispatchQueueItemsInOrder @ react-dom.development.js:9070
+processDispatchQueue @ react-dom.development.js:9083
+dispatchEventsForPlugins @ react-dom.development.js:9094
+eval @ react-dom.development.js:9285
+batchedUpdates$1 @ react-dom.development.js:26091
+batchedUpdates @ react-dom.development.js:3988
+dispatchEventForPluginEventSystem @ react-dom.development.js:9284
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ react-dom.development.js:6462
+dispatchEvent @ react-dom.development.js:6454
+hook.js:608 Image with src "/images/actions/1000-day-household.svg" may not render properly with a parent using position:"static". Consider changing the parent style to position:"relative" with a width and height.
+overrideMethod @ hook.js:608
+warnOnce @ utils.js:311
+eval @ image.js:784
+Promise.then
+handleLoading @ image.js:746
+onLoad @ image.js:838
+callCallback @ react-dom.development.js:4161
+invokeGuardedCallbackDev @ react-dom.development.js:4210
+invokeGuardedCallback @ react-dom.development.js:4274
+invokeGuardedCallbackAndCatchFirstError @ react-dom.development.js:4288
+executeDispatch @ react-dom.development.js:9038
+processDispatchQueueItemsInOrder @ react-dom.development.js:9070
+processDispatchQueue @ react-dom.development.js:9083
+dispatchEventsForPlugins @ react-dom.development.js:9094
+eval @ react-dom.development.js:9285
+batchedUpdates$1 @ react-dom.development.js:26091
+batchedUpdates @ react-dom.development.js:3988
+dispatchEventForPluginEventSystem @ react-dom.development.js:9284
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ react-dom.development.js:6462
+dispatchEvent @ react-dom.development.js:6454
+wallet.tsx:97 Matrix credentials stored successfully
+wallet.tsx:97 Matrix credentials stored successfully
 hot-dev-client.js:158 [Fast Refresh] rebuilding
-hot-dev-client.js:134 [Fast Refresh] done in 221ms
-CustomerFormReview.tsx:199 Submit button clicked!
+hot-dev-client.js:134 [Fast Refresh] done in 496ms
+hot-dev-client.js:158 [Fast Refresh] rebuilding
+CustomerFormReview.tsx:196 Submit button clicked!
 CustomerFormReview.tsx:49 Performing blockchain claim submission...
 CustomerFormReview.tsx:59 Matrix token available: true
-CustomerFormReview.tsx:60 Form data: {ecs:customerId: 'CUST-1760618442646', schema:profileImage: Array(1)}
+CustomerFormReview.tsx:60 Form data: {ecs:customerId: 'CUST-1760623680588', schema:profileImage: Array(1)}
 CustomerFormReview.tsx:74 Customer Collection ID: 478
-CustomerFormReview.tsx:78 START
-CustomerFormReview.tsx:79 chain:  {chainId: 'devnet-1', chainNetwork: 'testnet', chainLoading: false}
-CustomerFormReview.tsx:80 chain.chainNetwork:  testnet
-CustomerFormReview.tsx:82 Using RPC URL: https://testnet.ixo.earth/rpc/
-CustomerFormReview.tsx:186 Blockchain submission error: Error: Query failed with (6): for 478: collection not found: unknown request
-    at QueryClient.queryAbci (queryclient.js:118:19)
-    at async Object.request (utils.js:31:30)
+CustomerFormReview.tsx:79 Using RPC URL: https://devnet.ixo.earth/rpc/
+CustomerFormReview.tsx:90 Collection found: 478
+CustomerFormReview.tsx:93 Saving claim data to Matrix bot...
+CustomerFormReview.tsx:94  POST https://supamoto.claims.bot.devmx.ixo.earth/action 400 (Bad Request)
+saveClaim @ v1beta1.js:51
+saveClaim @ index.js:28
+_callee$ @ CustomerFormReview.tsx:94
+tryCatch @ runtime.js:45
+invoke @ runtime.js:274
+prototype.<computed> @ runtime.js:97
+asyncGeneratorStep @ CustomerFormReview.tsx:1
+_next @ CustomerFormReview.tsx:1
+Promise.then
+asyncGeneratorStep @ CustomerFormReview.tsx:1
+_next @ CustomerFormReview.tsx:1
+Promise.then
+asyncGeneratorStep @ CustomerFormReview.tsx:1
+_next @ CustomerFormReview.tsx:1
+eval @ CustomerFormReview.tsx:1
+eval @ CustomerFormReview.tsx:1
+performSubmission @ CustomerFormReview.tsx:48
+_callee$ @ CustomerFormReview.tsx:222
+tryCatch @ runtime.js:45
+invoke @ runtime.js:274
+prototype.<computed> @ runtime.js:97
+asyncGeneratorStep @ CustomerFormReview.tsx:1
+_next @ CustomerFormReview.tsx:1
+eval @ CustomerFormReview.tsx:1
+eval @ CustomerFormReview.tsx:1
+handleSubmit @ CustomerFormReview.tsx:195
+callCallback @ react-dom.development.js:4161
+invokeGuardedCallbackDev @ react-dom.development.js:4210
+invokeGuardedCallback @ react-dom.development.js:4274
+invokeGuardedCallbackAndCatchFirstError @ react-dom.development.js:4288
+executeDispatch @ react-dom.development.js:9038
+processDispatchQueueItemsInOrder @ react-dom.development.js:9070
+processDispatchQueue @ react-dom.development.js:9083
+dispatchEventsForPlugins @ react-dom.development.js:9094
+eval @ react-dom.development.js:9285
+batchedUpdates$1 @ react-dom.development.js:26091
+batchedUpdates @ react-dom.development.js:3988
+dispatchEventForPluginEventSystem @ react-dom.development.js:9284
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ react-dom.development.js:6462
+dispatchEvent @ react-dom.development.js:6454
+dispatchDiscreteEvent @ react-dom.development.js:6427
+CustomerFormReview.tsx:183 Blockchain submission error: MatrixBotError: Invalid action provided.
+    at throwResponseError (error.js:23:13)
+    at async Module.saveClaim (v1beta1.js:60:5)
 overrideMethod @ hook.js:608
 window.console.error @ next-dev.js:53
-_callee$ @ CustomerFormReview.tsx:186
+_callee$ @ CustomerFormReview.tsx:183
 tryCatch @ runtime.js:45
 invoke @ runtime.js:274
 prototype.<computed> @ runtime.js:97
-asyncGeneratorStep @ CustomerFormReview.tsx:29
-_throw @ CustomerFormReview.tsx:50
+asyncGeneratorStep @ CustomerFormReview.tsx:1
+_throw @ CustomerFormReview.tsx:1
 Promise.then
-asyncGeneratorStep @ CustomerFormReview.tsx:38
-_next @ CustomerFormReview.tsx:47
+asyncGeneratorStep @ CustomerFormReview.tsx:1
+_next @ CustomerFormReview.tsx:1
 Promise.then
-asyncGeneratorStep @ CustomerFormReview.tsx:38
-_next @ CustomerFormReview.tsx:47
-eval @ CustomerFormReview.tsx:52
-eval @ CustomerFormReview.tsx:44
+asyncGeneratorStep @ CustomerFormReview.tsx:1
+_next @ CustomerFormReview.tsx:1
+Promise.then
+asyncGeneratorStep @ CustomerFormReview.tsx:1
+_next @ CustomerFormReview.tsx:1
+eval @ CustomerFormReview.tsx:1
+eval @ CustomerFormReview.tsx:1
 performSubmission @ CustomerFormReview.tsx:48
-_callee$ @ CustomerFormReview.tsx:225
+_callee$ @ CustomerFormReview.tsx:222
 tryCatch @ runtime.js:45
 invoke @ runtime.js:274
 prototype.<computed> @ runtime.js:97
-asyncGeneratorStep @ CustomerFormReview.tsx:29
-_next @ CustomerFormReview.tsx:47
-eval @ CustomerFormReview.tsx:52
-eval @ CustomerFormReview.tsx:44
-handleSubmit @ CustomerFormReview.tsx:198
+asyncGeneratorStep @ CustomerFormReview.tsx:1
+_next @ CustomerFormReview.tsx:1
+eval @ CustomerFormReview.tsx:1
+eval @ CustomerFormReview.tsx:1
+handleSubmit @ CustomerFormReview.tsx:195
 callCallback @ react-dom.development.js:4161
 invokeGuardedCallbackDev @ react-dom.development.js:4210
 invokeGuardedCallback @ react-dom.development.js:4274
