@@ -1,160 +1,43 @@
-hook.js:608 Image with src "/images/actions/customer.svg" may not render properly with a parent using position:"static". Consider changing the parent style to position:"relative" with a width and height.
-overrideMethod @ hook.js:608
-warnOnce @ utils.js:311
-eval @ image.js:784
-Promise.then
-handleLoading @ image.js:746
-onLoad @ image.js:838
-callCallback @ react-dom.development.js:4161
-invokeGuardedCallbackDev @ react-dom.development.js:4210
-invokeGuardedCallback @ react-dom.development.js:4274
-invokeGuardedCallbackAndCatchFirstError @ react-dom.development.js:4288
-executeDispatch @ react-dom.development.js:9038
-processDispatchQueueItemsInOrder @ react-dom.development.js:9070
-processDispatchQueue @ react-dom.development.js:9083
-dispatchEventsForPlugins @ react-dom.development.js:9094
-eval @ react-dom.development.js:9285
-batchedUpdates$1 @ react-dom.development.js:26091
-batchedUpdates @ react-dom.development.js:3988
-dispatchEventForPluginEventSystem @ react-dom.development.js:9284
-dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ react-dom.development.js:6462
-dispatchEvent @ react-dom.development.js:6454
-hook.js:608 Image with src "/images/actions/1000-day-household.svg" may not render properly with a parent using position:"static". Consider changing the parent style to position:"relative" with a width and height.
-overrideMethod @ hook.js:608
-warnOnce @ utils.js:311
-eval @ image.js:784
-Promise.then
-handleLoading @ image.js:746
-onLoad @ image.js:838
-callCallback @ react-dom.development.js:4161
-invokeGuardedCallbackDev @ react-dom.development.js:4210
-invokeGuardedCallback @ react-dom.development.js:4274
-invokeGuardedCallbackAndCatchFirstError @ react-dom.development.js:4288
-executeDispatch @ react-dom.development.js:9038
-processDispatchQueueItemsInOrder @ react-dom.development.js:9070
-processDispatchQueue @ react-dom.development.js:9083
-dispatchEventsForPlugins @ react-dom.development.js:9094
-eval @ react-dom.development.js:9285
-batchedUpdates$1 @ react-dom.development.js:26091
-batchedUpdates @ react-dom.development.js:3988
-dispatchEventForPluginEventSystem @ react-dom.development.js:9284
-dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ react-dom.development.js:6462
-dispatchEvent @ react-dom.development.js:6454
 hot-dev-client.js:158 [Fast Refresh] rebuilding
-hot-dev-client.js:134 [Fast Refresh] done in 324ms
-hot-dev-client.js:158 [Fast Refresh] rebuilding
-hot-dev-client.js:134 [Fast Refresh] done in 180ms
-wallet.tsx:97 Matrix credentials stored successfully
-localStorage
-Storage {62d01e48d5079982214beff5c8212c50cbf384b2da993fc1ca378a3541d4f866: 'U2FsdGVkX1/HTg01ur4cXXns52in9Yz/1iw56w7whj0WnAobwm…A8jI7ZLNGaCHMDg21DaoiQ7n/lQfEsrrFe86Wd/YhRNvYQQ==', 6b68d5611b1d3ba1381ee6bcba2944ba8ac6afa674c44dc0564f96dccb9c1b4c: 'U2FsdGVkX19MYp5kkIzJuc05mpxfLe8LNbNHkW9dwObpD/Oga9…DkUlvQA5TBioCyKe0VXZ8VOu0k2HxYSvYYgrRh0jyLomPWtD1', wallet: '{"walletType":"signX","user":{"name":"did-ixo-ixo1…hhazltcHN2eGp0ZjI_ByhnpvkQIQcwEEXhiHFz_3yE5Ft"}}}', length: 3}
-CustomerFormReview.tsx:194 Submit button clicked!
-CustomerFormReview.tsx:48 Performing blockchain claim submission...
-CustomerFormReview.tsx:58 Matrix token available: true
-CustomerFormReview.tsx:59 Form data: {ecs:customerId: 'CUST-1760541115006', schema:profileImage: Array(1)}
-CustomerFormReview.tsx:73 Customer Collection ID: 478
-CustomerFormReview.tsx:76  POST https://rpc.devnet.ixo.earth/ net::ERR_NAME_NOT_RESOLVED
-http @ http.js:47
-execute @ httpclient.js:24
-detectVersion @ tendermint34client.js:61
-connect @ tendermint34client.js:50
-createQueryClient @ index.js:18
-_callee$ @ CustomerFormReview.tsx:76
-tryCatch @ runtime.js:45
-invoke @ runtime.js:274
-prototype.<computed> @ runtime.js:97
-asyncGeneratorStep @ CustomerFormReview.tsx:1
-_next @ CustomerFormReview.tsx:1
-eval @ CustomerFormReview.tsx:1
-eval @ CustomerFormReview.tsx:1
-performSubmission @ CustomerFormReview.tsx:47
-_callee$ @ CustomerFormReview.tsx:220
-tryCatch @ runtime.js:45
-invoke @ runtime.js:274
-prototype.<computed> @ runtime.js:97
-asyncGeneratorStep @ CustomerFormReview.tsx:1
-_next @ CustomerFormReview.tsx:1
-eval @ CustomerFormReview.tsx:1
-eval @ CustomerFormReview.tsx:1
-handleSubmit @ CustomerFormReview.tsx:193
-callCallback @ react-dom.development.js:4161
-invokeGuardedCallbackDev @ react-dom.development.js:4210
-invokeGuardedCallback @ react-dom.development.js:4274
-invokeGuardedCallbackAndCatchFirstError @ react-dom.development.js:4288
-executeDispatch @ react-dom.development.js:9038
-processDispatchQueueItemsInOrder @ react-dom.development.js:9070
-processDispatchQueue @ react-dom.development.js:9083
-dispatchEventsForPlugins @ react-dom.development.js:9094
-eval @ react-dom.development.js:9285
-batchedUpdates$1 @ react-dom.development.js:26091
-batchedUpdates @ react-dom.development.js:3988
-dispatchEventForPluginEventSystem @ react-dom.development.js:9284
-dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ react-dom.development.js:6462
-dispatchEvent @ react-dom.development.js:6454
-dispatchDiscreteEvent @ react-dom.development.js:6427
-CustomerFormReview.tsx:181 Blockchain submission error: TypeError: Failed to fetch
-    at http (http.js:47:16)
-    at HttpClient.execute (httpclient.js:24:85)
-    at Tendermint34Client.detectVersion (tendermint34client.js:61:39)
-    at Tendermint34Client.connect (tendermint34client.js:50:37)
-    at createQueryClient (index.js:18:97)
-    at _callee$ (CustomerFormReview.tsx:76:50)
-    at tryCatch (runtime.js:45:40)
-    at Generator.invoke [as _invoke] (runtime.js:274:22)
-    at prototype.<computed> [as next] (runtime.js:97:21)
-    at asyncGeneratorStep (CustomerFormReview.tsx:1:1)
-    at _next (CustomerFormReview.tsx:1:1)
-    at eval (CustomerFormReview.tsx:1:1)
-    at new Promise (<anonymous>)
-    at eval (CustomerFormReview.tsx:1:1)
-    at performSubmission (CustomerFormReview.tsx:47:26)
-    at _callee$ (CustomerFormReview.tsx:220:11)
-    at tryCatch (runtime.js:45:40)
-    at Generator.invoke [as _invoke] (runtime.js:274:22)
-    at prototype.<computed> [as next] (runtime.js:97:21)
-    at asyncGeneratorStep (CustomerFormReview.tsx:1:1)
-    at _next (CustomerFormReview.tsx:1:1)
-    at eval (CustomerFormReview.tsx:1:1)
-    at new Promise (<anonymous>)
-    at eval (CustomerFormReview.tsx:1:1)
-    at handleSubmit (CustomerFormReview.tsx:193:21)
-    at HTMLUnknownElement.callCallback (react-dom.development.js:4161:14)
-    at Object.invokeGuardedCallbackDev (react-dom.development.js:4210:16)
-    at invokeGuardedCallback (react-dom.development.js:4274:31)
-    at invokeGuardedCallbackAndCatchFirstError (react-dom.development.js:4288:25)
-    at executeDispatch (react-dom.development.js:9038:3)
-    at processDispatchQueueItemsInOrder (react-dom.development.js:9070:7)
-    at processDispatchQueue (react-dom.development.js:9083:5)
-    at dispatchEventsForPlugins (react-dom.development.js:9094:3)
-    at eval (react-dom.development.js:9285:12)
-    at batchedUpdates$1 (react-dom.development.js:26091:12)
-    at batchedUpdates (react-dom.development.js:3988:12)
-    at dispatchEventForPluginEventSystem (react-dom.development.js:9284:3)
-    at dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay (react-dom.development.js:6462:5)
-    at dispatchEvent (react-dom.development.js:6454:5)
-    at dispatchDiscreteEvent (react-dom.development.js:6427:5)
+hot-dev-client.js:134 [Fast Refresh] done in 221ms
+CustomerFormReview.tsx:199 Submit button clicked!
+CustomerFormReview.tsx:49 Performing blockchain claim submission...
+CustomerFormReview.tsx:59 Matrix token available: true
+CustomerFormReview.tsx:60 Form data: {ecs:customerId: 'CUST-1760618442646', schema:profileImage: Array(1)}
+CustomerFormReview.tsx:74 Customer Collection ID: 478
+CustomerFormReview.tsx:78 START
+CustomerFormReview.tsx:79 chain:  {chainId: 'devnet-1', chainNetwork: 'testnet', chainLoading: false}
+CustomerFormReview.tsx:80 chain.chainNetwork:  testnet
+CustomerFormReview.tsx:82 Using RPC URL: https://testnet.ixo.earth/rpc/
+CustomerFormReview.tsx:186 Blockchain submission error: Error: Query failed with (6): for 478: collection not found: unknown request
+    at QueryClient.queryAbci (queryclient.js:118:19)
+    at async Object.request (utils.js:31:30)
 overrideMethod @ hook.js:608
 window.console.error @ next-dev.js:53
-_callee$ @ CustomerFormReview.tsx:181
+_callee$ @ CustomerFormReview.tsx:186
 tryCatch @ runtime.js:45
 invoke @ runtime.js:274
 prototype.<computed> @ runtime.js:97
-asyncGeneratorStep @ CustomerFormReview.tsx:1
-_throw @ CustomerFormReview.tsx:1
+asyncGeneratorStep @ CustomerFormReview.tsx:29
+_throw @ CustomerFormReview.tsx:50
 Promise.then
-asyncGeneratorStep @ CustomerFormReview.tsx:1
-_next @ CustomerFormReview.tsx:1
-eval @ CustomerFormReview.tsx:1
-eval @ CustomerFormReview.tsx:1
-performSubmission @ CustomerFormReview.tsx:47
-_callee$ @ CustomerFormReview.tsx:220
+asyncGeneratorStep @ CustomerFormReview.tsx:38
+_next @ CustomerFormReview.tsx:47
+Promise.then
+asyncGeneratorStep @ CustomerFormReview.tsx:38
+_next @ CustomerFormReview.tsx:47
+eval @ CustomerFormReview.tsx:52
+eval @ CustomerFormReview.tsx:44
+performSubmission @ CustomerFormReview.tsx:48
+_callee$ @ CustomerFormReview.tsx:225
 tryCatch @ runtime.js:45
 invoke @ runtime.js:274
 prototype.<computed> @ runtime.js:97
-asyncGeneratorStep @ CustomerFormReview.tsx:1
-_next @ CustomerFormReview.tsx:1
-eval @ CustomerFormReview.tsx:1
-eval @ CustomerFormReview.tsx:1
-handleSubmit @ CustomerFormReview.tsx:193
+asyncGeneratorStep @ CustomerFormReview.tsx:29
+_next @ CustomerFormReview.tsx:47
+eval @ CustomerFormReview.tsx:52
+eval @ CustomerFormReview.tsx:44
+handleSubmit @ CustomerFormReview.tsx:198
 callCallback @ react-dom.development.js:4161
 invokeGuardedCallbackDev @ react-dom.development.js:4210
 invokeGuardedCallback @ react-dom.development.js:4274

@@ -23,10 +23,10 @@ export const DefaultChainName =
 export const EnableDeveloperMode = !!process.env.NEXT_PUBLIC_ENABLE_DEVELOPER_MODE;
 
 export const DefaultChainNetwork =
-  process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK === 'mainnet'
+  process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK
     ? process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK
     : EnableDeveloperMode
-    ? 'testnet'
+    ? 'devnet'
     : 'mainnet';
 
 export const LocalChainMode = Number(process.env.NEXT_PUBLIC_USE_LOCAL_BLOCKCHAIN_PORT || 0);
