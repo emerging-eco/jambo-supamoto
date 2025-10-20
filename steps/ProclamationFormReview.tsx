@@ -60,8 +60,15 @@ const ProclamationFormReview: FC<ProclamationFormReviewProps> = ({ onSuccess, on
       console.log('Form data:', formData);
 
       // 2. Create Matrix claim bot client
+      // Use network-specific bot URL based on chain network
+      const botUrlBase = chain?.chainNetwork === 'mainnet'
+        ? 'https://supamoto.claims.bot.ixo.earth'
+        : chain?.chainNetwork === 'testnet'
+        ? 'https://supamoto.claims.bot.testmx.ixo.earth'
+        : 'https://supamoto.claims.bot.devmx.ixo.earth';
+
       const claimBotClient = createMatrixClaimBotClient({
-        botUrl: process.env.NEXT_PUBLIC_MATRIX_CLAIM_BOT_URL || 'https://supamoto.claims.bot.testmx.ixo.earth',
+        botUrl: process.env.NEXT_PUBLIC_MATRIX_CLAIM_BOT_URL || botUrlBase,
         accessToken: matrixAccessToken,
       });
 
@@ -91,13 +98,34 @@ const ProclamationFormReview: FC<ProclamationFormReviewProps> = ({ onSuccess, on
 
       // 5. Save claim data to Matrix bot (gets claim ID)
       console.log('Saving proclamation claim data to Matrix bot...');
-      const saveClaimResponse = await claimBotClient.claim.v1beta1.saveClaim(collectionId, JSON.stringify(formData));
 
-      if (!saveClaimResponse.data.cid) {
+      // Make direct HTTP request to Matrix bot action endpoint
+      const actionResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_MATRIX_CLAIM_BOT_URL || botUrlBase}/action`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${matrixAccessToken}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            action: 'submit-1000-day-household-proclamation',
+            flags: formData,
+          }),
+        }
+      );
+
+      if (!actionResponse.ok) {
+        const errorData = await actionResponse.json();
+        throw new Error(`Matrix bot error: ${errorData.error || 'Unknown error'}`);
+      }
+
+      const actionResult = await actionResponse.json();
+      if (!actionResult.cid) {
         throw new Error('Failed to save claim data - no claim ID returned');
       }
 
-      const claimId = saveClaimResponse.data.cid;
+      const claimId = actionResult.cid;
       console.log('Claim saved with ID:', claimId);
 
       // 6. Create MsgSubmitClaim

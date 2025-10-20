@@ -14,7 +14,6 @@ import { ChainContext } from '@contexts/chain';
 import { secret } from '@utils/secrets';
 import { cosmos, ixo } from '@ixo/impactxclient-sdk';
 import { DeliverTxResponse } from '@cosmjs/stargate';
-import { createMatrixClaimBotClient } from '@ixo/matrixclient-sdk';
 import { createQueryClient } from '@ixo/impactxclient-sdk';
 import { signXBroadCastMessage } from '@utils/signX';
 import { initStargateClient, sendTransaction } from '@utils/client';
@@ -59,13 +58,7 @@ const CustomerFormReview: FC<CustomerFormReviewProps> = ({ onSuccess, onBack, fo
       console.log('Matrix token available:', !!matrixAccessToken);
       console.log('Form data:', formData);
 
-      // 2. Create Matrix claim bot client
-      const claimBotClient = createMatrixClaimBotClient({
-        botUrl: process.env.NEXT_PUBLIC_MATRIX_CLAIM_BOT_URL || 'https://supamoto.claims.bot.testmx.ixo.earth',
-        accessToken: matrixAccessToken,
-      });
-
-      // 3. Get customer collection ID from environment
+      // 2. Get customer collection ID from environment
       const collectionId = process.env.NEXT_PUBLIC_CUSTOMER_COLLECTION_ID;
       if (!collectionId) {
         throw new Error('Customer Collection ID not configured. Please set NEXT_PUBLIC_CUSTOMER_COLLECTION_ID environment variable.');
@@ -73,7 +66,7 @@ const CustomerFormReview: FC<CustomerFormReviewProps> = ({ onSuccess, onBack, fo
 
       console.log('Customer Collection ID:', collectionId);
 
-      // 4. Fetch collection details from blockchain
+      // 3. Fetch collection details from blockchain
       // Use RPC URL based on current chain network
       const rpcUrl = getChainRpcUrl(chain?.chainNetwork);
       console.log('Using RPC URL:', rpcUrl);
@@ -89,32 +82,27 @@ const CustomerFormReview: FC<CustomerFormReviewProps> = ({ onSuccess, onBack, fo
 
       console.log('Collection found:', collection.id);
 
-      // 5. Save claim data to Matrix bot (gets claim ID)
-      console.log('Saving claim data to Matrix bot...');
-      const saveClaimResponse = await claimBotClient.claim.v1beta1.saveClaim(collectionId, JSON.stringify(formData));
+      // 4. Generate claim ID
+      // Use timestamp-based ID for uniqueness
+      const claimId = `claim-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      console.log('Generated claim ID:', claimId);
 
-      if (!saveClaimResponse.data.cid) {
-        throw new Error('Failed to save claim data - no claim ID returned');
-      }
-
-      const claimId = saveClaimResponse.data.cid;
-      console.log('Claim saved with ID:', claimId);
-
-      // 6. Create MsgSubmitClaim
+      // 5. Create MsgSubmitClaim with form data as claim
       const msgSubmitClaimValue = {
         adminAddress: collection.admin as string,
         agentAddress: wallet?.user?.address as string,
         agentDid: wallet?.user?.did as string,
         claimId: claimId,
         collectionId: collectionId,
+        claim: JSON.stringify(formData), // Include form data as the claim
         useIntent: false,
         amount: [],
-        cw20Payment: [],
+        cw1155Payment: [],
       };
 
       console.log('MsgSubmitClaim value:', msgSubmitClaimValue);
 
-      // 7. Wrap in MsgExec for authz
+      // 6. Wrap in MsgExec for authz
       const message = {
         typeUrl: '/cosmos.authz.v1beta1.MsgExec',
         value: cosmos.authz.v1beta1.MsgExec.fromPartial({
@@ -130,7 +118,7 @@ const CustomerFormReview: FC<CustomerFormReviewProps> = ({ onSuccess, onBack, fo
 
       console.log('Message created, preparing to sign and broadcast...');
 
-      // 8. Sign and broadcast based on wallet type
+      // 7. Sign and broadcast based on wallet type
       let txHash: string | null = null;
 
       if (wallet?.walletType === 'signX') {
@@ -173,7 +161,7 @@ const CustomerFormReview: FC<CustomerFormReviewProps> = ({ onSuccess, onBack, fo
 
       console.log('Transaction successful! Hash:', txHash);
 
-      // 9. Success - pass transaction hash to result step
+      // 8. Success - pass transaction hash to result step
       onSuccess({
         confirmed: true,
         apiResponse: { transactionHash: txHash, claimId },
