@@ -11,6 +11,7 @@ Successfully replaced Matrix authentication flow with blockchain claim submissio
 ### **1. CustomerFormReview.tsx**
 
 #### **A. Added Required Imports** (Lines 1-21)
+
 ```typescript
 import { cosmos, ixo } from '@ixo/impactxclient-sdk';
 import { DeliverTxResponse } from '@cosmjs/stargate';
@@ -22,12 +23,15 @@ import { TRX_FEE_OPTION } from 'types/transactions';
 ```
 
 #### **B. Removed Unused State** (Line 32)
+
 - ❌ Removed: `const [showAuthModal, setShowAuthModal] = useState(false);`
 - ❌ Removed: `handleAuthSuccess()` function
 - ❌ Removed: MatrixAuthModal component from JSX
 
 #### **C. Replaced performSubmission Function** (Lines 47-191)
+
 **New Implementation**:
+
 1. Gets Matrix access token for claim bot
 2. Creates Matrix claim bot client
 3. Gets collection ID from environment variable
@@ -39,7 +43,9 @@ import { TRX_FEE_OPTION } from 'types/transactions';
 9. Returns transaction hash on success
 
 #### **D. Simplified handleSubmit Function** (Lines 193-221)
+
 **New Implementation**:
+
 - Checks if wallet is connected
 - Checks if Matrix token exists (for claim bot access)
 - Calls performSubmission directly (no Matrix auth modal)
@@ -49,6 +55,7 @@ import { TRX_FEE_OPTION } from 'types/transactions';
 ### **2. ProclamationFormReview.tsx**
 
 Applied identical changes as CustomerFormReview.tsx:
+
 - ✅ Added same imports
 - ✅ Removed showAuthModal state
 - ✅ Replaced performSubmission with blockchain implementation
@@ -63,6 +70,7 @@ The only difference is the memo text: "Submit Proclamation Claim" instead of "Su
 ### **3. Environment Variables**
 
 Created `.env.local.example` with required configuration:
+
 ```bash
 NEXT_PUBLIC_MATRIX_CLAIM_BOT_URL=https://supamoto.claims.bot.testmx.ixo.earth
 NEXT_PUBLIC_CUSTOMER_COLLECTION_ID=
@@ -71,6 +79,7 @@ NEXT_PUBLIC_CHAIN_RPC_URL=https://rpc.testnet.ixo.earth
 ```
 
 **Action Required**: Get the actual collection IDs from the SupaMoto team or blockchain:
+
 - `NEXT_PUBLIC_CUSTOMER_COLLECTION_ID` - for customer claims
 - `NEXT_PUBLIC_PROCLAMATION_COLLECTION_ID` - for proclamation claims
 
@@ -79,6 +88,7 @@ NEXT_PUBLIC_CHAIN_RPC_URL=https://rpc.testnet.ixo.earth
 ### **4. Type Definitions**
 
 Verified that `types/transactions.ts` already contains all required types:
+
 - ✅ `TRX_MSG`
 - ✅ `TRX_FEE`
 - ✅ `TRX_FEE_OPTION`
@@ -89,6 +99,7 @@ Verified that `types/transactions.ts` already contains all required types:
 ## 🔄 New Flow
 
 ### **Before (Matrix API)**:
+
 ```
 User clicks "Submit"
     ↓
@@ -110,6 +121,7 @@ Show result
 ```
 
 ### **After (Blockchain)**:
+
 ```
 User clicks "Submit"
     ↓
@@ -142,17 +154,17 @@ Show result with tx hash
 
 ## 📊 Key Differences
 
-| Aspect | Before (Matrix API) | After (Blockchain) |
-|--------|---------------------|-------------------|
-| **Authentication** | MatrixAuthModal | Wallet signature (SignX QR / Keplr popup) |
-| **Submission** | HTTP POST to API | Blockchain transaction |
-| **Data Storage** | API database | Matrix bot + blockchain |
-| **Result** | API response | Transaction hash + claim ID |
-| **Verification** | API confirmation | Blockchain explorer |
-| **Cost** | Free (API call) | Gas fees (can use feegrant) |
-| **Speed** | Instant | ~6 seconds (block time) |
-| **Permanence** | Database | Immutable blockchain |
-| **Modal Shown** | MatrixAuthModal | SignX QR modal (for SignX) or Keplr popup (for Keplr/Opera) |
+| Aspect             | Before (Matrix API) | After (Blockchain)                                          |
+| ------------------ | ------------------- | ----------------------------------------------------------- |
+| **Authentication** | MatrixAuthModal     | Wallet signature (SignX QR / Keplr popup)                   |
+| **Submission**     | HTTP POST to API    | Blockchain transaction                                      |
+| **Data Storage**   | API database        | Matrix bot + blockchain                                     |
+| **Result**         | API response        | Transaction hash + claim ID                                 |
+| **Verification**   | API confirmation    | Blockchain explorer                                         |
+| **Cost**           | Free (API call)     | Gas fees (can use feegrant)                                 |
+| **Speed**          | Instant             | ~6 seconds (block time)                                     |
+| **Permanence**     | Database            | Immutable blockchain                                        |
+| **Modal Shown**    | MatrixAuthModal     | SignX QR modal (for SignX) or Keplr popup (for Keplr/Opera) |
 
 ---
 
@@ -161,6 +173,7 @@ Show result with tx hash
 ### **performSubmission Function Flow**:
 
 1. **Get Matrix Token** (for claim bot access)
+
    ```typescript
    const matrixAccessToken = secret.accessToken;
    if (!matrixAccessToken) {
@@ -169,6 +182,7 @@ Show result with tx hash
    ```
 
 2. **Create Claim Bot Client**
+
    ```typescript
    const claimBotClient = createMatrixClaimBotClient({
      botUrl: process.env.NEXT_PUBLIC_MATRIX_CLAIM_BOT_URL,
@@ -177,25 +191,29 @@ Show result with tx hash
    ```
 
 3. **Get Collection ID** (Customer uses CUSTOMER_COLLECTION_ID, Proclamation uses PROCLAMATION_COLLECTION_ID)
+
    ```typescript
    // CustomerFormReview.tsx
    const collectionId = process.env.NEXT_PUBLIC_CUSTOMER_COLLECTION_ID;
    if (!collectionId) {
-     throw new Error('Customer Collection ID not configured. Please set NEXT_PUBLIC_CUSTOMER_COLLECTION_ID environment variable.');
+     throw new Error(
+       'Customer Collection ID not configured. Please set NEXT_PUBLIC_CUSTOMER_COLLECTION_ID environment variable.',
+     );
    }
 
    // ProclamationFormReview.tsx
    const collectionId = process.env.NEXT_PUBLIC_PROCLAMATION_COLLECTION_ID;
    if (!collectionId) {
-     throw new Error('Proclamation Collection ID not configured. Please set NEXT_PUBLIC_PROCLAMATION_COLLECTION_ID environment variable.');
+     throw new Error(
+       'Proclamation Collection ID not configured. Please set NEXT_PUBLIC_PROCLAMATION_COLLECTION_ID environment variable.',
+     );
    }
    ```
 
 4. **Fetch Collection from Blockchain**
+
    ```typescript
-   const queryClient = await createQueryClient(
-     process.env.NEXT_PUBLIC_CHAIN_RPC_URL
-   );
+   const queryClient = await createQueryClient(process.env.NEXT_PUBLIC_CHAIN_RPC_URL);
    const collectionResponse = await queryClient.ixo.claims.v1beta1.collection({
      id: collectionId,
    });
@@ -203,15 +221,14 @@ Show result with tx hash
    ```
 
 5. **Save Claim Data to Matrix Bot**
+
    ```typescript
-   const saveClaimResponse = await claimBotClient.claim.v1beta1.saveClaim(
-     collectionId,
-     JSON.stringify(formData)
-   );
+   const saveClaimResponse = await claimBotClient.claim.v1beta1.saveClaim(collectionId, JSON.stringify(formData));
    const claimId = saveClaimResponse.data.cid;
    ```
 
 6. **Create MsgSubmitClaim**
+
    ```typescript
    const msgSubmitClaimValue = {
      adminAddress: collection.admin,
@@ -226,6 +243,7 @@ Show result with tx hash
    ```
 
 7. **Wrap in MsgExec (Authz)**
+
    ```typescript
    const message = {
      typeUrl: '/cosmos.authz.v1beta1.MsgExec',
@@ -242,17 +260,11 @@ Show result with tx hash
    ```
 
 8. **Sign and Broadcast**
+
    ```typescript
    // SignX wallet
    if (wallet.walletType === 'signX') {
-     txHash = await signXBroadCastMessage(
-       [message],
-       'Submit Customer Claim',
-       'average',
-       'uixo',
-       chain,
-       wallet
-     );
+     txHash = await signXBroadCastMessage([message], 'Submit Customer Claim', 'average', 'uixo', chain, wallet);
    }
    // Keplr/Opera wallet
    else {
@@ -283,6 +295,7 @@ Show result with tx hash
 ## ✅ Verification
 
 ### **Development Server**:
+
 ```
 ✅ Server started successfully on http://localhost:3000
 ✅ Compiled in 1257 ms (2218 modules)
@@ -291,10 +304,12 @@ Show result with tx hash
 ```
 
 ### **Files Modified**: 2
+
 - `steps/CustomerFormReview.tsx`
 - `steps/ProclamationFormReview.tsx`
 
 ### **Files Created**: 1
+
 - `.env.local.example`
 
 ### **Total Changes**: ~300 lines of code
@@ -304,6 +319,7 @@ Show result with tx hash
 ## 🧪 Testing Instructions
 
 ### **Prerequisites**:
+
 1. ✅ Get Collection ID from SupaMoto team
 2. ✅ Add to `.env.local`: `NEXT_PUBLIC_COLLECTION_ID=<collection-id>`
 3. ✅ Restart dev server: `yarn dev`
@@ -367,22 +383,26 @@ Show result with tx hash
 ## 📝 Important Notes
 
 ### **Matrix Authentication Still Required**:
+
 - Matrix authentication is still needed for claim bot access
 - The MatrixAuthModal for wallet signature is removed
 - Users must authenticate with Matrix before submitting claims
 - This happens in the entry step or earlier in the flow
 
 ### **Wallet Signature Modals**:
+
 - **SignX**: Shows QR code modal (from signXBroadCastMessage)
 - **Keplr/Opera**: Shows wallet approval popup (native Keplr UI)
 - **No custom MatrixAuthModal** is shown during submission
 
 ### **Transaction Fees**:
+
 - Transactions require gas fees (uixo tokens)
 - Can be covered by feegrant if configured
 - Fee option is set to 'average' (can be adjusted)
 
 ### **Error Messages**:
+
 - All errors are caught and passed to result step
 - User-friendly error messages are displayed
 - Console logs provide detailed debugging information
@@ -435,4 +455,3 @@ Show result with tx hash
 **Status**: ✅ COMPLETE  
 **Impact**: Critical - Replaces API submission with blockchain  
 **Testing**: Required - Test with all wallet types
-

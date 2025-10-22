@@ -32,7 +32,7 @@ const SURVEY_URL = 'https://devmx.ixo.earth/_matrix/media/v3/download/devmx.ixo.
 const CustomerFormReview: FC<CustomerFormReviewProps> = ({ onSuccess, onBack, formData, header }) => {
   const [submitting, setSubmitting] = useState(false);
   const { wallet } = useContext(WalletContext);
-  const { chain } = useContext(ChainContext);
+  const { chain, chainInfo } = useContext(ChainContext);
 
   // Fetch same survey structure for display
   const { surveyData, loading, error } = useSurveyData(SURVEY_URL);
@@ -61,7 +61,9 @@ const CustomerFormReview: FC<CustomerFormReviewProps> = ({ onSuccess, onBack, fo
       // 2. Get customer collection ID from environment
       const collectionId = process.env.NEXT_PUBLIC_CUSTOMER_COLLECTION_ID;
       if (!collectionId) {
-        throw new Error('Customer Collection ID not configured. Please set NEXT_PUBLIC_CUSTOMER_COLLECTION_ID environment variable.');
+        throw new Error(
+          'Customer Collection ID not configured. Please set NEXT_PUBLIC_CUSTOMER_COLLECTION_ID environment variable.',
+        );
       }
 
       console.log('Customer Collection ID:', collectionId);
@@ -97,6 +99,7 @@ const CustomerFormReview: FC<CustomerFormReviewProps> = ({ onSuccess, onBack, fo
         claim: JSON.stringify(formData), // Include form data as the claim
         useIntent: false,
         amount: [],
+        cw20Payment: [],
         cw1155Payment: [],
       };
 
@@ -128,8 +131,8 @@ const CustomerFormReview: FC<CustomerFormReviewProps> = ({ onSuccess, onBack, fo
           'Submit Customer Claim',
           'average' as TRX_FEE_OPTION,
           'uixo',
-          chain,
-          wallet
+          chainInfo!,
+          wallet,
         );
       } else {
         console.log('Using Keplr/Opera wallet for broadcasting...');
@@ -139,10 +142,7 @@ const CustomerFormReview: FC<CustomerFormReviewProps> = ({ onSuccess, onBack, fo
           throw new Error('No offline signer found. Please ensure your wallet is connected.');
         }
 
-        const client = await initStargateClient(
-          rpcUrl,
-          offlineSigner
-        );
+        const client = await initStargateClient(rpcUrl, offlineSigner);
 
         const result = await sendTransaction(client, wallet?.user?.address as string, {
           msgs: [message],
@@ -261,4 +261,3 @@ const CustomerFormReview: FC<CustomerFormReviewProps> = ({ onSuccess, onBack, fo
 };
 
 export default CustomerFormReview;
-

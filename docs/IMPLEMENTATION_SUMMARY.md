@@ -20,20 +20,24 @@ Successfully implemented SurveyJS integration for the Jambo SupaMoto codebase wi
 ## 📁 Files Created
 
 ### **Configuration & Hooks**
+
 1. **`constants/surveyConfig.ts`** - Default survey configuration
 2. **`hooks/useSurveyTheme.ts`** - Survey theming hook with Jambo design system integration
 3. **`hooks/useSurveyModel.ts`** - Survey model creation and management hook
 4. **`hooks/useSurveyData.ts`** - Hook to fetch survey JSON from remote URL
 
 ### **Type Definitions**
+
 5. **`types/survey.ts`** - SurveyJS type definitions
 
 ### **Step Components**
+
 6. **`steps/CustomerFormEntry.tsx`** - Step 1: Survey form entry component
 7. **`steps/CustomerFormReview.tsx`** - Step 2: Read-only review component with API submission
 8. **`steps/CustomerClaimResult.tsx`** - Step 3: Success/failure result display
 
 ### **Styles**
+
 9. **`styles/survey.scss`** - Custom SurveyJS style overrides
 10. **`public/survey-core.css`** - SurveyJS core CSS (copied from node_modules)
 
@@ -42,6 +46,7 @@ Successfully implemented SurveyJS integration for the Jambo SupaMoto codebase wi
 ## 🔧 Files Modified
 
 ### **1. `types/steps.ts`**
+
 - Added new step enums: `customer_form_entry`, `customer_form_review`, `customer_claim_result`
 - Added step configurations in `STEP_INFO`
 - Added step data interfaces: `Customer_form_entry`, `Customer_form_review`, `Customer_claim_result`
@@ -49,20 +54,24 @@ Successfully implemented SurveyJS integration for the Jambo SupaMoto codebase wi
 - Updated `StepDataType` conditional type
 
 ### **2. `constants/config.json`**
+
 - Updated `action_one` configuration with three new steps:
   - `customer_form_entry` - Enter Customer Details
   - `customer_form_review` - Review Details
   - `customer_claim_result` - Submission Result
 
 ### **3. `pages/[actionId].tsx`**
+
 - Imported new step components
 - Added switch cases for the three new steps in `getStepComponent` function
 - Properly wired up data flow between steps
 
 ### **4. `pages/_app.tsx`**
+
 - Added import for `@styles/survey.scss`
 
 ### **5. `pages/_document.tsx`**
+
 - Added `<link>` tag to load SurveyJS CSS from `/survey-core.css`
 
 ---
@@ -74,6 +83,7 @@ Successfully implemented SurveyJS integration for the Jambo SupaMoto codebase wi
 **Component**: `steps/CustomerFormEntry.tsx`
 
 **Features**:
+
 - Fetches survey JSON from Matrix media URL: `https://devmx.ixo.earth/_matrix/media/v3/download/devmx.ixo.earth/xpPfyzgHkigQPtXFuRRBLBwr`
 - Displays loading state while fetching
 - Shows error message if fetch fails
@@ -84,6 +94,7 @@ Successfully implemented SurveyJS integration for the Jambo SupaMoto codebase wi
 - Passes survey data to Step 2
 
 **User Flow**:
+
 1. Component mounts
 2. Fetches survey JSON from URL
 3. Creates survey model
@@ -98,6 +109,7 @@ Successfully implemented SurveyJS integration for the Jambo SupaMoto codebase wi
 **Component**: `steps/CustomerFormReview.tsx`
 
 **Features**:
+
 - Fetches same survey structure for consistency
 - Displays survey in read-only mode (`mode: 'display'`)
 - Pre-fills with data from Step 1
@@ -110,6 +122,7 @@ Successfully implemented SurveyJS integration for the Jambo SupaMoto codebase wi
 - Passes result to Step 3
 
 **API Request**:
+
 ```json
 {
   "action": "submit-existing-customer-claim",
@@ -120,6 +133,7 @@ Successfully implemented SurveyJS integration for the Jambo SupaMoto codebase wi
 ```
 
 **User Flow**:
+
 1. User reviews their submitted data (read-only)
 2. User can go back to edit or proceed to submit
 3. On submit, API call is made
@@ -133,6 +147,7 @@ Successfully implemented SurveyJS integration for the Jambo SupaMoto codebase wi
 **Component**: `steps/CustomerClaimResult.tsx`
 
 **Features**:
+
 - Displays success icon and message if API call succeeded
 - Displays error icon and message if API call failed
 - Shows API response message
@@ -141,6 +156,7 @@ Successfully implemented SurveyJS integration for the Jambo SupaMoto codebase wi
 - No back button (submission is final)
 
 **User Flow**:
+
 1. User sees success or failure message
 2. User can navigate to Account or Actions page
 
@@ -161,6 +177,7 @@ The `useSurveyTheme` hook applies Jambo's design system to SurveyJS:
 ### **Custom Styles**
 
 `styles/survey.scss` provides additional overrides:
+
 - Question spacing
 - Input field styling
 - Button styling
@@ -253,17 +270,20 @@ const API_URL = 'https://supamoto.claims.bot.testmx.ixo.earth/action';
 ## 🚀 Next Steps
 
 ### **Immediate**:
+
 1. ✅ Test the survey form in the browser
 2. ✅ Verify data flow between steps
 3. ✅ Test API submission (may return NOT_IMPLEMENTED error)
 4. ✅ Verify error handling
 
 ### **Backend Requirements**:
+
 - Backend team needs to implement `handleSubmitExistingCustomerClaim` handler
 - Define exact form fields/flags expected
 - Update API to return proper success response
 
 ### **Future Enhancements**:
+
 1. Move survey URL to config
 2. Move API endpoint to environment variables
 3. Add loading spinner component
@@ -305,4 +325,3 @@ Refer to these specification documents for more details:
 The SurveyJS implementation is complete and ready for testing. The application builds successfully and the development server is running.
 
 **Access the implementation at**: `http://localhost:3001/action_one`
-

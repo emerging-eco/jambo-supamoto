@@ -260,8 +260,10 @@ const ActionExecution: NextPage<ActionPageProps> = ({ actionData }) => {
             onSuccess={handleOnNext<STEPS.customer_form_review>}
             onBack={handleBack}
             formData={
-              (action?.steps.find((s) => s.id === STEPS.customer_form_entry)?.data as StepDataType<STEPS.customer_form_entry>)
-                ?.surveyData || {}
+              (
+                action?.steps.find((s) => s.id === STEPS.customer_form_entry)
+                  ?.data as StepDataType<STEPS.customer_form_entry>
+              )?.surveyData || {}
             }
             header={action?.name}
           />
@@ -289,8 +291,10 @@ const ActionExecution: NextPage<ActionPageProps> = ({ actionData }) => {
             onSuccess={handleOnNext<STEPS.proclamation_form_review>}
             onBack={handleBack}
             formData={
-              (action?.steps.find((s) => s.id === STEPS.proclamation_form_entry)?.data as StepDataType<STEPS.proclamation_form_entry>)
-                ?.surveyData || {}
+              (
+                action?.steps.find((s) => s.id === STEPS.proclamation_form_entry)
+                  ?.data as StepDataType<STEPS.proclamation_form_entry>
+              )?.surveyData || {}
             }
             header={action?.name}
           />

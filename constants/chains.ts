@@ -22,10 +22,9 @@ export const DefaultChainName =
 
 export const EnableDeveloperMode = !!process.env.NEXT_PUBLIC_ENABLE_DEVELOPER_MODE;
 
-export const DefaultChainNetwork =
-  process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK
-    ? process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK
-    : EnableDeveloperMode
+export const DefaultChainNetwork = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK
+  ? process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK
+  : EnableDeveloperMode
     ? 'devnet'
     : 'mainnet';
 

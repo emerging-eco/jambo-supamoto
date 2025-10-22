@@ -40,7 +40,7 @@ const KadoBuyCrypto: FC<KadoStepProps> = ({ onSuccess, onBack, header }) => {
         <KadoModal visible={kadoVisible} onClose={handleCloseKado} productList={[PRODUCT.BUY]} />
       </main>
 
-      <Footer onBack={handleCloseKado} onForward={onSuccess} />
+      <Footer onBack={handleCloseKado} onForward={() => onSuccess({ data: [], currentIndex: 0 })} />
     </>
   );
 };

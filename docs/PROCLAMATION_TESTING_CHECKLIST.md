@@ -18,12 +18,14 @@ Use this checklist to verify that the proclamation action works correctly.
 ## 📋 Step 1: Entry Form Testing
 
 ### **Navigation**:
+
 - [ ] Navigate to http://localhost:3000
 - [ ] "1,000 Day Household" action card is visible
 - [ ] Click on the action card
 - [ ] Page loads without errors
 
 ### **Form Display**:
+
 - [ ] Title: "1000 Day Household" is visible
 - [ ] Description is visible: "A 1,000-day household is a family with a pregnant or breastfeeding mother, or a child younger than two years old."
 - [ ] Single checkbox is displayed
@@ -31,18 +33,21 @@ Use this checklist to verify that the proclamation action works correctly.
 - [ ] "Continue" button is visible
 
 ### **Form Interaction**:
+
 - [ ] Can check the checkbox
 - [ ] Can uncheck the checkbox
 - [ ] "Continue" button is clickable
 - [ ] Validation works (can't proceed without checking)
 
 ### **Form Submission**:
+
 - [ ] Check the checkbox
 - [ ] Click "Continue"
 - [ ] No console errors
 - [ ] Navigates to review step
 
 ### **Console Output** (Expected):
+
 ```
 Loading survey from URL...
 Survey loaded successfully
@@ -54,12 +59,14 @@ Survey model created
 ## 📋 Step 2: Review Form Testing
 
 ### **Page Load**:
+
 - [ ] Review page loads without errors
 - [ ] Title: "Review Your Proclamation" is visible
 - [ ] Subtitle: "Please review your information before submitting" is visible
 - [ ] Form is displayed
 
 ### **Form Display**:
+
 - [ ] Same form structure as entry step
 - [ ] Checkbox is pre-checked (from step 1)
 - [ ] Checkbox is read-only (can't uncheck)
@@ -68,12 +75,14 @@ Survey model created
 - [ ] "Back" button is visible
 
 ### **Back Navigation**:
+
 - [ ] Click "Back" button
 - [ ] Returns to entry step
 - [ ] Entry form still has checkbox checked
 - [ ] Click "Continue" again to return to review
 
 ### **Matrix Authentication** (SignX):
+
 - [ ] Click "Submit" button
 - [ ] Console shows: "SignX wallet detected - authenticating with address-based credentials..."
 - [ ] Console shows: "SignX Matrix authentication successful, proceeding with submission..."
@@ -81,6 +90,7 @@ Survey model created
 - [ ] Proceeds to API submission
 
 ### **Matrix Authentication** (Keplr/Opera):
+
 - [ ] Click "Submit" button
 - [ ] MatrixAuthModal appears
 - [ ] Modal shows "Authenticate with Wallet" button
@@ -91,6 +101,7 @@ Survey model created
 - [ ] Proceeds to API submission
 
 ### **API Submission**:
+
 - [ ] Console shows: "Performing submission..."
 - [ ] Console shows: "Matrix token available: true"
 - [ ] Console shows: "Making API request..."
@@ -99,6 +110,7 @@ Survey model created
 - [ ] Navigates to result step
 
 ### **Console Output** (Expected):
+
 ```
 Submit button clicked!
 Matrix token available: true (or authentication flow)
@@ -114,6 +126,7 @@ API response data: {...}
 ## 📋 Step 3: Result Form Testing
 
 ### **Success State**:
+
 - [ ] Result page loads without errors
 - [ ] Green checkmark (✓) is visible
 - [ ] Title: "Success!" is displayed
@@ -122,6 +135,7 @@ API response data: {...}
 - [ ] "Done" button is visible
 
 ### **Error State** (if API fails):
+
 - [ ] Result page loads without errors
 - [ ] Red X (✗) is visible
 - [ ] Title: "Submission Failed" is displayed
@@ -131,6 +145,7 @@ API response data: {...}
 - [ ] "Done" button is visible
 
 ### **Navigation**:
+
 - [ ] Click "Done" button
 - [ ] Returns to home page (http://localhost:3000)
 - [ ] No errors in console
@@ -140,12 +155,14 @@ API response data: {...}
 ## 🔍 Browser Console Checks
 
 ### **No Errors**:
+
 - [ ] No red errors in console
 - [ ] No TypeScript compilation errors
 - [ ] No 404 errors for survey URLs
 - [ ] No authentication errors (unless expected)
 
 ### **Expected Logs**:
+
 ```
 ✅ Loading survey from URL...
 ✅ Survey loaded successfully
@@ -163,12 +180,14 @@ API response data: {...}
 ## 🔍 Network Tab Checks
 
 ### **Survey Loading**:
+
 - [ ] Request to `https://devmx.ixo.earth/_matrix/media/v3/download/devmx.ixo.earth/UWRpYxNSeMJeRmAgBIIFNkCq`
 - [ ] Status: 200 OK
 - [ ] Response: JSON with survey definition
 - [ ] Response includes: "1000 Day Household" title
 
 ### **API Submission**:
+
 - [ ] Request to `<API_URL>/action`
 - [ ] Method: POST
 - [ ] Headers include: `Authorization: Bearer <token>`
@@ -181,6 +200,7 @@ API response data: {...}
 ## 🧪 Edge Case Testing
 
 ### **Test 1: Without Matrix Token**:
+
 - [ ] Clear localStorage
 - [ ] Start proclamation flow
 - [ ] Complete entry step
@@ -190,6 +210,7 @@ API response data: {...}
 - [ ] After authentication, submission proceeds
 
 ### **Test 2: With Existing Matrix Token**:
+
 - [ ] Complete flow once (token is stored)
 - [ ] Start proclamation flow again
 - [ ] Complete entry step
@@ -197,6 +218,7 @@ API response data: {...}
 - [ ] Should proceed directly to submission (no auth needed)
 
 ### **Test 3: Back Navigation**:
+
 - [ ] Complete entry step
 - [ ] On review step, click "Back"
 - [ ] Modify entry (uncheck and recheck)
@@ -204,6 +226,7 @@ API response data: {...}
 - [ ] Review should show updated data
 
 ### **Test 4: API Error Handling**:
+
 - [ ] Disconnect internet or use invalid API URL
 - [ ] Complete entry and review steps
 - [ ] Click "Submit"
@@ -216,6 +239,7 @@ API response data: {...}
 ## 📊 Comparison Testing
 
 ### **Compare with Customer Action**:
+
 - [ ] Both actions have 3 steps
 - [ ] Both have entry → review → result flow
 - [ ] Both use Matrix authentication
@@ -224,6 +248,7 @@ API response data: {...}
 - [ ] Both return to home on "Done"
 
 ### **Differences** (Expected):
+
 - [ ] Customer has multi-field form, Proclamation has single checkbox
 - [ ] Customer uses different API endpoint
 - [ ] Customer has more complex data structure
@@ -233,6 +258,7 @@ API response data: {...}
 ## ✅ Final Verification
 
 ### **Complete Flow**:
+
 - [ ] Can complete entire flow from start to finish
 - [ ] All 3 steps work correctly
 - [ ] Navigation works (forward and back)
@@ -242,6 +268,7 @@ API response data: {...}
 - [ ] Return to home works
 
 ### **No Regressions**:
+
 - [ ] Customer action still works
 - [ ] Other actions still work
 - [ ] Wallet connection still works
@@ -252,6 +279,7 @@ API response data: {...}
 ## 🐛 Known Issues to Watch For
 
 ### **Potential Issues**:
+
 - [ ] Survey URL returns 404 (check URL is correct)
 - [ ] Matrix authentication fails (check homeserver URL)
 - [ ] API endpoint not found (check API URL in .env)
@@ -259,6 +287,7 @@ API response data: {...}
 - [ ] TypeScript errors (check type definitions)
 
 ### **If Issues Found**:
+
 1. Note the exact error message
 2. Note the step where it occurred
 3. Check browser console for details
@@ -312,6 +341,7 @@ Notes: ___________
 ## 🎯 Success Criteria
 
 **All tests pass when**:
+
 - ✅ All 3 steps load and display correctly
 - ✅ Navigation works in both directions
 - ✅ Matrix authentication works for all wallet types
@@ -328,4 +358,3 @@ Notes: ___________
 **Edge Cases**: 4  
 **Success Rate**: Should be 100%  
 **Status**: Ready for testing
-

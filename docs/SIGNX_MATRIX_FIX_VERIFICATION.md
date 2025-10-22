@@ -18,6 +18,7 @@ Use this checklist to verify that the `matrix: true` parameter fix is working co
 ## 📋 Test 1: Clear Previous State
 
 **Run in Browser Console**:
+
 ```javascript
 localStorage.clear();
 ```
@@ -78,6 +79,7 @@ SignX login success: {
 - [ ] `matrix.userId` is present ✅
 
 **Then check for**:
+
 ```
 Matrix credentials stored successfully
 ```
@@ -93,8 +95,9 @@ Matrix credentials stored successfully
 ### **Check Encrypted Matrix Token**
 
 **Run in Console**:
+
 ```javascript
-localStorage.getItem('jambo-supamoto-secret-key-v1')
+localStorage.getItem('jambo-supamoto-secret-key-v1');
 ```
 
 **Expected**: Encrypted string (e.g., `"U2FsdGVkX1+abc123..."`)
@@ -104,8 +107,9 @@ localStorage.getItem('jambo-supamoto-secret-key-v1')
 ### **Check Wallet Data**
 
 **Run in Console**:
+
 ```javascript
-JSON.parse(localStorage.getItem('wallet')).user.matrix
+JSON.parse(localStorage.getItem('wallet')).user.matrix;
 ```
 
 **Expected**: Matrix credentials object
@@ -142,6 +146,7 @@ JSON.parse(localStorage.getItem('wallet')).user.matrix
 3. Watch console output
 
 **Expected Console Output**:
+
 ```
 Submit button clicked!
 Performing blockchain claim submission...
@@ -173,6 +178,7 @@ Using SignX wallet for broadcasting...
 4. Wait for transaction to complete
 
 **Expected Console Output**:
+
 ```
 Transaction successful! Hash: <hash>
 ```
@@ -204,6 +210,7 @@ Transaction successful! Hash: <hash>
 3. Watch console output
 
 **Expected Console Output**:
+
 ```
 Submit button clicked!
 Performing blockchain proclamation claim submission...
@@ -234,6 +241,7 @@ Using SignX wallet for broadcasting...
 4. Wait for transaction to complete
 
 **Expected Console Output**:
+
 ```
 Transaction successful! Hash: <hash>
 ```
@@ -266,11 +274,13 @@ Transaction successful! Hash: <hash>
 ### **Issue: "Matrix credentials stored successfully" NOT shown**
 
 **Possible Causes**:
+
 1. SignX mobile app not updated to latest version
 2. Data Vault not configured in mobile app
 3. Network/environment issue
 
 **Debug Steps**:
+
 1. Check SignX login response in console - does it include `matrix` field?
 2. Update IXO Impacts X mobile app to latest version
 3. Verify Data Vault is configured in mobile app settings
@@ -281,13 +291,15 @@ Transaction successful! Hash: <hash>
 ### **Issue: "Matrix token available: false"**
 
 **Possible Causes**:
+
 1. Matrix credentials not stored during login
 2. localStorage cleared after login
 
 **Debug Steps**:
+
 1. Check localStorage:
    ```javascript
-   localStorage.getItem('jambo-supamoto-secret-key-v1')
+   localStorage.getItem('jambo-supamoto-secret-key-v1');
    ```
 2. If null, Matrix credentials were not stored
 3. Disconnect and reconnect wallet
@@ -298,12 +310,14 @@ Transaction successful! Hash: <hash>
 ### **Issue: Blockchain submission still fails**
 
 **Possible Causes**:
+
 1. Collection IDs not configured
 2. Collection not found on blockchain
 3. Matrix claim bot API error
 4. Network/RPC error
 
 **Debug Steps**:
+
 1. Check `.env.local` has collection IDs:
    - `NEXT_PUBLIC_CUSTOMER_COLLECTION_ID=478`
    - `NEXT_PUBLIC_PROCLAMATION_COLLECTION_ID=479`
@@ -318,17 +332,19 @@ Transaction successful! Hash: <hash>
 ### **Before Fix**:
 
 **SignX Login Response**:
+
 ```json
 {
   "data": {
     "address": "ixo1...",
-    "did": "did:ixo:...",
+    "did": "did:ixo:..."
     // ❌ NO matrix field
   }
 }
 ```
 
 **Console Output**:
+
 ```
 Submit button clicked!
 // ❌ Nothing else (fails at Matrix token check)
@@ -341,6 +357,7 @@ Submit button clicked!
 ### **After Fix**:
 
 **SignX Login Response**:
+
 ```json
 {
   "data": {
@@ -356,6 +373,7 @@ Submit button clicked!
 ```
 
 **Console Output**:
+
 ```
 Submit button clicked!
 Performing blockchain claim submission...
@@ -389,4 +407,3 @@ Transaction successful! Hash: <hash>
 **Critical Tests**: 5  
 **Success Rate**: Should be 100%  
 **Status**: Ready for testing
-

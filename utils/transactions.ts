@@ -164,7 +164,7 @@ export const generateVoteTrx = ({
 }): TRX_MSG => ({
   typeUrl: '/cosmos.gov.v1beta1.MsgVote',
   value: cosmos.gov.v1beta1.MsgVote.fromPartial({
-    proposalId: longify(proposalId),
+    proposalId: longify(proposalId) as any,
     voter: voterAddress,
     option,
   }),

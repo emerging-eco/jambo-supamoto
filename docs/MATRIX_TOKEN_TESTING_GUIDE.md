@@ -43,6 +43,7 @@ Use this guide to verify that Matrix token extraction is working correctly.
 ### **Step 3: Verify Console Output**
 
 **Expected Console Logs**:
+
 ```
 SignX login success: {data: {...}}
 Matrix credentials stored successfully  ✅
@@ -51,6 +52,7 @@ Matrix credentials stored successfully  ✅
 **If you see this**, Matrix token extraction is working! ✅
 
 **If you DON'T see "Matrix credentials stored successfully"**:
+
 - ❌ Check console for errors
 - ❌ Check if user.matrix exists in login response
 - ❌ Verify SignX account has Data Vault access
@@ -60,16 +62,19 @@ Matrix credentials stored successfully  ✅
 ### **Step 4: Verify localStorage**
 
 **Run in Console**:
+
 ```javascript
-localStorage.getItem('jambo-supamoto-secret-key-v1')
+localStorage.getItem('jambo-supamoto-secret-key-v1');
 ```
 
 **Expected Result**:
+
 ```
 "U2FsdGVkX1+abc123..." // Encrypted data
 ```
 
 **If null or undefined**:
+
 - ❌ Matrix credentials were not stored
 - ❌ Check console for errors during login
 
@@ -78,6 +83,7 @@ localStorage.getItem('jambo-supamoto-secret-key-v1')
 ### **Step 5: Verify Matrix Token Accessible**
 
 **Run in Console**:
+
 ```javascript
 // Check if secret utility can decrypt token
 const secretKey = localStorage.getItem('jambo-supamoto-secret-key-v1');
@@ -93,6 +99,7 @@ console.log('Encrypted data exists:', !!secretKey);
 ## 📋 Test 2: Blockchain Claim Submission
 
 ### **Prerequisites**:
+
 - [ ] SignX wallet connected
 - [ ] Matrix credentials stored (verified in Test 1)
 - [ ] Collection IDs configured in `.env.local`
@@ -115,6 +122,7 @@ console.log('Encrypted data exists:', !!secretKey);
 4. **Click "Submit"** button
 
 **Expected Console Output**:
+
 ```
 Submit button clicked!
 Performing blockchain claim submission...
@@ -129,6 +137,7 @@ Using SignX wallet for broadcasting...
 ```
 
 **Then**:
+
 - SignX QR code modal appears
 - Scan QR code with mobile app
 - Approve transaction
@@ -146,6 +155,7 @@ Using SignX wallet for broadcasting...
 4. **Click "Submit"** button
 
 **Expected Console Output**:
+
 ```
 Submit button clicked!
 Performing blockchain proclamation claim submission...
@@ -163,11 +173,13 @@ Proclamation Collection ID: <id>
 If your SignX account is NOT configured with Data Vault access:
 
 **Expected Error**:
+
 ```
 Error: Data Vault credentials not found. Please ensure your IXO mobile app is properly configured with a Data Vault account.
 ```
 
 **Console Output**:
+
 ```
 Matrix credentials incomplete: {accessToken: undefined, userId: undefined}
 Initializing wallets error: Error: Data Vault credentials not found...
@@ -187,11 +199,13 @@ This is the **correct behavior** - the error message is descriptive and helpful.
 3. **Try to submit a claim** (without connecting wallet)
 
 **Expected Error**:
+
 ```
 Wallet not connected. Please connect your wallet.
 ```
 
 **If you connect wallet but Matrix token is missing**:
+
 ```
 Matrix authentication required. Please authenticate with Matrix first.
 ```
@@ -201,6 +215,7 @@ Matrix authentication required. Please authenticate with Matrix first.
 ## 📊 Success Checklist
 
 ### **SignX Login**:
+
 - [ ] QR code appears
 - [ ] Can scan with mobile app
 - [ ] Login succeeds
@@ -210,11 +225,13 @@ Matrix authentication required. Please authenticate with Matrix first.
 - [ ] Wallet address appears in UI
 
 ### **Matrix Token Storage**:
+
 - [ ] localStorage.getItem('jambo-supamoto-secret-key-v1') returns encrypted data
 - [ ] No errors in console during login
 - [ ] Matrix credentials validated (accessToken and userId exist)
 
 ### **Blockchain Submission**:
+
 - [ ] Console shows: "Matrix token available: true" ✅
 - [ ] Console shows: "Customer/Proclamation Collection ID: <id>"
 - [ ] Console shows: "Saving claim data to Matrix bot..."
@@ -229,11 +246,13 @@ Matrix authentication required. Please authenticate with Matrix first.
 ### **Issue: "Matrix credentials stored successfully" NOT shown**
 
 **Possible Causes**:
+
 1. SignX account not configured with Data Vault
 2. SignX SDK not returning matrix credentials
 3. Code error in wallet context
 
 **Debug Steps**:
+
 1. Check console for errors
 2. Check if `user.matrix` exists:
    ```javascript
@@ -249,14 +268,16 @@ Matrix authentication required. Please authenticate with Matrix first.
 ### **Issue: "Matrix token available: false"**
 
 **Possible Causes**:
+
 1. Matrix credentials not stored during login
 2. localStorage cleared after login
 3. Encryption/decryption error
 
 **Debug Steps**:
+
 1. Check localStorage:
    ```javascript
-   localStorage.getItem('jambo-supamoto-secret-key-v1')
+   localStorage.getItem('jambo-supamoto-secret-key-v1');
    ```
 2. If null, Matrix credentials were not stored
 3. Disconnect and reconnect wallet
@@ -267,12 +288,14 @@ Matrix authentication required. Please authenticate with Matrix first.
 ### **Issue: Blockchain submission still fails**
 
 **Possible Causes**:
+
 1. Collection IDs not configured
 2. Collection not found on blockchain
 3. Network/RPC error
 4. Claim bot API error
 
 **Debug Steps**:
+
 1. Check `.env.local` has collection IDs
 2. Verify collection IDs are correct
 3. Check console for specific error message
@@ -340,4 +363,3 @@ After completing all tests:
 **Critical Tests**: 2 (SignX login + Blockchain submission)  
 **Success Rate**: Should be 100%  
 **Status**: Ready for testing
-

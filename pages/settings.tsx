@@ -24,10 +24,10 @@ const Settings: NextPage = () => {
   const { theme, updateTheme } = useContext(ThemeContext);
   const { chain } = useContext(ChainContext);
 
-  const handleChainClick = (e: ChangeEvent<HTMLInputElement>) =>
+  const handleChainClick = (e: ChangeEvent<HTMLInputElement> | any) =>
     updateChainNetwork(e.target.checked ? 'testnet' : 'mainnet');
 
-  const handleThemeClick = (e: ChangeEvent<HTMLInputElement>) => updateTheme(e.target.checked ? 'dark' : 'light');
+  const handleThemeClick = (e: ChangeEvent<HTMLInputElement> | any) => updateTheme(e.target.checked ? 'dark' : 'light');
 
   return (
     <>

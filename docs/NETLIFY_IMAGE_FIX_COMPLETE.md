@@ -15,6 +15,7 @@ The HTTP 500 errors when loading wallet images on Netlify have been **successful
 ## Problem Statement
 
 ### Symptoms
+
 - HTTP 500 errors on `/_next/image` endpoint
 - Wallet images fail to load on Netlify
 - Action images fail to load on Netlify
@@ -22,6 +23,7 @@ The HTTP 500 errors when loading wallet images on Netlify have been **successful
 - Error only occurs on production deployment
 
 ### Affected Images
+
 - `/images/wallets/signX.png`
 - `/images/wallets/keplr.png`
 - `/images/wallets/opera.png`
@@ -57,12 +59,14 @@ The HTTP 500 errors when loading wallet images on Netlify have been **successful
 ### Configuration Issue
 
 **netlify.toml**:
+
 ```toml
 [build.environment]
   NEXT_USE_NETLIFY_EDGE = "true"  # ← Enables Edge Runtime
 ```
 
 **next.config.js**:
+
 ```javascript
 images: {
   domains: ['raw.githubusercontent.com', 'app.osmosis.zone', 's3.amazonaws.com'],
@@ -79,6 +83,7 @@ images: {
 **File**: `next.config.js`
 
 **Before**:
+
 ```javascript
 images: {
   domains: ['raw.githubusercontent.com', 'app.osmosis.zone', 's3.amazonaws.com'],
@@ -86,6 +91,7 @@ images: {
 ```
 
 **After**:
+
 ```javascript
 images: {
   unoptimized: true,  // ← ADDED THIS LINE
@@ -109,6 +115,7 @@ images: {
 ### What Gets Fixed
 
 ✅ **Wallet Images** - All load successfully
+
 - Keplr wallet icon
 - Opera wallet icon
 - SignX wallet icon
@@ -117,36 +124,41 @@ images: {
 - Fallback icon
 
 ✅ **Action Images** - All load successfully
+
 - All action card images
 - Fallback images
 
 ✅ **Chain Images** - All load successfully
+
 - Chain logo images
 - Fallback images
 
 ✅ **User Experience** - Significantly improved
+
 - No more 500 errors
 - Images load reliably
 - Consistent experience across devices
 
 ### Performance Trade-offs
 
-| Aspect | Before | After | Impact |
-|--------|--------|-------|--------|
-| Image Optimization | Yes | No | Slightly larger files |
-| File Size | Smaller | Larger | ~50 KB total increase |
-| Load Speed | Optimized | Static | Negligible difference |
-| Reliability | Broken | Working | ✅ Major improvement |
-| Netlify Support | No | Yes | ✅ Works perfectly |
+| Aspect             | Before    | After   | Impact                |
+| ------------------ | --------- | ------- | --------------------- |
+| Image Optimization | Yes       | No      | Slightly larger files |
+| File Size          | Smaller   | Larger  | ~50 KB total increase |
+| Load Speed         | Optimized | Static  | Negligible difference |
+| Reliability        | Broken    | Working | ✅ Major improvement  |
+| Netlify Support    | No        | Yes     | ✅ Works perfectly    |
 
 ### File Size Impact
 
 **Per Image**:
+
 - Wallet icon: +3-5 KB
 - Action image: +5-10 KB
 - Total for all images: ~50 KB
 
 **Acceptable Because**:
+
 - Total impact is minimal
 - Static file serving is very fast
 - Reliability improvement outweighs size increase
@@ -192,6 +204,7 @@ git push origin main
 ## Testing Checklist
 
 ### Local Testing
+
 - [ ] `next.config.js` contains `unoptimized: true`
 - [ ] `yarn build` completes without errors
 - [ ] `yarn start` starts successfully
@@ -201,6 +214,7 @@ git push origin main
 - [ ] No `/_next/image` requests in Network tab
 
 ### Netlify Testing
+
 - [ ] Deployment completes successfully
 - [ ] Site is accessible
 - [ ] Wallet images load
@@ -211,6 +225,7 @@ git push origin main
 - [ ] All images have proper fallbacks
 
 ### Functional Testing
+
 - [ ] Wallet selection screen works
 - [ ] Home page displays correctly
 - [ ] Chain selector works
@@ -221,9 +236,9 @@ git push origin main
 
 ## Files Modified
 
-| File | Change | Lines |
-|------|--------|-------|
-| `next.config.js` | Added `unoptimized: true` | 28 |
+| File             | Change                    | Lines |
+| ---------------- | ------------------------- | ----- |
+| `next.config.js` | Added `unoptimized: true` | 28    |
 
 **Total Changes**: 1 file, 1 line added
 
@@ -247,28 +262,31 @@ git push origin main
 
 ## Documentation Created
 
-| Document | Purpose |
-|----------|---------|
-| `NETLIFY_IMAGE_OPTIMIZATION_ISSUE.md` | Detailed root cause analysis |
-| `NETLIFY_IMAGE_FIX_TESTING_GUIDE.md` | Step-by-step testing instructions |
-| `NETLIFY_IMAGE_FIX_COMPLETE.md` | This executive summary |
+| Document                              | Purpose                           |
+| ------------------------------------- | --------------------------------- |
+| `NETLIFY_IMAGE_OPTIMIZATION_ISSUE.md` | Detailed root cause analysis      |
+| `NETLIFY_IMAGE_FIX_TESTING_GUIDE.md`  | Step-by-step testing instructions |
+| `NETLIFY_IMAGE_FIX_COMPLETE.md`       | This executive summary            |
 
 ---
 
 ## Next Steps
 
 ### Immediate (Today)
+
 1. ✅ Review and approve the fix
 2. ✅ Deploy to Netlify
 3. ✅ Verify images load on production
 4. ✅ Monitor for any issues
 
 ### Short-term (This Week)
+
 - Monitor production for any image-related issues
 - Collect user feedback
 - Verify no performance regressions
 
 ### Long-term (Future)
+
 - Consider upgrading to Next.js 13+ for better Netlify support
 - Evaluate CDN-based image optimization
 - Manually optimize images for smaller file sizes
@@ -277,15 +295,15 @@ git push origin main
 
 ## Key Metrics
 
-| Metric | Value |
-|--------|-------|
-| Files Modified | 1 |
-| Lines Changed | 1 |
-| Breaking Changes | 0 |
-| Backward Compatibility | 100% |
-| Estimated Fix Time | < 5 minutes |
-| Deployment Time | 2-5 minutes |
-| Risk Level | Very Low |
+| Metric                 | Value       |
+| ---------------------- | ----------- |
+| Files Modified         | 1           |
+| Lines Changed          | 1           |
+| Breaking Changes       | 0           |
+| Backward Compatibility | 100%        |
+| Estimated Fix Time     | < 5 minutes |
+| Deployment Time        | 2-5 minutes |
+| Risk Level             | Very Low    |
 
 ---
 
@@ -308,6 +326,7 @@ The application will now load all images successfully on Netlify without any 500
 ## Support & Questions
 
 For questions about this fix:
+
 1. See `NETLIFY_IMAGE_OPTIMIZATION_ISSUE.md` for technical details
 2. See `NETLIFY_IMAGE_FIX_TESTING_GUIDE.md` for testing instructions
 3. Check Netlify build logs for deployment issues
@@ -322,4 +341,3 @@ For questions about this fix:
 **Solution**: Disable image optimization with `unoptimized: true`
 **Result**: All images load successfully
 **Status**: ✅ Ready for deployment
-

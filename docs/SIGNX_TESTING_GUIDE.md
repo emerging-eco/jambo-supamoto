@@ -11,6 +11,7 @@ This guide helps you verify that SignX Matrix authentication works correctly.
 ### **Steps**:
 
 1. **Clear browser storage** (to simulate first-time user):
+
    ```javascript
    // In browser console (F12)
    localStorage.clear();
@@ -26,6 +27,7 @@ This guide helps you verify that SignX Matrix authentication works correctly.
 4. **Click "Submit" button**
 
 ### **Expected Console Output**:
+
 ```
 Submit button clicked!
 No Matrix token found
@@ -44,12 +46,14 @@ API response data: {...}
 ```
 
 ### **Expected Behavior**:
+
 - ✅ **No modal appears** (this is key!)
 - ✅ Form submits automatically after brief pause
 - ✅ Success or error page shows based on API response
 - ✅ No errors in console (except expected API errors if any)
 
 ### **What's Happening Behind the Scenes**:
+
 1. System detects no Matrix token
 2. Detects wallet type is 'signX'
 3. Automatically generates Matrix credentials from address
@@ -69,6 +73,7 @@ API response data: {...}
 4. **Fill out form and submit**
 
 ### **Expected Console Output**:
+
 ```
 Submit button clicked!
 Performing submission...
@@ -78,6 +83,7 @@ Making API request...
 ```
 
 ### **Expected Behavior**:
+
 - ✅ Form submits **immediately**
 - ✅ No authentication step (token already exists)
 - ✅ No modal
@@ -95,6 +101,7 @@ Making API request...
 4. **Fill out form and submit**
 
 ### **Expected Behavior**:
+
 - ✅ MatrixAuthModal **appears**
 - ✅ Shows "Authenticate with Wallet" button
 - ✅ Clicking button prompts wallet for signature
@@ -102,6 +109,7 @@ Making API request...
 - ✅ Form submits automatically
 
 ### **Verification**:
+
 This confirms that the existing modal-based authentication for Keplr/Opera wallets is **not broken** by the SignX changes.
 
 ---
@@ -113,6 +121,7 @@ This confirms that the existing modal-based authentication for Keplr/Opera walle
 **Simulate**: Wallet connected but no address available
 
 **Expected**:
+
 - ✅ Error message: "Wallet address not found. Please reconnect your wallet."
 - ✅ No crash
 - ✅ User can retry
@@ -120,12 +129,14 @@ This confirms that the existing modal-based authentication for Keplr/Opera walle
 ### **Test 4b: Network Error**
 
 **Steps**:
+
 1. Disconnect internet
 2. Clear localStorage
 3. Connect SignX wallet
 4. Try to submit form
 
 **Expected**:
+
 - ✅ Error message about Matrix authentication failure
 - ✅ Clear error in console
 - ✅ No crash
@@ -133,6 +144,7 @@ This confirms that the existing modal-based authentication for Keplr/Opera walle
 ### **Test 4c: Matrix Server Down**
 
 **Expected**:
+
 - ✅ Error message displayed
 - ✅ User can retry later
 - ✅ App remains functional
@@ -142,6 +154,7 @@ This confirms that the existing modal-based authentication for Keplr/Opera walle
 ## 🔍 What to Check in Browser Console
 
 ### **Good Signs (Expected)**:
+
 ```
 ✅ "SignX wallet detected - authenticating with address-based credentials..."
 ✅ "SignX Matrix authentication successful!"
@@ -150,6 +163,7 @@ This confirms that the existing modal-based authentication for Keplr/Opera walle
 ```
 
 ### **Bad Signs (Should NOT appear)**:
+
 ```
 ❌ "Unsupported wallet type: signX"
 ❌ "TypeError: Cannot read properties of undefined"
@@ -166,11 +180,13 @@ This confirms that the existing modal-based authentication for Keplr/Opera walle
 1. **Open DevTools → Network tab**
 2. **Submit form**
 3. **Look for POST request** to:
+
    ```
    https://supamoto.claims.bot.testmx.ixo.earth/action
    ```
 
 4. **Check Request Headers**:
+
    ```
    Authorization: Bearer syt_...
    Content-Type: application/json
@@ -207,6 +223,7 @@ This confirms that the existing modal-based authentication for Keplr/Opera walle
    ```
 
 **Expected Output**:
+
 ```
 Access Token: syt_abc123...
 User ID: @did-ixo-ixo1abc123...:devmx.ixo.earth
@@ -220,6 +237,7 @@ Device ID: ABCDEF123456
 Before considering the implementation complete, verify:
 
 ### **SignX Wallet**:
+
 - [ ] No modal appears on first submission
 - [ ] Authentication happens automatically
 - [ ] Form submits successfully
@@ -229,6 +247,7 @@ Before considering the implementation complete, verify:
 - [ ] No errors in console
 
 ### **Keplr/Opera Wallet**:
+
 - [ ] Modal appears on first submission
 - [ ] Wallet signature prompt works
 - [ ] Modal closes after authentication
@@ -237,12 +256,14 @@ Before considering the implementation complete, verify:
 - [ ] Subsequent submissions skip modal
 
 ### **Error Handling**:
+
 - [ ] Missing address handled gracefully
 - [ ] Network errors show clear messages
 - [ ] User can retry after errors
 - [ ] No crashes or blank screens
 
 ### **General**:
+
 - [ ] Development server runs without errors
 - [ ] No TypeScript compilation errors
 - [ ] No breaking changes to existing features
@@ -255,6 +276,7 @@ Before considering the implementation complete, verify:
 ### **Issue: Modal still appears for SignX**
 
 **Check**:
+
 ```javascript
 // In console during form submission
 console.log('Wallet type:', wallet?.walletType);
@@ -269,6 +291,7 @@ console.log('Wallet type:', wallet?.walletType);
 ### **Issue: "Wallet address not found"**
 
 **Check**:
+
 ```javascript
 // In console
 console.log('Wallet user:', wallet?.user);
@@ -284,17 +307,20 @@ console.log('Address:', wallet?.user?.address);
 ### **Issue: Authentication fails**
 
 **Check**:
+
 1. Environment variable is set:
+
    ```bash
    # In .env
    NEXT_PUBLIC_MATRIX_HOMESERVER_URL=https://devmx.ixo.earth
    ```
 
 2. Matrix server is accessible:
+
    ```javascript
    // In console
    fetch('https://devmx.ixo.earth/_matrix/client/versions')
-     .then(r => r.json())
+     .then((r) => r.json())
      .then(console.log);
    ```
 
@@ -305,11 +331,13 @@ console.log('Address:', wallet?.user?.address);
 ### **Issue: Token not persisting**
 
 **Check**:
+
 1. localStorage is enabled in browser
 2. No browser extensions blocking storage
 3. Not in incognito/private mode
 
 **Fix**:
+
 ```javascript
 // Clear and retry
 localStorage.clear();
@@ -321,6 +349,7 @@ localStorage.clear();
 ## 🎯 Success Criteria
 
 **All tests pass when**:
+
 - ✅ SignX users authenticate automatically
 - ✅ No modal for SignX users
 - ✅ Keplr/Opera users see modal
@@ -371,6 +400,7 @@ Once all tests pass:
    - Mobile browsers
 
 3. **Test production build**:
+
    ```bash
    yarn build
    yarn start
@@ -386,4 +416,3 @@ Once all tests pass:
 **Critical Tests**: 4  
 **Success Rate**: Should be 100%  
 **Status**: Ready for testing
-

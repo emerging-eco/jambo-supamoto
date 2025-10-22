@@ -3,14 +3,17 @@
 ## **1. Overview**
 
 ### **1.1 Purpose**
+
 Implement a three-step workflow for "Action One" that allows users to submit details of an existing customer through a form-based interface, review the submitted data, and receive confirmation of the submission status.
 
 ### **1.2 User Flow Summary**
+
 1. **Step 1**: Form Entry - User fills out customer details in a form
 2. **Step 2**: Review & Confirm - User reviews entered data (read-only) with option to go back and edit
 3. **Step 3**: Result Display - User sees success or failure message based on API response
 
 ### **1.3 API Integration**
+
 - **Endpoint**: `https://supamoto.claims.bot.testmx.ixo.earth/action`
 - **Action**: `submit-existing-customer-claim`
 - **Method**: POST
@@ -22,6 +25,7 @@ Implement a three-step workflow for "Action One" that allows users to submit det
 ## **2. Technical Architecture**
 
 ### **2.1 Step Configuration**
+
 Update `constants/config.json` to define three steps for Action One:
 
 ```json
@@ -48,6 +52,7 @@ Update `constants/config.json` to define three steps for Action One:
 ```
 
 ### **2.2 Step Type Definitions**
+
 Add new step types to `types/steps.ts`:
 
 ```typescript
@@ -86,12 +91,15 @@ export type AllStepDataTypes =
 ## **3. Step 1: Form Entry Component**
 
 ### **3.1 Component Specification**
+
 **File**: `steps/CustomerFormEntry.tsx`
 
 ### **3.2 Functional Requirements**
 
 #### **Form Fields** (To be defined based on customer data requirements)
+
 Suggested fields based on typical customer information:
+
 - **Customer ID** (text, required)
 - **Full Name** (text, required)
 - **Phone Number** (text, required)
@@ -102,21 +110,25 @@ Suggested fields based on typical customer information:
 - **Additional Notes** (textarea, optional)
 
 #### **Form Library Options**
+
 Since SurveyJS is not currently in the project, consider:
 
 **Option A: Native HTML Forms** (Recommended - matches existing codebase pattern)
+
 - Use existing `Input` and `TextArea` components
 - Follows pattern from `ShortTextInput.tsx`, `ReceiverAddress.tsx`
 - No additional dependencies required
 - Consistent with current architecture
 
 **Option B: Add SurveyJS**
+
 - Install: `npm install survey-react survey-core`
 - Provides advanced form features (conditional logic, validation, themes)
 - Requires additional configuration and learning curve
 - May be overkill for simple form
 
 **Option C: React Hook Form**
+
 - Install: `npm install react-hook-form`
 - Lightweight, performant form library
 - Good TypeScript support
@@ -276,14 +288,16 @@ export default CustomerFormEntry;
 ```
 
 ### **3.4 Validation Rules**
+
 - **Required fields**: Customer ID, Full Name, Phone Number, Country
 - **Email validation**: Standard email format (if provided)
 - **Phone validation**: Numeric characters only (optional enhancement)
 - **Form cannot be submitted** until all required fields are filled
 
 ### **3.5 User Experience**
+
 - Form fields pre-populated if user navigates back from Step 2
-- Clear visual indication of required fields (asterisk *)
+- Clear visual indication of required fields (asterisk \*)
 - Forward button disabled until form is valid
 - Back button returns to home/actions list
 
@@ -292,9 +306,11 @@ export default CustomerFormEntry;
 ## **4. Step 2: Review & Confirm Component**
 
 ### **4.1 Component Specification**
+
 **File**: `steps/CustomerFormReview.tsx`
 
 ### **4.2 Functional Requirements**
+
 - Display all form data in read-only format
 - Provide clear visual distinction from editable form
 - Show "Back" button to return to Step 1 for editing
@@ -447,11 +463,13 @@ export default CustomerFormReview;
 ### **4.4 API Integration Details**
 
 #### **Authentication**
+
 - Requires Matrix access token
 - Token should be retrieved from wallet context or secure storage
 - Format: `Authorization: Bearer <token>`
 
 #### **Request Payload**
+
 ```json
 {
   "action": "submit-existing-customer-claim",
@@ -471,6 +489,7 @@ export default CustomerFormReview;
 #### **Expected Responses**
 
 **Success (200)**:
+
 ```json
 {
   "message": "Existing customer claim submitted successfully."
@@ -478,6 +497,7 @@ export default CustomerFormReview;
 ```
 
 **Current Implementation (400 - NOT_IMPLEMENTED)**:
+
 ```json
 {
   "code": 501,
@@ -487,6 +507,7 @@ export default CustomerFormReview;
 ```
 
 **Error (400/401/500)**:
+
 ```json
 {
   "code": 400,
@@ -496,19 +517,21 @@ export default CustomerFormReview;
 ```
 
 ### **4.5 Loading States**
+
 - Disable both Back and Submit buttons during API call
 - Change Submit button label to "Submitting..."
 - Optional: Show loading spinner
-
 
 ---
 
 ## **5. Step 3: Result Display Component**
 
 ### **5.1 Component Specification**
+
 **File**: `steps/CustomerClaimResult.tsx`
 
 ### **5.2 Functional Requirements**
+
 - Display success message if API call succeeded
 - Display error message if API call failed
 - Show appropriate icon (Success/SadFace)
@@ -582,11 +605,13 @@ export default CustomerClaimResult;
 ```
 
 ### **5.4 Success Message Examples**
+
 - "Customer claim submitted successfully!"
 - "Your submission has been received and is being processed."
 - Display any message returned from API
 
 ### **5.5 Error Message Examples**
+
 - "Submission failed. Please try again."
 - "Not Implemented: This feature is not yet available." (current API state)
 - "Authentication failed. Please sign in again."
@@ -599,6 +624,7 @@ export default CustomerClaimResult;
 ### **6.1 Update `pages/[actionId].tsx`**
 
 Add imports:
+
 ```typescript
 import CustomerFormEntry from '@steps/CustomerFormEntry';
 import CustomerFormReview from '@steps/CustomerFormReview';
@@ -606,6 +632,7 @@ import CustomerClaimResult from '@steps/CustomerClaimResult';
 ```
 
 Add cases to `getStepComponent` function:
+
 ```typescript
 const getStepComponent = (step: STEP) => {
   switch (step?.id) {
@@ -654,6 +681,7 @@ const getStepComponent = (step: STEP) => {
 ## **7. Styling Requirements**
 
 ### **7.1 New Styles Needed**
+
 Add to `styles/stepsPages.module.scss`:
 
 ```scss
@@ -710,12 +738,12 @@ Add to `styles/stepsPages.module.scss`:
 }
 ```
 
-
 ---
 
 ## **8. Testing Checklist**
 
 ### **8.1 Step 1 - Form Entry**
+
 - [ ] All required fields show validation errors when empty
 - [ ] Form cannot be submitted with invalid data
 - [ ] Optional fields can be left empty
@@ -724,6 +752,7 @@ Add to `styles/stepsPages.module.scss`:
 - [ ] Back button returns to actions list
 
 ### **8.2 Step 2 - Review**
+
 - [ ] All entered data displays correctly
 - [ ] Optional fields that are empty don't show
 - [ ] Back button returns to Step 1 with data intact
@@ -732,6 +761,7 @@ Add to `styles/stepsPages.module.scss`:
 - [ ] Buttons disabled during submission
 
 ### **8.3 Step 3 - Result**
+
 - [ ] Success message displays when API returns 200
 - [ ] Error message displays when API returns error
 - [ ] Appropriate icon shows (Success/SadFace)
@@ -739,6 +769,7 @@ Add to `styles/stepsPages.module.scss`:
 - [ ] No back button present
 
 ### **8.4 API Integration**
+
 - [ ] Correct endpoint called
 - [ ] Authorization header included
 - [ ] Request payload formatted correctly
@@ -752,18 +783,22 @@ Add to `styles/stepsPages.module.scss`:
 ## **9. Dependencies & Prerequisites**
 
 ### **9.1 Backend Requirements**
+
 ⚠️ **IMPORTANT**: The API currently returns `NOT_IMPLEMENTED` error. Backend team must:
+
 1. Implement `handleSubmitExistingCustomerClaim` handler
 2. Define required form fields/flags
 3. Create claim collection and template
 4. Update API documentation with expected payload structure
 
 ### **9.2 Frontend Dependencies**
+
 - No new npm packages required (using native forms)
 - Existing components: Header, Footer, Input, TextArea, Card, IconText
 - Existing utilities: styles, icons
 
 ### **9.3 Authentication**
+
 - Matrix access token must be available
 - Implement token retrieval from WalletContext or secure storage
 - Handle token expiration/refresh
@@ -773,6 +808,7 @@ Add to `styles/stepsPages.module.scss`:
 ## **10. Future Enhancements**
 
 ### **10.1 Form Improvements**
+
 - Add field-level validation with error messages
 - Implement phone number formatting
 - Add country code prefix to phone numbers
@@ -780,6 +816,7 @@ Add to `styles/stepsPages.module.scss`:
 - Auto-save draft to local storage
 
 ### **10.2 UX Improvements**
+
 - Progress indicator showing current step (1 of 3, 2 of 3, etc.)
 - Confirmation dialog before final submission
 - Toast notifications for success/error
@@ -787,6 +824,7 @@ Add to `styles/stepsPages.module.scss`:
 - Print/download confirmation receipt
 
 ### **10.3 Advanced Features**
+
 - Form field configuration from backend
 - Conditional fields based on country selection
 - Integration with customer database for auto-complete
@@ -798,16 +836,19 @@ Add to `styles/stepsPages.module.scss`:
 ## **11. Implementation Timeline**
 
 ### **Phase 1: Backend Preparation** (Prerequisite)
+
 - Backend team implements API handler
 - Define exact form fields required
 - Test API endpoint independently
 
 ### **Phase 2: Frontend Development** (Estimated: 2-3 days)
+
 - Day 1: Implement Step 1 (Form Entry)
 - Day 2: Implement Step 2 (Review) + Step 3 (Result)
 - Day 3: Integration, styling, testing
 
 ### **Phase 3: Testing & Refinement** (Estimated: 1-2 days)
+
 - Unit testing
 - Integration testing with API
 - User acceptance testing
@@ -833,24 +874,28 @@ Add to `styles/stepsPages.module.scss`:
 ## **13. Notes & Considerations**
 
 ### **13.1 Security**
+
 - Ensure Matrix access token is stored securely
 - Validate all input data on both client and server
 - Sanitize user input to prevent XSS attacks
 - Use HTTPS for all API communications
 
 ### **13.2 Performance**
+
 - Minimize re-renders during form input
 - Debounce validation checks if needed
 - Optimize API payload size
 - Handle slow network conditions gracefully
 
 ### **13.3 Accessibility**
+
 - Ensure all form fields have proper labels
 - Provide clear error messages
 - Support keyboard navigation
 - Test with screen readers
 
 ### **13.4 Browser Compatibility**
+
 - Test on major browsers (Chrome, Firefox, Safari, Edge)
 - Ensure mobile responsiveness
 - Handle different screen sizes appropriately
@@ -858,6 +903,3 @@ Add to `styles/stepsPages.module.scss`:
 ---
 
 This specification provides a complete blueprint for implementing the "Submit Existing Customer Claim" feature. The implementation follows existing patterns in the Jambo codebase and requires no additional dependencies beyond what's already installed.
-
-
-

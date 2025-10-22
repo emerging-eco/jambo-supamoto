@@ -33,7 +33,7 @@ const SURVEY_URL = 'https://devmx.ixo.earth/_matrix/media/v3/download/devmx.ixo.
 const ProclamationFormReview: FC<ProclamationFormReviewProps> = ({ onSuccess, onBack, formData, header }) => {
   const [submitting, setSubmitting] = useState(false);
   const { wallet } = useContext(WalletContext);
-  const { chain } = useContext(ChainContext);
+  const { chain, chainInfo } = useContext(ChainContext);
 
   // Fetch survey from Matrix media URL
   const { surveyData, loading, error } = useSurveyData(SURVEY_URL);
@@ -61,11 +61,12 @@ const ProclamationFormReview: FC<ProclamationFormReviewProps> = ({ onSuccess, on
 
       // 2. Create Matrix claim bot client
       // Use network-specific bot URL based on chain network
-      const botUrlBase = chain?.chainNetwork === 'mainnet'
-        ? 'https://supamoto.claims.bot.ixo.earth'
-        : chain?.chainNetwork === 'testnet'
-        ? 'https://supamoto.claims.bot.testmx.ixo.earth'
-        : 'https://supamoto.claims.bot.devmx.ixo.earth';
+      const botUrlBase =
+        chain?.chainNetwork === 'mainnet'
+          ? 'https://supamoto.claims.bot.ixo.earth'
+          : chain?.chainNetwork === 'testnet'
+            ? 'https://supamoto.claims.bot.testmx.ixo.earth'
+            : 'https://supamoto.claims.bot.devmx.ixo.earth';
 
       const claimBotClient = createMatrixClaimBotClient({
         botUrl: process.env.NEXT_PUBLIC_MATRIX_CLAIM_BOT_URL || botUrlBase,
@@ -75,7 +76,9 @@ const ProclamationFormReview: FC<ProclamationFormReviewProps> = ({ onSuccess, on
       // 3. Get proclamation collection ID from environment
       const collectionId = process.env.NEXT_PUBLIC_PROCLAMATION_COLLECTION_ID;
       if (!collectionId) {
-        throw new Error('Proclamation Collection ID not configured. Please set NEXT_PUBLIC_PROCLAMATION_COLLECTION_ID environment variable.');
+        throw new Error(
+          'Proclamation Collection ID not configured. Please set NEXT_PUBLIC_PROCLAMATION_COLLECTION_ID environment variable.',
+        );
       }
 
       console.log('Proclamation Collection ID:', collectionId);
@@ -100,20 +103,17 @@ const ProclamationFormReview: FC<ProclamationFormReviewProps> = ({ onSuccess, on
       console.log('Saving proclamation claim data to Matrix bot...');
 
       // Make direct HTTP request to Matrix bot action endpoint
-      const actionResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_MATRIX_CLAIM_BOT_URL || botUrlBase}/action`,
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${matrixAccessToken}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            action: 'submit-1000-day-household-proclamation',
-            flags: formData,
-          }),
-        }
-      );
+      const actionResponse = await fetch(`${process.env.NEXT_PUBLIC_MATRIX_CLAIM_BOT_URL || botUrlBase}/action`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${matrixAccessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'submit-1000-day-household-proclamation',
+          flags: formData,
+        }),
+      });
 
       if (!actionResponse.ok) {
         const errorData = await actionResponse.json();
@@ -138,6 +138,7 @@ const ProclamationFormReview: FC<ProclamationFormReviewProps> = ({ onSuccess, on
         useIntent: false,
         amount: [],
         cw20Payment: [],
+        cw1155Payment: [],
       };
 
       console.log('MsgSubmitClaim value:', msgSubmitClaimValue);
@@ -168,8 +169,8 @@ const ProclamationFormReview: FC<ProclamationFormReviewProps> = ({ onSuccess, on
           'Submit Proclamation Claim',
           'average' as TRX_FEE_OPTION,
           'uixo',
-          chain,
-          wallet
+          chainInfo!,
+          wallet,
         );
       } else {
         console.log('Using Keplr/Opera wallet for broadcasting...');
@@ -179,10 +180,7 @@ const ProclamationFormReview: FC<ProclamationFormReviewProps> = ({ onSuccess, on
           throw new Error('No offline signer found. Please ensure your wallet is connected.');
         }
 
-        const client = await initStargateClient(
-          rpcUrl,
-          offlineSigner
-        );
+        const client = await initStargateClient(rpcUrl, offlineSigner);
 
         const result = await sendTransaction(client, wallet?.user?.address as string, {
           msgs: [message],
@@ -301,4 +299,3 @@ const ProclamationFormReview: FC<ProclamationFormReviewProps> = ({ onSuccess, on
 };
 
 export default ProclamationFormReview;
-

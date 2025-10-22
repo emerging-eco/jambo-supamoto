@@ -16,6 +16,7 @@ console.log('Is authenticated:', isAuthenticated());
 ```
 
 **Expected Result**:
+
 - ✅ `secret` object exists
 - ✅ `secret.accessToken` returns `null` (not yet authenticated)
 - ✅ `isAuthenticated()` returns `false`
@@ -43,6 +44,7 @@ console.log('After removal:', removed); // Should be null
 ```
 
 **Expected Result**:
+
 - ✅ Value is saved and encrypted in localStorage
 - ✅ Value can be retrieved and decrypted
 - ✅ Value can be removed
@@ -62,6 +64,7 @@ console.log('Generated username:', username);
 ```
 
 **Expected Result**:
+
 - ✅ Username format: `did-ixo-{address}`
 
 ---
@@ -79,6 +82,7 @@ console.log('Generated password:', password);
 ```
 
 **Expected Result**:
+
 - ✅ Password is a 32-character MD5 hash
 
 ---
@@ -92,6 +96,7 @@ console.log('Generated password:', password);
 5. Check browser console
 
 **Expected Console Output**:
+
 ```
 Submit button clicked!
 Matrix token available: false
@@ -100,6 +105,7 @@ Submission error: Error: Matrix access token not found. Please authenticate with
 ```
 
 **Expected Result**:
+
 - ✅ Submit button works
 - ✅ Error is caught and logged
 - ✅ Error message is clear
@@ -133,27 +139,28 @@ try {
     username: username,
     password: password,
   });
-  
+
   console.log('Login successful!');
   console.log('Access Token:', result.accessToken);
   console.log('User ID:', result.userId);
   console.log('Device ID:', result.deviceId);
-  
+
   // Verify token is stored
   console.log('Token from storage:', secret.accessToken);
-  
 } catch (error) {
   console.error('Login failed:', error);
 }
 ```
 
 **Expected Result (Success)**:
+
 - ✅ Login or registration succeeds
 - ✅ Access token is returned
 - ✅ Token is stored in secure storage
 - ✅ `secret.accessToken` returns the token
 
 **Expected Result (Failure)**:
+
 - ⚠️ Error message explains the issue
 - ⚠️ Check if Matrix server is accessible
 - ⚠️ Check if credentials are correct
@@ -167,26 +174,25 @@ import { useMatrixAuth } from '@hooks/useMatrixAuth';
 
 function TestComponent() {
   const { authenticateWithMatrix, getAccessToken, isAuthenticated, loading, error } = useMatrixAuth();
-  
+
   const handleAuth = async () => {
     try {
       const address = 'ixo1abc123...';
       const mnemonic = 'your twelve word mnemonic phrase';
-      
+
       const result = await authenticateWithMatrix(address, mnemonic);
       console.log('Authenticated:', result);
-      
+
       const token = getAccessToken();
       console.log('Token:', token);
-      
+
       const isAuth = isAuthenticated();
       console.log('Is authenticated:', isAuth);
-      
     } catch (err) {
       console.error('Auth error:', err);
     }
   };
-  
+
   return (
     <div>
       <button onClick={handleAuth}>Authenticate</button>
@@ -208,6 +214,7 @@ console.log('Matrix Room Bot:', process.env.NEXT_PUBLIC_MATRIX_ROOM_BOT_URL);
 ```
 
 **Expected Output**:
+
 ```
 Matrix Homeserver: https://devmx.ixo.earth
 Matrix Room Bot: https://matrix-room-bot.testmx.ixo.earth
@@ -223,6 +230,7 @@ Matrix Room Bot: https://matrix-room-bot.testmx.ixo.earth
 4. Look for encrypted keys
 
 **Expected**:
+
 - Keys are hashed (SHA256)
 - Values are encrypted (AES)
 - Cannot read values directly
@@ -238,10 +246,12 @@ When you click Submit on the review page:
 3. Check for requests
 
 **Current Expected Behavior**:
+
 - ❌ No network request (error thrown before fetch)
 - ✅ Console shows error about missing token
 
 **After Matrix Login**:
+
 - ✅ POST request to `https://supamoto.claims.bot.testmx.ixo.earth/action`
 - ✅ Authorization header present
 - ✅ Request body contains form data
@@ -267,18 +277,20 @@ When you click Submit on the review page:
 ### Issue: "Failed to login or register"
 
 **Possible Causes**:
+
 1. Matrix server is down
 2. Network connectivity issue
 3. Invalid credentials
 4. CORS issue
 
 **Debug**:
+
 ```javascript
 // Test Matrix server connectivity
 fetch('https://devmx.ixo.earth/_matrix/client/versions')
-  .then(r => r.json())
-  .then(data => console.log('Matrix server versions:', data))
-  .catch(err => console.error('Cannot reach Matrix server:', err));
+  .then((r) => r.json())
+  .then((data) => console.log('Matrix server versions:', data))
+  .catch((err) => console.error('Cannot reach Matrix server:', err));
 ```
 
 ---
@@ -288,6 +300,7 @@ fetch('https://devmx.ixo.earth/_matrix/client/versions')
 **Cause**: SecureStorage might have issues in some browsers.
 
 **Debug**:
+
 ```javascript
 import { secureSave, secureGet } from '@utils/storage';
 
@@ -326,4 +339,3 @@ Once all tests pass, you're ready to implement the Matrix login flow. Choose one
 3. **Manual token entry** - Add settings page to paste Matrix token (testing only)
 
 Refer to `MATRIX_AUTH_IMPLEMENTATION_SUMMARY.md` for detailed implementation options.
-

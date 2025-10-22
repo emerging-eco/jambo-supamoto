@@ -3,6 +3,7 @@
 ## 🚀 Quick Start Testing
 
 ### **Prerequisites**
+
 - ✅ Development server running (`yarn dev`)
 - ✅ Keplr or Opera wallet extension installed
 - ✅ Wallet connected to testnet
@@ -42,7 +43,7 @@
 6. **Approve Signature**
    - Review the signature request in wallet
    - Click "Approve"
-   - **Expected**: 
+   - **Expected**:
      - Success message appears in modal
      - Modal auto-closes after 1.5 seconds
      - Form submission proceeds automatically
@@ -82,7 +83,7 @@
 4. Modal appears
 5. Click "Authenticate with Wallet"
 6. **Reject** the signature in wallet
-7. **Expected**: 
+7. **Expected**:
    - Error message appears in modal
    - Modal stays open
    - Can click "Authenticate with Wallet" again to retry
@@ -92,6 +93,7 @@
 ## 🔍 What to Look For
 
 ### **Console Logs (Success Path)**:
+
 ```
 Submit button clicked!
 No Matrix token found, showing auth modal...
@@ -110,11 +112,13 @@ API response data: {...}
 ```
 
 ### **Network Tab**:
+
 - POST to `https://supamoto.claims.bot.testmx.ixo.earth/action`
 - Authorization header present
 - Request body contains form data
 
 ### **Local Storage**:
+
 - Check Application → Local Storage
 - Should see encrypted keys (hashed with SHA256)
 - Values are encrypted (AES)
@@ -127,7 +131,8 @@ API response data: {...}
 
 **Cause**: Wallet doesn't support signing arbitrary messages
 
-**Solution**: 
+**Solution**:
+
 - Update wallet extension to latest version
 - Try different wallet (Keplr or Opera)
 
@@ -138,6 +143,7 @@ API response data: {...}
 **Cause**: Wallet extension not installed or not loaded
 
 **Solution**:
+
 - Install Keplr or Opera extension
 - Refresh page after installation
 - Check if extension is enabled
@@ -149,6 +155,7 @@ API response data: {...}
 **Cause**: Wallet or chain context not available
 
 **Debug**:
+
 ```javascript
 // In browser console
 console.log('Wallet:', wallet);
@@ -167,6 +174,7 @@ console.log('ChainId:', chain?.chainId);
 **Cause**: Environment variable missing
 
 **Solution**: Check `.env` file has:
+
 ```
 NEXT_PUBLIC_MATRIX_HOMESERVER_URL=https://devmx.ixo.earth
 ```
@@ -178,12 +186,13 @@ NEXT_PUBLIC_MATRIX_HOMESERVER_URL=https://devmx.ixo.earth
 **Cause**: Matrix server issue or network problem
 
 **Debug**:
+
 ```javascript
 // Test Matrix server connectivity
 fetch('https://devmx.ixo.earth/_matrix/client/versions')
-  .then(r => r.json())
-  .then(data => console.log('Matrix server:', data))
-  .catch(err => console.error('Cannot reach Matrix:', err));
+  .then((r) => r.json())
+  .then((data) => console.log('Matrix server:', data))
+  .catch((err) => console.error('Cannot reach Matrix:', err));
 ```
 
 ---
@@ -191,6 +200,7 @@ fetch('https://devmx.ixo.earth/_matrix/client/versions')
 ## 🎯 Success Indicators
 
 ### **✅ Authentication Successful When**:
+
 - Modal appears on first submit
 - Wallet prompts for signature
 - Success message shows
@@ -201,6 +211,7 @@ fetch('https://devmx.ixo.earth/_matrix/client/versions')
 - Subsequent submits work without modal
 
 ### **✅ Token Persistence Working When**:
+
 - Refresh page
 - Reconnect wallet
 - Submit form
@@ -211,12 +222,14 @@ fetch('https://devmx.ixo.earth/_matrix/client/versions')
 ## 🧪 Advanced Testing
 
 ### **Test Different Wallets**:
+
 1. Test with Keplr
 2. Clear storage
 3. Test with Opera
 4. Verify both work
 
 ### **Test Token Persistence**:
+
 1. Authenticate successfully
 2. Close browser completely
 3. Reopen browser
@@ -225,6 +238,7 @@ fetch('https://devmx.ixo.earth/_matrix/client/versions')
 6. Should work without re-auth
 
 ### **Test Multiple Accounts**:
+
 1. Authenticate with Account A
 2. Disconnect wallet
 3. Connect with Account B
@@ -315,6 +329,7 @@ If recording a demo:
 ## 🆘 Need Help?
 
 If tests fail, check:
+
 1. Console for error messages
 2. Network tab for failed requests
 3. `.env` file for correct URLs
@@ -322,4 +337,3 @@ If tests fail, check:
 5. Connected to correct network (testnet)
 
 Refer to `WALLET_SIGNATURE_AUTH_IMPLEMENTATION.md` for detailed debugging steps.
-

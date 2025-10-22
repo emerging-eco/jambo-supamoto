@@ -51,4 +51,3 @@ const CustomerClaimResult: FC<CustomerClaimResultProps> = ({ data, header }) => 
 };
 
 export default CustomerClaimResult;
-

@@ -289,7 +289,7 @@ const ReviewAndSign: FC<ReviewAndSignProps> = ({
           <form className={styles.stepsForm} autoComplete='none'>
             <p className={utilsStyles.label}>I am sending</p>
             <AmountAndDenom
-              amount={(Array.isArray(amount) ? amount[0] ?? '' : amount) ?? ''}
+              amount={(Array.isArray(amount) ? (amount[0] ?? '') : amount) ?? ''}
               denom={getDisplayDenomFromCurrencyToken(
                 Array.isArray(token) ? (token[0] as CURRENCY_TOKEN) : (token as CURRENCY_TOKEN),
               )}
@@ -305,8 +305,8 @@ const ReviewAndSign: FC<ReviewAndSignProps> = ({
             <div>
               {Array.isArray(dstAddress) &&
                 dstAddress.map((address, index) => {
-                  const addressAmount = amount![index];
-                  const addressToken = token![index];
+                  const addressAmount = Array.isArray(amount) ? amount[index] : amount;
+                  const addressToken = Array.isArray(token) ? token[index] : token;
                   return (
                     <MultiSendCard
                       address={shortenAddress(address)}

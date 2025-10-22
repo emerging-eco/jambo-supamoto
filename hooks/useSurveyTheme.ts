@@ -72,4 +72,3 @@ export default function useSurveyTheme() {
     [], // Empty dependency array - theme is static
   );
 }
-

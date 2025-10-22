@@ -22,22 +22,26 @@ Matrix authentication using wallet signatures has been successfully implemented.
 Added three new functions for signature-based authentication:
 
 #### 1. `generatePasswordFromSignature(signature: string)`
+
 - Generates Matrix password from wallet signature
 - Uses MD5 hash (same approach as mnemonic method)
 - Ensures consistent password for same signature
 
 #### 2. `generateMatrixAuthChallenge()`
+
 - Creates a challenge string for wallet to sign
 - Uses ISO timestamp encoded in base64
 - Unique for each authentication attempt
 
 #### 3. `signChallengeWithWallet(walletType, chainId, address, challenge)`
+
 - Signs the challenge using wallet's `signArbitrary` method
 - Supports Keplr and Opera wallets
 - Returns signature string for password generation
 - Handles wallet-specific implementations
 
 **Example Usage**:
+
 ```typescript
 // Generate challenge
 const challenge = generateMatrixAuthChallenge();
@@ -56,6 +60,7 @@ const password = generatePasswordFromSignature(signature);
 Added new function: `authenticateWithWalletSignature(walletType, chainId, address)`
 
 **Complete Flow**:
+
 1. Generate authentication challenge
 2. Request wallet signature via `signArbitrary`
 3. Generate Matrix password from signature
@@ -63,10 +68,11 @@ Added new function: `authenticateWithWalletSignature(walletType, chainId, addres
 5. Store access token in secure storage
 
 **Hook API**:
+
 ```typescript
 const {
-  authenticateWithMatrix,           // Original mnemonic-based auth
-  authenticateWithWalletSignature,  // NEW: Signature-based auth
+  authenticateWithMatrix, // Original mnemonic-based auth
+  authenticateWithWalletSignature, // NEW: Signature-based auth
   getAccessToken,
   isAuthenticated,
   loading,
@@ -75,13 +81,14 @@ const {
 ```
 
 **Usage Example**:
+
 ```typescript
 const { authenticateWithWalletSignature } = useMatrixAuth();
 
 await authenticateWithWalletSignature(
-  wallet.walletType,  // 'keplr', 'opera', etc.
-  chain.chainId,      // 'ixo-5'
-  wallet.user.address // 'ixo1abc...'
+  wallet.walletType, // 'keplr', 'opera', etc.
+  chain.chainId, // 'ixo-5'
+  wallet.user.address, // 'ixo1abc...'
 );
 ```
 
@@ -92,6 +99,7 @@ await authenticateWithWalletSignature(
 Created a professional modal component for Matrix authentication.
 
 **Features**:
+
 - ✅ Clear explanation of what's happening
 - ✅ Step-by-step information for users
 - ✅ Loading states during authentication
@@ -101,6 +109,7 @@ Created a professional modal component for Matrix authentication.
 - ✅ Responsive design
 
 **Props**:
+
 ```typescript
 {
   isOpen: boolean;           // Control modal visibility
@@ -113,6 +122,7 @@ Created a professional modal component for Matrix authentication.
 ```
 
 **User Experience**:
+
 1. Modal opens when authentication needed
 2. User clicks "Authenticate with Wallet"
 3. Wallet prompts for signature approval
@@ -126,6 +136,7 @@ Created a professional modal component for Matrix authentication.
 Integrated Matrix authentication into the form submission flow.
 
 **Changes**:
+
 1. Added `showAuthModal` state
 2. Split `handleSubmit` into two functions:
    - `handleSubmit()` - Checks for token, shows modal if needed
@@ -134,6 +145,7 @@ Integrated Matrix authentication into the form submission flow.
 4. Renders `MatrixAuthModal` component
 
 **Flow**:
+
 ```
 User clicks Submit
     ↓
@@ -187,21 +199,25 @@ YES → Proceed with submission directly
 ## 🔐 Security Features
 
 ### **Challenge Generation**
+
 - Uses ISO timestamp for uniqueness
 - Base64 encoded for safe transmission
 - Different challenge each time
 
 ### **Signature Verification**
+
 - Wallet signs with private key
 - Signature proves wallet ownership
 - Cannot be forged or replayed
 
 ### **Password Generation**
+
 - MD5 hash of signature
 - Deterministic (same signature = same password)
 - Secure for Matrix authentication
 
 ### **Token Storage**
+
 - AES encryption before storage
 - SHA256 key hashing
 - Stored in browser localStorage
@@ -261,6 +277,7 @@ YES → Proceed with submission directly
 ## 🐛 Debugging
 
 ### **Check if Token Exists**
+
 ```javascript
 // Browser console
 import { secret } from '@utils/secrets';
@@ -269,6 +286,7 @@ console.log('User ID:', secret.userId);
 ```
 
 ### **Check Wallet Support**
+
 ```javascript
 // Browser console
 if (window.keplr) {
@@ -277,6 +295,7 @@ if (window.keplr) {
 ```
 
 ### **Test Challenge Generation**
+
 ```javascript
 import { generateMatrixAuthChallenge } from '@utils/matrix';
 const challenge = generateMatrixAuthChallenge();
@@ -284,21 +303,18 @@ console.log('Challenge:', challenge);
 ```
 
 ### **Test Signature**
+
 ```javascript
 import { signChallengeWithWallet } from '@utils/matrix';
 
-const signature = await signChallengeWithWallet(
-  'keplr',
-  'ixo-5',
-  'ixo1abc...',
-  'test-challenge'
-);
+const signature = await signChallengeWithWallet('keplr', 'ixo-5', 'ixo1abc...', 'test-challenge');
 console.log('Signature:', signature);
 ```
 
 ### **Console Logs to Watch**
 
 During authentication, you'll see:
+
 ```
 Submit button clicked!
 No Matrix token found, showing auth modal...
@@ -319,10 +335,12 @@ API response status: 200
 ## 📁 Files Modified/Created
 
 ### **New Files**
+
 1. ✅ `components/MatrixAuthModal/MatrixAuthModal.tsx` - Modal component
 2. ✅ `components/MatrixAuthModal/MatrixAuthModal.module.scss` - Modal styles
 
 ### **Modified Files**
+
 1. ✅ `utils/matrix.ts` - Added signature-based auth functions
 2. ✅ `hooks/useMatrixAuth.ts` - Added `authenticateWithWalletSignature`
 3. ✅ `steps/CustomerFormReview.tsx` - Integrated modal and auth flow
@@ -332,18 +350,21 @@ API response status: 200
 ## 🎨 UI/UX Features
 
 ### **Modal Design**
+
 - Clean, professional appearance
 - Matches existing design system
 - Responsive (mobile-friendly)
 - Accessible (keyboard + screen readers)
 
 ### **User Feedback**
+
 - Loading states during auth
 - Clear error messages
 - Success animation
 - Auto-close on success
 
 ### **Information Architecture**
+
 - Explains what will happen
 - Lists steps clearly
 - No technical jargon
@@ -354,7 +375,9 @@ API response status: 200
 ## 🚀 Next Steps (Optional Enhancements)
 
 ### **1. Add WalletConnect Support**
+
 Currently shows "coming soon" error. Implement:
+
 ```typescript
 // In utils/matrix.ts
 if (walletType === 'walletConnect') {
@@ -364,7 +387,9 @@ if (walletType === 'walletConnect') {
 ```
 
 ### **2. Add Automatic Authentication on Wallet Connect**
+
 Trigger Matrix auth immediately after wallet connection:
+
 ```typescript
 // In contexts/wallet.tsx
 useEffect(() => {
@@ -375,14 +400,18 @@ useEffect(() => {
 ```
 
 ### **3. Add Token Refresh**
+
 Handle expired tokens:
+
 ```typescript
 // Check token expiry
 // Re-authenticate if expired
 ```
 
 ### **4. Add Logout Functionality**
+
 Clear Matrix credentials on wallet disconnect:
+
 ```typescript
 import { clearMatrixCredentials } from '@utils/matrix';
 
@@ -421,4 +450,3 @@ The wallet signature-based Matrix authentication is complete and production-read
 5. Return later without re-authenticating
 
 **Key Achievement**: Eliminated the need for mnemonic input while maintaining full Matrix authentication functionality across all wallet types.
-

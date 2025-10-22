@@ -1,6 +1,7 @@
 # Netlify Image Fix - Quick Reference
 
 ## The Problem
+
 ```
 ❌ HTTP 500 errors when loading wallet images on Netlify
 ❌ Endpoint: /_next/image?url=...&w=96&q=75
@@ -9,6 +10,7 @@
 ```
 
 ## The Root Cause
+
 ```
 Next.js 12 image optimization + Netlify Edge Runtime = Incompatibility
 - Image optimization needs Node.js (Sharp library)
@@ -17,6 +19,7 @@ Next.js 12 image optimization + Netlify Edge Runtime = Incompatibility
 ```
 
 ## The Solution
+
 ```javascript
 // next.config.js - Add ONE line:
 images: {
@@ -26,6 +29,7 @@ images: {
 ```
 
 ## What This Does
+
 - ✅ Disables image optimization
 - ✅ Serves images as static files
 - ✅ Works with Netlify Edge Runtime
@@ -60,6 +64,7 @@ git push origin main
 ## Verification Checklist
 
 ### Local
+
 - [ ] `next.config.js` has `unoptimized: true`
 - [ ] `yarn build` succeeds
 - [ ] `yarn start` works
@@ -68,6 +73,7 @@ git push origin main
 - [ ] No `/_next/image` requests
 
 ### Netlify
+
 - [ ] Deployment succeeds
 - [ ] Site is accessible
 - [ ] Wallet images load
@@ -78,6 +84,7 @@ git push origin main
 ## Expected Results
 
 ### Before Fix
+
 ```
 GET /_next/image?url=%2Fimages%2Fwallets%2Fkeplr.png&w=96&q=75
 ← 500 Internal Server Error
@@ -85,6 +92,7 @@ GET /_next/image?url=%2Fimages%2Fwallets%2Fkeplr.png&w=96&q=75
 ```
 
 ### After Fix
+
 ```
 GET /images/wallets/keplr.png
 ← 200 OK
@@ -93,18 +101,19 @@ GET /images/wallets/keplr.png
 
 ## File Size Impact
 
-| Item | Size |
-|------|------|
-| Per wallet icon | +3-5 KB |
-| All wallet images | +20 KB |
-| All action images | +20 KB |
-| Total impact | ~50 KB |
+| Item              | Size    |
+| ----------------- | ------- |
+| Per wallet icon   | +3-5 KB |
+| All wallet images | +20 KB  |
+| All action images | +20 KB  |
+| Total impact      | ~50 KB  |
 
 **Acceptable**: Yes - reliability > file size
 
 ## Troubleshooting
 
 ### Images still not loading?
+
 ```bash
 # 1. Hard refresh
 Ctrl+Shift+R (Windows) or Cmd+Shift+R (Mac)
@@ -121,6 +130,7 @@ yarn start
 ```
 
 ### Build fails?
+
 ```bash
 # Check for syntax errors
 yarn build
@@ -133,6 +143,7 @@ ls -la public/images/wallets/
 ```
 
 ### Still seeing 500 errors?
+
 ```bash
 # 1. Check Netlify build logs
 # Go to https://app.netlify.com → Deploys → Build log
@@ -159,21 +170,21 @@ git push origin main
 
 ## Key Files
 
-| File | Change |
-|------|--------|
+| File             | Change                    |
+| ---------------- | ------------------------- |
 | `next.config.js` | Added `unoptimized: true` |
 
 **That's it!** Only 1 file, 1 line changed.
 
 ## Documentation
 
-| Document | Purpose |
-|----------|---------|
-| `NETLIFY_IMAGE_OPTIMIZATION_ISSUE.md` | Technical details |
-| `NETLIFY_IMAGE_FIX_TESTING_GUIDE.md` | Testing instructions |
-| `NETLIFY_IMAGE_FIX_COMPLETE.md` | Executive summary |
-| `NETLIFY_IMAGE_FIX_ALTERNATIVES.md` | Alternative solutions |
-| `NETLIFY_IMAGE_FIX_QUICK_REFERENCE.md` | This document |
+| Document                               | Purpose               |
+| -------------------------------------- | --------------------- |
+| `NETLIFY_IMAGE_OPTIMIZATION_ISSUE.md`  | Technical details     |
+| `NETLIFY_IMAGE_FIX_TESTING_GUIDE.md`   | Testing instructions  |
+| `NETLIFY_IMAGE_FIX_COMPLETE.md`        | Executive summary     |
+| `NETLIFY_IMAGE_FIX_ALTERNATIVES.md`    | Alternative solutions |
+| `NETLIFY_IMAGE_FIX_QUICK_REFERENCE.md` | This document         |
 
 ## Status
 
@@ -212,4 +223,3 @@ git push origin main
 **Risk**: Very low
 
 **Status**: ✅ Ready to go!
-

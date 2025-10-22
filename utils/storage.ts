@@ -56,4 +56,3 @@ export function secureRemove(key: string) {
 export function secureClear() {
   secureStorage.clear();
 }
-

@@ -5,24 +5,26 @@
 ### Changes Summary
 
 #### 1. Core Fix: `constants/chains.ts`
+
 **Status**: ✅ Fixed
 
 **Before**:
+
 ```typescript
 export const DefaultChainNetwork =
   process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK === 'mainnet'
     ? process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK
     : EnableDeveloperMode
-    ? 'testnet'
-    : 'mainnet';
+      ? 'testnet'
+      : 'mainnet';
 ```
 
 **After**:
+
 ```typescript
-export const DefaultChainNetwork =
-  process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK
-    ? process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK
-    : EnableDeveloperMode
+export const DefaultChainNetwork = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK
+  ? process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK
+  : EnableDeveloperMode
     ? 'devnet'
     : 'mainnet';
 ```
@@ -30,9 +32,11 @@ export const DefaultChainNetwork =
 **Impact**: This is the root cause fix. Now respects the environment variable and defaults to 'devnet' for developer mode.
 
 #### 2. Debug Cleanup: `steps/CustomerFormReview.tsx`
+
 **Status**: ✅ Cleaned
 
 **Removed Lines 78-80**:
+
 ```typescript
 console.log('START');
 console.log('chain: ', chain);
@@ -50,7 +54,7 @@ The following components automatically benefit from the fix:
    - Now correctly initializes with 'devnet' instead of 'testnet'
 
 2. **`steps/CustomerFormReview.tsx`** (Line 78)
-   - Uses `getChainRpcUrl(chain?.chainNetwork)` 
+   - Uses `getChainRpcUrl(chain?.chainNetwork)`
    - Now receives correct 'devnet' chainNetwork
    - Maps to correct RPC: `https://devnet.ixo.earth/rpc/`
 
@@ -66,12 +70,14 @@ The following components automatically benefit from the fix:
 ### Environment Configuration Verification
 
 **Current `.env.local`**:
+
 ```
 NEXT_PUBLIC_ENABLE_DEVELOPER_MODE=1
 NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK=devnet
 ```
 
 **Expected Behavior After Fix**:
+
 - ✅ `DefaultChainNetwork` = 'devnet'
 - ✅ `chain.chainNetwork` = 'devnet'
 - ✅ RPC URL = 'https://devnet.ixo.earth/rpc/'
@@ -102,26 +108,33 @@ export const getChainRpcUrl = (chainNetwork?: CHAIN_NETWORK_TYPE | string): stri
 **File**: `contexts/chain.tsx`
 
 1. **Initialization** (Line 24):
+
    ```typescript
    chainNetwork: DefaultChainNetwork as CHAIN_NETWORK_TYPE,
    ```
+
    - ✅ Now uses correct 'devnet' from fixed DefaultChainNetwork
 
 2. **Chain Selection** (Line 87):
+
    ```typescript
    const chainInfos = getChainsByNetwork(chains, selectedChainNetwork);
    ```
+
    - ✅ Correctly filters chains by network
 
 3. **Context Value** (Line 107):
+
    ```typescript
    chain: currentChain,
    ```
+
    - ✅ Provides correct chainNetwork to consumers
 
 ### Blockchain Submission Flow
 
 **Customer Form Review** (`steps/CustomerFormReview.tsx`):
+
 1. Line 36: Gets `chain` from ChainContext ✅
 2. Line 78: Calls `getChainRpcUrl(chain?.chainNetwork)` ✅
 3. Result: Uses `https://devnet.ixo.earth/rpc/` ✅
@@ -130,6 +143,7 @@ export const getChainRpcUrl = (chainNetwork?: CHAIN_NETWORK_TYPE | string): stri
 6. Line 141-148: Broadcasts transaction to devnet ✅
 
 **Proclamation Form Review** (`steps/ProclamationFormReview.tsx`):
+
 - Same flow as Customer Form Review ✅
 
 ### Testing Checklist
@@ -145,9 +159,9 @@ export const getChainRpcUrl = (chainNetwork?: CHAIN_NETWORK_TYPE | string): stri
 
 ### Files Modified
 
-| File | Changes | Status |
-|------|---------|--------|
-| `constants/chains.ts` | Fixed DefaultChainNetwork logic | ✅ Complete |
+| File                           | Changes                              | Status      |
+| ------------------------------ | ------------------------------------ | ----------- |
+| `constants/chains.ts`          | Fixed DefaultChainNetwork logic      | ✅ Complete |
 | `steps/CustomerFormReview.tsx` | Removed debug console.log statements | ✅ Complete |
 
 ### Files Not Modified (No Changes Needed)
@@ -163,6 +177,7 @@ export const getChainRpcUrl = (chainNetwork?: CHAIN_NETWORK_TYPE | string): stri
 ✅ **Fully Backward Compatible**
 
 The fix maintains backward compatibility:
+
 - Explicit environment variables are still respected
 - Mainnet still works as expected
 - Testnet can still be explicitly selected
@@ -172,10 +187,10 @@ The fix maintains backward compatibility:
 ### Conclusion
 
 The chain network selection issue has been successfully resolved. The application will now:
+
 1. Respect the `NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK` environment variable
 2. Default to 'devnet' when developer mode is enabled
 3. Use the correct RPC endpoints for blockchain operations
 4. Allow submit buttons on review pages to function correctly
 
 **Status**: ✅ Ready for Testing
-

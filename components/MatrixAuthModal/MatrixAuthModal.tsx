@@ -54,7 +54,7 @@ const MatrixAuthModal: FC<MatrixAuthModalProps> = ({ isOpen, onClose, onSuccess,
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.header}>
           <h2>Matrix Authentication Required</h2>
-          <button className={styles.closeButton} onClick={onClose} aria-label="Close">
+          <button className={styles.closeButton} onClick={onClose} aria-label='Close'>
             ×
           </button>
         </div>
@@ -76,7 +76,7 @@ const MatrixAuthModal: FC<MatrixAuthModalProps> = ({ isOpen, onClose, onSuccess,
               <div className={styles.infoBox}>
                 <h3>What happens next:</h3>
                 <ol>
-                  <li>You'll be asked to sign a message with your wallet</li>
+                  <li>You&apos;ll be asked to sign a message with your wallet</li>
                   <li>This signature is used to create your Matrix credentials</li>
                   <li>Your credentials are securely stored for future use</li>
                   <li>No sensitive information leaves your device</li>
@@ -112,4 +112,3 @@ const MatrixAuthModal: FC<MatrixAuthModalProps> = ({ isOpen, onClose, onSuccess,
 };
 
 export default MatrixAuthModal;
-

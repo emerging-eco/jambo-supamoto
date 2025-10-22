@@ -35,11 +35,12 @@ export const DefaultChainNetwork =
   process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK === 'mainnet'
     ? process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK
     : EnableDeveloperMode
-    ? 'testnet'  // ← ALWAYS forced to testnet when developer mode enabled
-    : 'mainnet';
+      ? 'testnet' // ← ALWAYS forced to testnet when developer mode enabled
+      : 'mainnet';
 ```
 
 **Why It Failed**:
+
 1. Only respected env var if it was explicitly 'mainnet'
 2. When `NEXT_PUBLIC_ENABLE_DEVELOPER_MODE=1`, always defaulted to 'testnet'
 3. Ignored `NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK=devnet` setting
@@ -52,15 +53,15 @@ export const DefaultChainNetwork =
 
 ```typescript
 // AFTER - CORRECT
-export const DefaultChainNetwork =
-  process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK
-    ? process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK
-    : EnableDeveloperMode
-    ? 'devnet'  // ← Defaults to devnet, respects env var
+export const DefaultChainNetwork = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK
+  ? process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK
+  : EnableDeveloperMode
+    ? 'devnet' // ← Defaults to devnet, respects env var
     : 'mainnet';
 ```
 
 **Key Changes**:
+
 1. ✅ Respects explicit environment variable regardless of value
 2. ✅ Defaults to 'devnet' when developer mode enabled (not 'testnet')
 3. ✅ Maintains backward compatibility
@@ -72,19 +73,19 @@ export const DefaultChainNetwork =
 
 ### Code Changes
 
-| File | Change | Impact |
-|------|--------|--------|
-| `constants/chains.ts` | Fixed DefaultChainNetwork logic | Core fix |
-| `steps/CustomerFormReview.tsx` | Removed debug console.log statements | Cleanup |
+| File                           | Change                               | Impact   |
+| ------------------------------ | ------------------------------------ | -------- |
+| `constants/chains.ts`          | Fixed DefaultChainNetwork logic      | Core fix |
+| `steps/CustomerFormReview.tsx` | Removed debug console.log statements | Cleanup  |
 
 ### Documentation Created
 
-| Document | Purpose |
-|----------|---------|
-| `CHAIN_NETWORK_FIX_SUMMARY.md` | Detailed root cause analysis |
-| `CHAIN_NETWORK_FIX_VERIFICATION.md` | Complete verification report |
+| Document                             | Purpose                           |
+| ------------------------------------ | --------------------------------- |
+| `CHAIN_NETWORK_FIX_SUMMARY.md`       | Detailed root cause analysis      |
+| `CHAIN_NETWORK_FIX_VERIFICATION.md`  | Complete verification report      |
 | `CHAIN_NETWORK_FIX_TESTING_GUIDE.md` | Step-by-step testing instructions |
-| `CHAIN_NETWORK_FIX_COMPLETE.md` | Executive summary |
+| `CHAIN_NETWORK_FIX_COMPLETE.md`      | Executive summary                 |
 
 ---
 
@@ -93,43 +94,49 @@ export const DefaultChainNetwork =
 ### Components Fixed
 
 ✅ **Customer Form Review Page** (`steps/CustomerFormReview.tsx`)
+
 - Submit button now functional
 - Uses correct devnet RPC: `https://devnet.ixo.earth/rpc/`
 - Transactions submit successfully
 
 ✅ **Proclamation Form Review Page** (`steps/ProclamationFormReview.tsx`)
+
 - Submit button now functional
 - Uses correct devnet RPC: `https://devnet.ixo.earth/rpc/`
 - Transactions submit successfully
 
 ✅ **Chain Context** (`contexts/chain.tsx`)
+
 - Initializes with correct network
 - Provides correct chainNetwork to all consumers
 
 ✅ **Chain Selector** (`components/ChainSelector/ChainSelector.tsx`)
+
 - Displays correct network name
 
 ### Behavior Changes
 
-| Scenario | Before | After |
-|----------|--------|-------|
-| `NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK=devnet` + dev mode | ❌ Used testnet | ✅ Uses devnet |
+| Scenario                                               | Before          | After           |
+| ------------------------------------------------------ | --------------- | --------------- |
+| `NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK=devnet` + dev mode  | ❌ Used testnet | ✅ Uses devnet  |
 | `NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK=testnet` + dev mode | ❌ Used testnet | ✅ Uses testnet |
 | `NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK=mainnet` + dev mode | ❌ Used testnet | ✅ Uses mainnet |
-| No explicit network + dev mode | ❌ Used testnet | ✅ Uses devnet |
-| No explicit network + no dev mode | ✅ Used mainnet | ✅ Uses mainnet |
+| No explicit network + dev mode                         | ❌ Used testnet | ✅ Uses devnet  |
+| No explicit network + no dev mode                      | ✅ Used mainnet | ✅ Uses mainnet |
 
 ---
 
 ## Testing Status
 
 ### Verification Completed
+
 - ✅ Code review completed
 - ✅ Logic verified correct
 - ✅ No breaking changes identified
 - ✅ Backward compatibility confirmed
 
 ### Testing Required
+
 - ⏳ Customer form submission test
 - ⏳ Proclamation form submission test
 - ⏳ Environment variable override tests
@@ -155,6 +162,7 @@ See `CHAIN_NETWORK_FIX_TESTING_GUIDE.md` for detailed testing instructions.
 ## Rollback Plan
 
 If issues occur:
+
 ```bash
 git checkout constants/chains.ts steps/CustomerFormReview.tsx
 npm run dev
@@ -165,12 +173,14 @@ npm run dev
 ## Environment Configuration
 
 **Current `.env.local`**:
+
 ```
 NEXT_PUBLIC_ENABLE_DEVELOPER_MODE=1
 NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK=devnet
 ```
 
 **Expected Result**:
+
 - ✅ Application uses devnet
 - ✅ RPC URL: `https://devnet.ixo.earth/rpc/`
 - ✅ Chain ID: `devnet-1`
@@ -180,15 +190,15 @@ NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK=devnet
 
 ## Key Metrics
 
-| Metric | Value |
-|--------|-------|
-| Files Modified | 2 |
-| Lines Changed | ~10 |
-| Breaking Changes | 0 |
-| Backward Compatibility | 100% |
-| Components Fixed | 4 |
-| Documentation Pages | 4 |
-| Time to Fix | < 1 hour |
+| Metric                 | Value    |
+| ---------------------- | -------- |
+| Files Modified         | 2        |
+| Lines Changed          | ~10      |
+| Breaking Changes       | 0        |
+| Backward Compatibility | 100%     |
+| Components Fixed       | 4        |
+| Documentation Pages    | 4        |
+| Time to Fix            | < 1 hour |
 
 ---
 
@@ -208,4 +218,3 @@ The chain network selection issue has been successfully identified and resolved.
 4. **Long-term**: Monitor for any issues
 
 For questions or issues, refer to the detailed documentation files created during this resolution.
-

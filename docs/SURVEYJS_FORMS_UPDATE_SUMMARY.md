@@ -15,6 +15,7 @@ Both SurveyJS forms have been successfully updated with the new form definitions
 **File**: `steps/CustomerFormEntry.tsx`
 
 **Change** (Line 21):
+
 ```typescript
 // BEFORE
 const SURVEY_URL = 'https://devmx.ixo.earth/_matrix/media/v3/download/devmx.ixo.earth/xpPfyzgHkigQPtXFuRRBLBwr';
@@ -28,6 +29,7 @@ const SURVEY_URL = 'https://devmx.ixo.earth/_matrix/media/v3/download/devmx.ixo.
 **File**: `steps/CustomerFormEntry.tsx`
 
 **Change** (Lines 42-49):
+
 ```typescript
 // BEFORE
 const initialData = useMemo(
@@ -52,6 +54,7 @@ const initialData = useMemo(
 #### **3. New Form Structure**
 
 The new customer form includes:
+
 - ✅ **Customer ID** (read-only, pre-filled)
 - ✅ **Client Group Type** (dropdown with options: Utility, Utility-Staff, Non-Utility, etc.)
 - ✅ **First Name** (text input)
@@ -67,6 +70,7 @@ The new customer form includes:
   - Coordinates (Latitude/Longitude)
 
 **Removed from old form**:
+
 - ❌ Gender field
 - ❌ Beneficiary category checkboxes
 - ❌ Gender-based conditional logic
@@ -80,11 +84,13 @@ The new customer form includes:
 **File**: `steps/ProclamationFormEntry.tsx` (NEW FILE - 80 lines)
 
 **Survey URL**:
+
 ```typescript
 const SURVEY_URL = 'https://devmx.ixo.earth/_matrix/media/v3/download/devmx.ixo.earth/HJhNWZWdMIdKEysvAKJWDEQU';
 ```
 
 **Component Features**:
+
 - ✅ Follows same pattern as `CustomerFormEntry.tsx`
 - ✅ Uses `useSurveyData` hook to fetch survey from Matrix URL
 - ✅ Uses `useSurveyModel` hook to create survey model
@@ -95,6 +101,7 @@ const SURVEY_URL = 'https://devmx.ixo.earth/_matrix/media/v3/download/devmx.ixo.
 #### **2. Form Structure**
 
 The proclamation form is very simple:
+
 - ✅ **Title**: "1000 Day Household"
 - ✅ **Description**: "A 1,000-day household is a family with a pregnant or breastfeeding mother, or a child younger than two years old."
 - ✅ **Single Checkbox**: "I understand the definition of a 1,000-day household and confirm that my household is a 1,000-day household."
@@ -106,11 +113,13 @@ The proclamation form is very simple:
 **File**: `pages/[actionId].tsx`
 
 **Added Import** (Line 27):
+
 ```typescript
 import ProclamationFormEntry from '@steps/ProclamationFormEntry';
 ```
 
 **Added Case to Switch Statement** (Lines 275-283):
+
 ```typescript
 case STEPS.define_proposal_title:
   return (
@@ -204,6 +213,7 @@ Complete
 ### **Customer Form**
 
 **New Features**:
+
 - ✅ Client type selection (Utility, Non-Utility, etc.)
 - ✅ Delivery method preference
 - ✅ Profile image upload with camera support
@@ -211,11 +221,13 @@ Complete
 - ✅ Alternative contact number
 
 **Simplified**:
+
 - ✅ No gender-based conditional logic
 - ✅ Cleaner, more focused form
 - ✅ Better organized with panels
 
 **Validation**:
+
 - ✅ National ID format: `xxxxxx/xx/x`
 - ✅ Required fields enforced
 - ✅ File type validation for images
@@ -223,6 +235,7 @@ Complete
 ### **Proclamation Form**
 
 **Characteristics**:
+
 - ✅ Very simple - single checkbox
 - ✅ Self-proclamation style
 - ✅ Clear definition provided
@@ -284,27 +297,27 @@ Complete
 
 ### **Customer Form**
 
-| Feature | Old Form | New Form |
-|---------|----------|----------|
-| **Gender Field** | ✅ Yes (with conditional logic) | ❌ No |
-| **Beneficiary Categories** | ✅ Yes (checkboxes) | ❌ No |
-| **Client Type** | ❌ No | ✅ Yes (dropdown) |
-| **Delivery Method** | ❌ No | ✅ Yes (radio group) |
-| **Profile Image** | ❌ No | ✅ Yes (required) |
-| **Location Panel** | ❌ No | ✅ Yes (organized) |
-| **Alternative Contact** | ❌ No | ✅ Yes |
-| **Complexity** | High (conditional logic) | Low (straightforward) |
-| **Focus** | Beneficiary categorization | Customer registration |
+| Feature                    | Old Form                        | New Form              |
+| -------------------------- | ------------------------------- | --------------------- |
+| **Gender Field**           | ✅ Yes (with conditional logic) | ❌ No                 |
+| **Beneficiary Categories** | ✅ Yes (checkboxes)             | ❌ No                 |
+| **Client Type**            | ❌ No                           | ✅ Yes (dropdown)     |
+| **Delivery Method**        | ❌ No                           | ✅ Yes (radio group)  |
+| **Profile Image**          | ❌ No                           | ✅ Yes (required)     |
+| **Location Panel**         | ❌ No                           | ✅ Yes (organized)    |
+| **Alternative Contact**    | ❌ No                           | ✅ Yes                |
+| **Complexity**             | High (conditional logic)        | Low (straightforward) |
+| **Focus**                  | Beneficiary categorization      | Customer registration |
 
 ### **Proclamation Form**
 
-| Feature | Value |
-|---------|-------|
-| **Type** | Self-proclamation |
-| **Fields** | 1 checkbox |
-| **Complexity** | Very low |
-| **Time to Complete** | < 30 seconds |
-| **Purpose** | Confirm 1000-day household status |
+| Feature              | Value                             |
+| -------------------- | --------------------------------- |
+| **Type**             | Self-proclamation                 |
+| **Fields**           | 1 checkbox                        |
+| **Complexity**       | Very low                          |
+| **Time to Complete** | < 30 seconds                      |
+| **Purpose**          | Confirm 1000-day household status |
 
 ---
 
@@ -321,6 +334,7 @@ Both new forms have `showPreviewBeforeComplete: true` in their JSON. However, yo
 ### **2. File Upload**
 
 The customer form requires a profile image upload. Make sure:
+
 - ✅ SurveyJS file upload is configured correctly
 - ✅ Camera access works on mobile devices
 - ✅ File size limits are appropriate
@@ -329,6 +343,7 @@ The customer form requires a profile image upload. Make sure:
 ### **3. Validation Patterns**
 
 The new customer form has regex validation for:
+
 - **National ID**: `xxxxxx/xx/x` format
 - **Phone numbers**: May have specific format requirements
 
@@ -337,6 +352,7 @@ Test these thoroughly to ensure they work as expected.
 ### **4. API Integration**
 
 The field names have changed significantly. You may need to update:
+
 - ✅ API submission logic in `CustomerFormReview.tsx`
 - ✅ Backend API to handle new field names
 - ✅ Data mapping if needed
@@ -344,6 +360,7 @@ The field names have changed significantly. You may need to update:
 ### **5. Step Type Reuse**
 
 The proclamation action reuses the existing `STEPS.define_proposal_title` step type. This is fine, but be aware that:
+
 - The step name in `types/steps.ts` is "Define proposal title"
 - The actual form is for 1000-day household proclamation
 - This is just a naming mismatch, functionality is correct
@@ -408,4 +425,3 @@ The proclamation action reuses the existing `STEPS.define_proposal_title` step t
 **Status**: ✅ COMPLETE  
 **Impact**: Both actions now use updated SurveyJS forms  
 **Ready for**: Testing and deployment
-

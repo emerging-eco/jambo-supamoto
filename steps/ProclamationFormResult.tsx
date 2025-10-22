@@ -63,4 +63,3 @@ const ProclamationFormResult: FC<ProclamationFormResultProps> = ({ onSuccess, da
 };
 
 export default ProclamationFormResult;
-

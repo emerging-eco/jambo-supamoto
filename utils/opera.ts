@@ -13,7 +13,7 @@ export const initializeOpera = async (chainInfo: KEPLR_CHAIN_INFO_TYPE): Promise
   const opera = getOpera();
   if (!opera) return;
   try {
-    await opera.experimentalSuggestChain(chainInfo as ChainInfo);
+    await opera.experimentalSuggestChain(chainInfo as any);
     await opera.enable(chainInfo.chainId);
     const key = await opera.getKey(chainInfo.chainId);
     return key

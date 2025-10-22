@@ -7,6 +7,7 @@ This guide provides a comprehensive approach to implementing SurveyJS in the Jam
 ### **1.1 Why SurveyJS?**
 
 **Benefits:**
+
 - ✅ **Dynamic Forms**: Define forms via JSON configuration
 - ✅ **Rich Question Types**: Text, dropdown, radio, checkbox, file upload, etc.
 - ✅ **Conditional Logic**: Show/hide questions based on answers
@@ -17,6 +18,7 @@ This guide provides a comprehensive approach to implementing SurveyJS in the Jam
 - ✅ **Read-only Mode**: Display submitted forms
 
 **vs. Native HTML Forms:**
+
 - More flexible and maintainable
 - Backend-driven form configuration
 - Advanced features out of the box
@@ -35,6 +37,7 @@ yarn add survey-core survey-react-ui
 ### **2.2 Package Versions**
 
 Based on impacts-x-web (proven stable):
+
 ```json
 {
   "survey-core": "^2.2.5",
@@ -81,18 +84,19 @@ export const surveyDefaultConfig = {
   showNavigationButtons: true,
   complete: false,
   focusFirstQuestionAutomatic: true,
-  pageNextText: "Continue",
-  pagePrevText: "Back",
+  pageNextText: 'Continue',
+  pagePrevText: 'Back',
   showCompletedPage: false,
-  checkErrorsMode: "onValueChanged",
-  showProgressBar: "top",
-  progressBarType: "buttons"
+  checkErrorsMode: 'onValueChanged',
+  showProgressBar: 'top',
+  progressBarType: 'buttons',
 };
 
 export default surveyDefaultConfig;
 ```
 
 **Configuration Explained:**
+
 - `showNavigationButtons`: Show Next/Previous buttons
 - `complete`: Don't auto-complete (we handle manually)
 - `focusFirstQuestionAutomatic`: Auto-focus first field
@@ -113,50 +117,51 @@ export default function useSurveyTheme() {
   return {
     cssVariables: {
       // Background colors
-      "--sjs-general-backcolor": "var(--bg-color)",
-      "--sjs-general-backcolor-dark": "var(--bg-color)",
-      "--sjs-general-backcolor-dim-light": "var(--light-grey-color)",
+      '--sjs-general-backcolor': 'var(--bg-color)',
+      '--sjs-general-backcolor-dark': 'var(--bg-color)',
+      '--sjs-general-backcolor-dim-light': 'var(--light-grey-color)',
 
       // Primary colors (buttons, active states)
-      "--sjs-primary-backcolor": "var(--primary-color)",
-      "--sjs-primary-backcolor-dark": "var(--secondary-color)",
-      "--sjs-primary-forecolor": "var(--main-font-color-inverted)",
+      '--sjs-primary-backcolor': 'var(--primary-color)',
+      '--sjs-primary-backcolor-dark': 'var(--secondary-color)',
+      '--sjs-primary-forecolor': 'var(--main-font-color-inverted)',
 
       // Text colors
-      "--sjs-general-forecolor": "var(--main-font-color)",
-      "--sjs-general-forecolor-light": "var(--lighter-font-color)",
+      '--sjs-general-forecolor': 'var(--main-font-color)',
+      '--sjs-general-forecolor-light': 'var(--lighter-font-color)',
 
       // Font
-      "--sjs-font-family": "Roboto, sans-serif",
-      "--sjs-font-size": "var(--main-font-size)",
+      '--sjs-font-family': 'Roboto, sans-serif',
+      '--sjs-font-size': 'var(--main-font-size)',
 
       // Border radius
-      "--sjs-corner-radius": "var(--button-border-radius)",
-      "--sjs-editorpanel-cornerRadius": "var(--card-border-radius)",
-      "--sjs-questionpanel-cornerRadius": "12px",
+      '--sjs-corner-radius': 'var(--button-border-radius)',
+      '--sjs-editorpanel-cornerRadius': 'var(--card-border-radius)',
+      '--sjs-questionpanel-cornerRadius': '12px',
 
       // Error colors
-      "--sjs-special-red": "var(--error-color)",
-      "--sjs-special-red-forecolor": "var(--main-font-color-inverted)",
+      '--sjs-special-red': 'var(--error-color)',
+      '--sjs-special-red-forecolor': 'var(--main-font-color-inverted)',
 
       // Success colors
-      "--sjs-special-green": "var(--success-color)",
-      "--sjs-special-green-forecolor": "var(--main-font-color-inverted)",
+      '--sjs-special-green': 'var(--success-color)',
+      '--sjs-special-green-forecolor': 'var(--main-font-color-inverted)',
 
       // Shadows
-      "--sjs-shadow-small": "0px 2px 4px rgba(0, 0, 0, 0.1)",
-      "--sjs-shadow-medium": "0px 4px 8px rgba(0, 0, 0, 0.1)",
-      "--sjs-shadow-large": "0px 8px 16px rgba(0, 0, 0, 0.1)",
+      '--sjs-shadow-small': '0px 2px 4px rgba(0, 0, 0, 0.1)',
+      '--sjs-shadow-medium': '0px 4px 8px rgba(0, 0, 0, 0.1)',
+      '--sjs-shadow-large': '0px 8px 16px rgba(0, 0, 0, 0.1)',
     },
-    themeName: "jambo-theme",
-    colorPalette: "light", // or "dark" based on theme
-    showQuestionNumbers: "off",
-    isPanelless: false
+    themeName: 'jambo-theme',
+    colorPalette: 'light', // or "dark" based on theme
+    showQuestionNumbers: 'off',
+    isPanelless: false,
   };
 }
 ```
 
 **Theme Integration:**
+
 - Uses CSS variables from `styles/variables.scss`
 - Matches existing Jambo design system
 - Supports light/dark mode
@@ -195,7 +200,7 @@ export default function useSurveyModel({
   onComplete,
   initialData,
   mode = 'edit',
-  completeText = 'Submit'
+  completeText = 'Submit',
 }: UseSurveyModelOptions) {
   const theme = useSurveyTheme();
   const [model, setModel] = useState<Model | null>(null);
@@ -211,7 +216,7 @@ export default function useSurveyModel({
       triggers: surveyData.triggers,
       title: surveyData.title,
       completeText,
-      ...surveyDefaultConfig
+      ...surveyDefaultConfig,
     });
 
     // Apply theme
@@ -247,6 +252,7 @@ export default function useSurveyModel({
 ```
 
 **Hook Features:**
+
 - Creates and configures survey model
 - Applies theme automatically
 - Handles initial data
@@ -260,7 +266,7 @@ export default function useSurveyModel({
 
 **File**: `types/survey.ts`
 
-```typescript
+````typescript
 export interface ISurveyPage {
   name?: string;
   title?: string;
@@ -417,9 +423,10 @@ const CustomerFormReview: FC<CustomerFormReviewProps> = ({
 };
 
 export default CustomerFormReview;
-```
+````
 
 **Key Features:**
+
 - Uses `mode: 'display'` for read-only
 - Same survey structure as entry step
 - Pre-filled with form data
@@ -528,8 +535,7 @@ import '@styles/survey.scss';
       "title": "Address Details",
       "elements": [
         { "type": "text", "name": "address", "title": "Street Address" },
-        { "type": "dropdown", "name": "country", "title": "Country",
-          "choices": ["ZM", "MW"] }
+        { "type": "dropdown", "name": "country", "title": "Country", "choices": ["ZM", "MW"] }
       ]
     }
   ]
@@ -572,9 +578,7 @@ import '@styles/survey.scss';
       "type": "text",
       "name": "email",
       "title": "Email",
-      "validators": [
-        { "type": "email", "text": "Please enter a valid email" }
-      ]
+      "validators": [{ "type": "email", "text": "Please enter a valid email" }]
     },
     {
       "type": "text",
@@ -685,7 +689,7 @@ Serializer.addClass(
   function () {
     return new QuestionCustomerLookup('');
   },
-  'question'
+  'question',
 );
 ```
 
@@ -829,9 +833,7 @@ import { Model } from 'survey-core';
 describe('useSurveyModel', () => {
   it('creates model with correct configuration', () => {
     const surveyData = {
-      elements: [
-        { type: 'text', name: 'test', title: 'Test' }
-      ]
+      elements: [{ type: 'text', name: 'test', title: 'Test' }],
     };
 
     const model = new Model(surveyData);
@@ -842,7 +844,7 @@ describe('useSurveyModel', () => {
 
   it('applies initial data', () => {
     const model = new Model({
-      elements: [{ type: 'text', name: 'name' }]
+      elements: [{ type: 'text', name: 'name' }],
     });
 
     model.data = { name: 'John' };
@@ -857,9 +859,7 @@ describe('useSurveyModel', () => {
 ```typescript
 it('validates required fields', () => {
   const model = new Model({
-    elements: [
-      { type: 'text', name: 'email', isRequired: true }
-    ]
+    elements: [{ type: 'text', name: 'email', isRequired: true }],
   });
 
   const isValid = model.validate();
@@ -874,17 +874,20 @@ it('validates required fields', () => {
 ## **10. Migration Path**
 
 ### **10.1 Phase 1: Install & Setup**
+
 - ✅ Install packages
 - ✅ Create configuration files
 - ✅ Create hooks
 - ✅ Add styles
 
 ### **10.2 Phase 2: Implement One Action**
+
 - ✅ Convert Action One to use SurveyJS
 - ✅ Test thoroughly
 - ✅ Gather feedback
 
 ### **10.3 Phase 3: Expand**
+
 - ✅ Convert Action Two
 - ✅ Add more complex features
 - ✅ Optimize performance
@@ -896,12 +899,14 @@ it('validates required fields', () => {
 ### **Native HTML Forms (Current Approach)**
 
 **Pros:**
+
 - ✅ Simple and straightforward
 - ✅ No additional dependencies
 - ✅ Full control over markup
 - ✅ Matches existing patterns
 
 **Cons:**
+
 - ❌ More code to write
 - ❌ Manual validation logic
 - ❌ Hard to make dynamic
@@ -910,6 +915,7 @@ it('validates required fields', () => {
 ### **SurveyJS (Recommended)**
 
 **Pros:**
+
 - ✅ JSON-driven configuration
 - ✅ Built-in validation
 - ✅ Conditional logic
@@ -919,6 +925,7 @@ it('validates required fields', () => {
 - ✅ Professional appearance
 
 **Cons:**
+
 - ❌ Additional dependency (~200KB)
 - ❌ Learning curve
 - ❌ Less control over markup
@@ -928,6 +935,7 @@ it('validates required fields', () => {
 ## **12. Recommendation**
 
 **Use SurveyJS if:**
+
 - ✅ Forms need to be configurable from backend
 - ✅ Complex validation rules required
 - ✅ Conditional logic needed
@@ -935,6 +943,7 @@ it('validates required fields', () => {
 - ✅ Want professional UX out of the box
 
 **Use Native Forms if:**
+
 - ✅ Very simple forms (1-2 fields)
 - ✅ Need complete control over markup
 - ✅ Want to minimize dependencies
@@ -944,6 +953,7 @@ it('validates required fields', () => {
 **Recommendation: Use SurveyJS** ✅
 
 **Reasons:**
+
 1. Form structure may change based on backend requirements
 2. Validation rules can be complex
 3. May need conditional fields (e.g., country-specific)
@@ -968,7 +978,7 @@ This guide provides everything needed to implement SurveyJS in Jambo SupaMoto:
 
 The implementation is production-ready and follows best practices from the impacts-x-web codebase.
 
-```
+````
 
 ---
 
@@ -1003,7 +1013,7 @@ interface Customer_claim_result {
   message?: string;
   errorDetails?: string;
 }
-```
+````
 
 ---
 
@@ -1146,6 +1156,7 @@ export default CustomerFormEntry;
 ```
 
 **Key Features:**
+
 - Survey defined as JSON structure
 - Built-in validation (required fields, email format)
 - Custom completion handler
@@ -1153,5 +1164,3 @@ export default CustomerFormEntry;
 - Uses existing Header/Footer components
 
 ---
-
-

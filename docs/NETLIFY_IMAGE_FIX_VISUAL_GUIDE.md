@@ -88,6 +88,7 @@ CHANGE: +1 line
 ## Image Loading Comparison
 
 ### Before Fix (Broken)
+
 ```
 Browser Request
     │
@@ -105,6 +106,7 @@ Next.js Image Optimization
 ```
 
 ### After Fix (Working)
+
 ```
 Browser Request
     │
@@ -317,4 +319,3 @@ Status: ✅ READY FOR PRODUCTION
 │                                                              │
 └─────────────────────────────────────────────────────────────┘
 ```
-

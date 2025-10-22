@@ -7,21 +7,25 @@ The SurveyJS form was experiencing continuous flickering and re-rendering, preve
 ## Root Causes Identified
 
 ### 1. **Unstable Theme Object** (`useSurveyTheme`)
+
 - The theme object was recreated on every render
 - Each new object reference triggered the `useSurveyModel` useEffect
 - **Impact**: Continuous model recreation
 
 ### 2. **Unstable onComplete Callback** (`CustomerFormEntry`)
+
 - `handleComplete` function was recreated on every render
 - New function reference triggered the `useSurveyModel` useEffect
 - **Impact**: Continuous model recreation
 
 ### 3. **Unstable initialData Object** (`CustomerFormEntry`)
+
 - `initialData` object was recreated on every render
 - Included `Date.now()` which generated new timestamps each render
 - **Impact**: Continuous model recreation
 
 ### 4. **Cascading Re-renders**
+
 - Model recreation → state update → component re-render → new dependencies → repeat
 - React Strict Mode (enabled in `next.config.js`) doubled the effect in development
 
@@ -32,13 +36,16 @@ The SurveyJS form was experiencing continuous flickering and re-rendering, preve
 **File**: `hooks/useSurveyTheme.ts`
 
 **Changes**:
+
 ```typescript
 import { useMemo } from 'react';
 
 export default function useSurveyTheme() {
   return useMemo(
     () => ({
-      cssVariables: { /* ... */ },
+      cssVariables: {
+        /* ... */
+      },
       themeName: 'jambo-theme',
       colorPalette: 'light' as const,
       showQuestionNumbers: 'off' as const,
@@ -58,12 +65,14 @@ export default function useSurveyTheme() {
 **File**: `hooks/useSurveyModel.ts`
 
 **Changes**:
+
 1. Added `useRef` to store the latest `onComplete` callback
 2. Removed `onComplete` from the main useEffect dependency array
 3. Created a stable wrapper function that calls the ref
 4. Separated `initialData` updates into a separate useEffect
 
 **Key Code**:
+
 ```typescript
 const onCompleteRef = useRef(onComplete);
 
@@ -74,14 +83,14 @@ useEffect(() => {
 
 useEffect(() => {
   // ... create model
-  
+
   // Use stable wrapper that calls the ref
   const completionHandler = (sender: Model, options: any) => {
     if (onCompleteRef.current) {
       onCompleteRef.current(sender, options);
     }
   };
-  
+
   surveyModel.onCompleting.add(completionHandler);
   // ...
 }, [surveyData, mode, completeText, theme]); // onComplete removed!
@@ -94,7 +103,8 @@ useEffect(() => {
 }, [model, initialData]);
 ```
 
-**Result**: 
+**Result**:
+
 - Model is only recreated when `surveyData`, `mode`, `completeText`, or `theme` changes
 - `onComplete` changes don't trigger model recreation
 - `initialData` changes update the model data without recreation
@@ -108,6 +118,7 @@ useEffect(() => {
 **Changes**:
 
 1. **Memoized handleComplete**:
+
 ```typescript
 const handleComplete = useCallback(
   (sender: Model, options: any) => {
@@ -119,14 +130,13 @@ const handleComplete = useCallback(
 ```
 
 2. **Memoized customerId**:
+
 ```typescript
-const customerId = useMemo(
-  () => data?.surveyData?.['ecs:customerId'] || `CUST-${Date.now()}`,
-  [data?.surveyData],
-);
+const customerId = useMemo(() => data?.surveyData?.['ecs:customerId'] || `CUST-${Date.now()}`, [data?.surveyData]);
 ```
 
 3. **Memoized initialData**:
+
 ```typescript
 const initialData = useMemo(
   () => ({
@@ -139,6 +149,7 @@ const initialData = useMemo(
 ```
 
 4. **Improved useEffect for readOnly field**:
+
 ```typescript
 useEffect(() => {
   if (model) {
@@ -157,6 +168,7 @@ useEffect(() => {
 ## Before vs After
 
 ### Before (Infinite Loop)
+
 ```
 Component renders
   ↓
@@ -176,6 +188,7 @@ State update → Component re-renders
 ```
 
 ### After (Stable)
+
 ```
 Component renders (first time)
   ↓
@@ -199,11 +212,13 @@ Only re-renders when props actually change
 ## Testing Verification
 
 ### ✅ Development Server
+
 - Server compiled successfully: `event - compiled client and server successfully in 4.5s (2218 modules)`
 - No compilation errors related to the changes
 - Application running at `http://localhost:3000`
 
 ### ✅ Expected Behavior
+
 1. **Survey form loads once** and remains stable
 2. **No flickering** occurs during initial load or interaction
 3. **User input is captured** and persists in form fields
@@ -213,6 +228,7 @@ Only re-renders when props actually change
 7. **Continue button** functions correctly
 
 ### ✅ What to Test
+
 1. Navigate to the customer form page
 2. Verify the form loads without flickering
 3. Fill out form fields and verify data persists
@@ -247,11 +263,13 @@ Only re-renders when props actually change
 ## Performance Impact
 
 ### Before
+
 - **Renders per second**: Infinite (continuous loop)
 - **User interaction**: Blocked
 - **CPU usage**: High (continuous re-rendering)
 
 ### After
+
 - **Initial renders**: 1-2 (normal React behavior)
 - **Re-renders**: Only when props change
 - **User interaction**: Smooth and responsive
@@ -290,4 +308,3 @@ Only re-renders when props actually change
 - [x] Minimal code changes
 - [x] Existing functionality preserved
 - [x] Development server compiles successfully
-

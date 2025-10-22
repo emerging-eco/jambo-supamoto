@@ -21,6 +21,7 @@ yarn dev
 ```
 
 **Expected Result**:
+
 - ✅ Page loads without errors
 - ✅ No console errors about "Chains changed"
 - ✅ No TypeError about removeAllListeners
@@ -44,6 +45,7 @@ localStorage.setItem('wallet', JSON.stringify({
 ```
 
 **Expected Result**:
+
 - ✅ Page loads successfully
 - ✅ Console shows warning: "Chain ID mismatch detected. Clearing stale wallet data."
 - ✅ No crash or error
@@ -64,6 +66,7 @@ yarn dev
 ```
 
 **Expected Result**:
+
 - ✅ Page loads without errors
 - ✅ No chain mismatch errors
 - ✅ App functions normally
@@ -75,12 +78,14 @@ yarn dev
 ### **Scenario 1: Fresh Installation**
 
 **Steps**:
+
 1. Clone repository
 2. Install dependencies: `yarn install`
 3. Start dev server: `yarn dev`
 4. Open http://localhost:3000
 
 **Expected**:
+
 - ✅ App loads successfully
 - ✅ No errors in console
 - ✅ Can navigate pages
@@ -90,11 +95,13 @@ yarn dev
 ### **Scenario 2: After Environment Change**
 
 **Steps**:
+
 1. Change `.env` file (e.g., switch chain network)
 2. Restart dev server: `yarn dev`
 3. Open http://localhost:3000
 
 **Expected**:
+
 - ✅ App loads successfully
 - ✅ If wallet was connected, it may show chain mismatch warning
 - ✅ Can reconnect wallet with new chain
@@ -104,12 +111,14 @@ yarn dev
 ### **Scenario 3: Wallet Connection Flow**
 
 **Steps**:
+
 1. Open app
 2. Click "Connect Wallet"
 3. Select SignX wallet
 4. Complete connection
 
 **Expected**:
+
 - ✅ Wallet connects successfully
 - ✅ No errors during initialization
 - ✅ User data is stored correctly
@@ -119,11 +128,13 @@ yarn dev
 ### **Scenario 4: Chain Switching**
 
 **Steps**:
+
 1. Connect wallet on mainnet
 2. Change environment to testnet
 3. Refresh page
 
 **Expected**:
+
 - ✅ App detects chain mismatch
 - ✅ Shows warning in console
 - ✅ Clears stale wallet data
@@ -136,6 +147,7 @@ yarn dev
 ### **Console Messages**
 
 **Good (Expected)**:
+
 ```
 ✅ "Chain ID mismatch detected. Clearing stale wallet data."
 ✅ "Initializing wallets..."
@@ -143,6 +155,7 @@ yarn dev
 ```
 
 **Bad (Should NOT appear)**:
+
 ```
 ❌ "Error: Chains changed, please logout and login again"
 ❌ "TypeError: Cannot read properties of undefined (reading 'removeAllListeners')"
@@ -154,6 +167,7 @@ yarn dev
 ### **Network Tab**
 
 **Check**:
+
 - ✅ No failed requests on page load
 - ✅ API calls complete successfully
 - ✅ No 500 errors
@@ -163,6 +177,7 @@ yarn dev
 ### **Application State**
 
 **Check**:
+
 - ✅ Page renders correctly
 - ✅ Navigation works
 - ✅ Wallet connection available
@@ -175,6 +190,7 @@ yarn dev
 ### **Issue: Still seeing errors**
 
 **Solution**:
+
 ```bash
 # 1. Clear everything
 rm -rf .next
@@ -195,6 +211,7 @@ yarn dev
 ### **Issue: Wallet won't connect**
 
 **Solution**:
+
 ```javascript
 // In browser console
 localStorage.clear();
@@ -206,6 +223,7 @@ localStorage.clear();
 ### **Issue: Chain mismatch persists**
 
 **Check**:
+
 1. `.env` file has correct chain configuration
 2. localStorage is cleared
 3. Dev server was restarted after .env changes
@@ -232,6 +250,7 @@ Before considering the fix complete, verify:
 ## 🎯 Success Criteria
 
 **All tests pass when**:
+
 - ✅ No runtime errors on page load
 - ✅ Chain mismatch handled automatically
 - ✅ Wallet initialization completes
@@ -271,6 +290,7 @@ Once all tests pass:
    - Test form submission
 
 2. **Test Production Build**:
+
    ```bash
    yarn build
    yarn start
@@ -287,4 +307,3 @@ Once all tests pass:
 **Critical Tests**: 3  
 **Optional Tests**: 4  
 **Success Rate**: Should be 100%
-

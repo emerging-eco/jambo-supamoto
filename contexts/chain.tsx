@@ -37,7 +37,7 @@ export const ChainContext = createContext({
 export const ChainProvider = ({ children }: HTMLAttributes<HTMLDivElement>) => {
   const [chains, setChains] = useState<CHAIN_INFO_REQUEST[]>([]);
   const [currentChain, setCurrentChain] = useState<CHAIN_STATE_TYPE>(DEFAULT_CHAIN);
-  const queryClientRef = useRef<QUERY_CLIENT | undefined>();
+  const queryClientRef = useRef<QUERY_CLIENT | undefined>(undefined);
 
   const updateCurrentChain = (newChain: any, override: boolean = false) => {
     if (override) setCurrentChain({ ...DEFAULT_CHAIN, ...newChain });

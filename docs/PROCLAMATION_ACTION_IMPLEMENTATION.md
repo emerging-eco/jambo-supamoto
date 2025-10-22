@@ -11,6 +11,7 @@ The proclamation action has been fully implemented with a complete 3-step flow (
 ### **1. Step Type Definitions** (`types/steps.ts`)
 
 #### **A. Added to STEPS enum** (Lines 34-36):
+
 ```typescript
 proclamation_form_entry = 'proclamation_form_entry',
 proclamation_form_review = 'proclamation_form_review',
@@ -18,6 +19,7 @@ proclamation_form_result = 'proclamation_form_result',
 ```
 
 #### **B. Added to steps object** (Lines 163-174):
+
 ```typescript
 [STEPS.proclamation_form_entry]: {
   id: STEPS.proclamation_form_entry,
@@ -34,6 +36,7 @@ proclamation_form_result = 'proclamation_form_result',
 ```
 
 #### **C. Added data type interfaces** (Lines 258-272):
+
 ```typescript
 interface Proclamation_form_entry {
   surveyData?: Record<string, any>;
@@ -54,6 +57,7 @@ interface Proclamation_form_result {
 ```
 
 #### **D. Added to AllStepDataTypes union** (Lines 292-294):
+
 ```typescript
 | Proclamation_form_entry
 | Proclamation_form_review
@@ -61,6 +65,7 @@ interface Proclamation_form_result {
 ```
 
 #### **E. Added to StepDataType conditional type** (Lines 345-350):
+
 ```typescript
 : T extends STEPS.proclamation_form_entry
   ? Proclamation_form_entry
@@ -80,6 +85,7 @@ interface Proclamation_form_result {
 **Purpose**: Review step for proclamation action
 
 **Features**:
+
 - Fetches same survey structure as entry step
 - Displays form in read-only mode (`mode: 'display'`)
 - Pre-fills with data from entry step
@@ -93,6 +99,7 @@ interface Proclamation_form_result {
 **API Endpoint**: `POST /action` with action: `submit-1000-day-household-proclamation`
 
 **Key Functions**:
+
 - `handleSubmit()`: Checks Matrix token, authenticates if needed, calls performSubmission
 - `handleAuthSuccess()`: Callback after successful Matrix authentication
 - `performSubmission()`: Makes API request with Matrix token
@@ -104,6 +111,7 @@ interface Proclamation_form_result {
 **Purpose**: Result step showing submission outcome
 
 **Features**:
+
 - Displays success or error message
 - Shows submission details
 - Provides "Done" button to return home
@@ -111,6 +119,7 @@ interface Proclamation_form_result {
 - Clean, user-friendly UI
 
 **States**:
+
 - **Success**: Green checkmark, success message, details
 - **Error**: Red X, error message, error details, retry suggestion
 
@@ -119,6 +128,7 @@ interface Proclamation_form_result {
 ### **3. Updated Routing** (`pages/[actionId].tsx`)
 
 #### **A. Added component imports** (Lines 27-29):
+
 ```typescript
 import ProclamationFormEntry from '@steps/ProclamationFormEntry';
 import ProclamationFormReview from '@steps/ProclamationFormReview';
@@ -126,17 +136,21 @@ import ProclamationFormResult from '@steps/ProclamationFormResult';
 ```
 
 #### **B. Fixed entry step routing** (Lines 277-285):
+
 **Changed from**:
+
 ```typescript
 case STEPS.define_proposal_title:  // ❌ Wrong step type
 ```
 
 **Changed to**:
+
 ```typescript
 case STEPS.proclamation_form_entry:  // ✅ Correct step type
 ```
 
 #### **C. Added review step routing** (Lines 286-297):
+
 ```typescript
 case STEPS.proclamation_form_review:
   return (
@@ -153,6 +167,7 @@ case STEPS.proclamation_form_review:
 ```
 
 #### **D. Added result step routing** (Lines 298-305):
+
 ```typescript
 case STEPS.proclamation_form_result:
   return (
@@ -177,6 +192,7 @@ case STEPS.proclamation_form_result:
 **Form**: "1000 Day Household" - Single checkbox
 
 **User Actions**:
+
 1. Sees title and description
 2. Reads: "A 1,000-day household is a family with a pregnant or breastfeeding mother, or a child younger than two years old."
 3. Checks: "I understand the definition of a 1,000-day household and confirm that my household is a 1,000-day household."
@@ -195,6 +211,7 @@ case STEPS.proclamation_form_result:
 **Display Mode**: Read-only
 
 **User Actions**:
+
 1. Sees "Review Your Proclamation" title
 2. Sees same form as step 1, but read-only
 3. Checkbox is pre-checked (from step 1 data)
@@ -202,10 +219,12 @@ case STEPS.proclamation_form_result:
 5. Clicks "Submit"
 
 **Authentication Flow**:
+
 - **SignX**: Automatic authentication with address
 - **Keplr/Opera**: Shows MatrixAuthModal for wallet signature
 
 **API Request**:
+
 ```json
 POST /action
 {
@@ -230,6 +249,7 @@ Headers: {
 **Display**:
 
 **Success**:
+
 ```
 ✓
 Success!
@@ -239,6 +259,7 @@ Your 1,000 Day Household proclamation has been recorded successfully.
 ```
 
 **Error**:
+
 ```
 ✗
 Submission Failed
@@ -249,6 +270,7 @@ Please try again or contact support if the problem persists.
 ```
 
 **User Actions**:
+
 1. Reads result message
 2. Clicks "Done"
 3. Returns to home page
@@ -312,6 +334,7 @@ Home Page
 ## ✅ Verification
 
 ### **Development Server**:
+
 ```
 ✅ Server started successfully on http://localhost:3000
 ✅ Compiled in 1670 ms (2218 modules)
@@ -320,6 +343,7 @@ Home Page
 ```
 
 ### **Step Type Verification**:
+
 ```bash
 $ grep "proclamation" types/steps.ts
 proclamation_form_entry = 'proclamation_form_entry',
@@ -331,6 +355,7 @@ proclamation_form_result = 'proclamation_form_result',
 ```
 
 ### **Component Verification**:
+
 ```bash
 $ ls -la steps/ | grep Proclamation
 ProclamationFormEntry.tsx
@@ -339,6 +364,7 @@ ProclamationFormResult.tsx
 ```
 
 ### **Routing Verification**:
+
 ```bash
 $ grep "proclamation" pages/[actionId].tsx
 import ProclamationFormEntry from '@steps/ProclamationFormEntry';
@@ -357,6 +383,7 @@ case STEPS.proclamation_form_result:
 ## 🧪 Testing Instructions
 
 ### **1. Clear Browser Cache**:
+
 ```
 Chrome/Firefox: Ctrl+Shift+R (Windows/Linux) or Cmd+Shift+R (Mac)
 Safari: Cmd+Option+R
@@ -365,6 +392,7 @@ Safari: Cmd+Option+R
 ### **2. Test Complete Flow**:
 
 **Step 1 - Entry**:
+
 1. Navigate to http://localhost:3000
 2. Click "1,000 Day Household" action card
 3. **Verify**: Form loads with title and description
@@ -373,6 +401,7 @@ Safari: Cmd+Option+R
 6. Click "Continue"
 
 **Step 2 - Review**:
+
 1. **Verify**: "Review Your Proclamation" title appears
 2. **Verify**: Same form structure as step 1
 3. **Verify**: Checkbox is pre-checked (read-only)
@@ -385,6 +414,7 @@ Safari: Cmd+Option+R
    - Modal closes, submission proceeds
 
 **Step 3 - Result**:
+
 1. **Verify**: Success or error message appears
 2. **If success**: Green checkmark, success message
 3. **If error**: Red X, error message with details
@@ -397,11 +427,11 @@ Safari: Cmd+Option+R
 
 ### **Before Implementation**:
 
-| Step | Status | Issue |
-|------|--------|-------|
-| **Entry** | ⚠️ Partially working | Using wrong step type (`define_proposal_title`) |
-| **Review** | ❌ Not implemented | Component missing, no routing |
-| **Result** | ❌ Not implemented | Component missing, no routing |
+| Step       | Status               | Issue                                           |
+| ---------- | -------------------- | ----------------------------------------------- |
+| **Entry**  | ⚠️ Partially working | Using wrong step type (`define_proposal_title`) |
+| **Review** | ❌ Not implemented   | Component missing, no routing                   |
+| **Result** | ❌ Not implemented   | Component missing, no routing                   |
 
 **Completion**: 33% (1 of 3 steps partially working)
 
@@ -409,11 +439,11 @@ Safari: Cmd+Option+R
 
 ### **After Implementation**:
 
-| Step | Status | Features |
-|------|--------|----------|
-| **Entry** | ✅ Fully working | Correct step type, survey loads, data saves |
+| Step       | Status           | Features                                       |
+| ---------- | ---------------- | ---------------------------------------------- |
+| **Entry**  | ✅ Fully working | Correct step type, survey loads, data saves    |
 | **Review** | ✅ Fully working | Read-only display, Matrix auth, API submission |
-| **Result** | ✅ Fully working | Success/error display, navigation home |
+| **Result** | ✅ Fully working | Success/error display, navigation home         |
 
 **Completion**: 100% (3 of 3 steps fully working)
 
@@ -458,4 +488,3 @@ The proclamation action now has a complete, production-ready implementation that
 **Status**: ✅ COMPLETE  
 **Impact**: Critical - Enables full proclamation action flow  
 **Testing**: Required - Test complete 3-step flow
-

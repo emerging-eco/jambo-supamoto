@@ -1,4 +1,4 @@
-import { createClient } from 'matrix-js-sdk';
+import createClient from 'matrix-js-sdk';
 import md5 from 'md5';
 import { cons } from '@constants/matrix';
 import { secureSave, secureRemove } from './storage';
@@ -292,4 +292,3 @@ export async function authenticateSignXWithMatrix(address: string): Promise<Auth
     throw new Error(`Failed to authenticate SignX with Matrix: ${error.message}`);
   }
 }
-

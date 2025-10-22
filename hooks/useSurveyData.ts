@@ -16,7 +16,7 @@ export default function useSurveyData(surveyUrl: string | null) {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(surveyUrl);
+        const response = await fetch(surveyUrl as string);
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -37,4 +37,3 @@ export default function useSurveyData(surveyUrl: string | null) {
 
   return { surveyData, loading, error };
 }
-

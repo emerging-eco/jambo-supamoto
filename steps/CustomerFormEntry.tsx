@@ -34,10 +34,7 @@ const CustomerFormEntry: FC<CustomerFormEntryProps> = ({ onSuccess, onBack, data
   );
 
   // Generate customer ID once and memoize it
-  const customerId = useMemo(
-    () => data?.surveyData?.['ecs:customerId'] || `CUST-${Date.now()}`,
-    [data?.surveyData],
-  );
+  const customerId = useMemo(() => data?.surveyData?.['ecs:customerId'] || `CUST-${Date.now()}`, [data?.surveyData]);
 
   // Memoize initial data to prevent creating new object on every render
   const initialData = useMemo(
@@ -109,4 +106,3 @@ const CustomerFormEntry: FC<CustomerFormEntryProps> = ({ onSuccess, onBack, data
 };
 
 export default CustomerFormEntry;
-

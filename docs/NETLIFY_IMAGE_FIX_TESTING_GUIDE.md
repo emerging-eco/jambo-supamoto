@@ -20,6 +20,7 @@ cat next.config.js | grep -A 3 "images:"
 ```
 
 **Expected Output**:
+
 ```javascript
 images: {
   unoptimized: true,
@@ -41,6 +42,7 @@ yarn build
 ```
 
 **Expected Output**:
+
 ```
 ✓ Compiled successfully
 ✓ Linting and checking validity of types
@@ -59,6 +61,7 @@ yarn start
 ```
 
 **Expected Output**:
+
 ```
 > ready - started server on 0.0.0.0:3000, url: http://localhost:3000
 ```
@@ -72,6 +75,7 @@ yarn start
 5. Reload the page
 
 **Expected Behavior**:
+
 - ✅ Wallet images load successfully
 - ✅ Action images load successfully
 - ✅ No `/_next/image` requests (image optimization disabled)
@@ -79,6 +83,7 @@ yarn start
 - ✅ No console errors
 
 **Image URLs Should Look Like**:
+
 ```
 /images/wallets/keplr.png
 /images/wallets/signX.png
@@ -91,6 +96,7 @@ yarn start
 ```
 
 **NOT Like** (these would indicate optimization is still running):
+
 ```
 /_next/image?url=%2Fimages%2Fwallets%2Fkeplr.png&w=96&q=75
 ```
@@ -98,6 +104,7 @@ yarn start
 ### Step 5: Test Specific Components
 
 #### Test Wallet Selection
+
 1. Navigate to the application
 2. Look for wallet selection screen
 3. Verify all wallet icons display correctly:
@@ -109,6 +116,7 @@ yarn start
    - Fallback (if any fail) ✓
 
 #### Test Action Cards
+
 1. Navigate to home page
 2. Verify action images display:
    - All action cards show images
@@ -116,6 +124,7 @@ yarn start
    - No 500 errors in console
 
 #### Test Chain Selector
+
 1. Open chain selector
 2. Verify chain logo images display
 3. Verify fallback image works if needed
@@ -127,6 +136,7 @@ yarn start
 **Expected**: No errors related to images
 
 **NOT Expected**:
+
 ```
 GET /_next/image?url=... 500 (Internal Server Error)
 Failed to load image
@@ -159,6 +169,7 @@ git push origin <your-branch>
 ### Step 4: Merge to Main/Deploy Branch
 
 Once approved:
+
 ```bash
 git merge <your-branch>
 git push origin main
@@ -184,6 +195,7 @@ Once deployment is complete:
 5. Check for image loading
 
 **Expected**:
+
 - ✅ All images load successfully
 - ✅ No 500 errors
 - ✅ No `/_next/image` requests
@@ -195,6 +207,7 @@ Once deployment is complete:
 ## Verification Checklist
 
 ### Local Build
+
 - [ ] `yarn build` completes without errors
 - [ ] `yarn start` starts successfully
 - [ ] Images load in local production build
@@ -202,6 +215,7 @@ Once deployment is complete:
 - [ ] No `/_next/image` requests in Network tab
 
 ### Netlify Deployment
+
 - [ ] Deployment completes successfully
 - [ ] Site is accessible
 - [ ] Wallet images load
@@ -211,6 +225,7 @@ Once deployment is complete:
 - [ ] No `/_next/image` requests
 
 ### Functional Testing
+
 - [ ] Wallet selection screen displays all wallets
 - [ ] Home page displays all action cards
 - [ ] Chain selector displays chain logos
@@ -224,6 +239,7 @@ Once deployment is complete:
 ### Issue: Images Still Not Loading
 
 **Solution**:
+
 1. Hard refresh browser: `Ctrl+Shift+R` (Windows) or `Cmd+Shift+R` (Mac)
 2. Clear browser cache
 3. Check that `next.config.js` has `unoptimized: true`
@@ -232,6 +248,7 @@ Once deployment is complete:
 ### Issue: Build Fails
 
 **Solution**:
+
 1. Check build logs on Netlify
 2. Verify `next.config.js` syntax is correct
 3. Run `yarn build` locally to debug
@@ -240,6 +257,7 @@ Once deployment is complete:
 ### Issue: Still Seeing 500 Errors
 
 **Solution**:
+
 1. Verify deployment is using latest code
 2. Check Netlify build logs for errors
 3. Try clearing Netlify cache and redeploying
@@ -248,6 +266,7 @@ Once deployment is complete:
 ### Issue: Images Load But Look Different
 
 **Solution**:
+
 - This is expected - images are no longer optimized
 - File sizes may be slightly larger
 - Image quality should still be acceptable
@@ -258,11 +277,13 @@ Once deployment is complete:
 ## Performance Impact
 
 ### Before Fix
+
 - ❌ 500 errors on all image requests
 - ❌ Images don't load
 - ❌ User experience broken
 
 ### After Fix
+
 - ✅ All images load successfully
 - ✅ Static file serving (very fast)
 - ✅ Slightly larger file sizes (negligible for this project)
@@ -271,6 +292,7 @@ Once deployment is complete:
 ### File Size Comparison
 
 **Typical Wallet Icon**:
+
 - Optimized: ~2-3 KB
 - Unoptimized: ~5-8 KB
 - Difference: ~3-5 KB per image
@@ -300,17 +322,20 @@ git push origin main
 ## Next Steps
 
 ### Immediate
+
 1. ✅ Apply fix to `next.config.js`
 2. ✅ Test locally
 3. ✅ Deploy to Netlify
 4. ✅ Verify on production
 
 ### Short-term
+
 - Monitor for any image-related issues
 - Collect user feedback
 - Verify no performance regressions
 
 ### Long-term
+
 - Consider upgrading to Next.js 13+ for better Netlify support
 - Evaluate CDN-based image optimization (Cloudinary, Imgix)
 - Manually optimize images for smaller file sizes
@@ -332,10 +357,10 @@ If you encounter issues:
 ## Summary
 
 The fix is simple and effective:
+
 - **Change**: Add `unoptimized: true` to `next.config.js`
 - **Benefit**: Images load successfully on Netlify
 - **Trade-off**: Slightly larger file sizes (acceptable)
 - **Result**: Better user experience, no 500 errors
 
 **Status**: ✅ **READY FOR DEPLOYMENT**
-

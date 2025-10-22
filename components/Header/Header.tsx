@@ -13,17 +13,24 @@ import { FC } from 'react';
 type HeaderProps = {
   configure?: boolean;
   header?: string;
+  allowBack?: boolean;
 };
 
-const Header: FC<HeaderProps> = ({ configure = false, header }) => {
+const Header: FC<HeaderProps> = ({ configure = false, header, allowBack = false }) => {
   const { headerShowLogo, headerShowName } = config;
   const router = useRouter();
 
   return (
     <nav className={styles.nav}>
-      <Anchor active openInNewTab href='https://my.jambo.earth/'>
-        <ColoredIcon icon={DappStore} color={ICON_COLOR.iconGrey} size={25} className={styles.headerIcon} />
-      </Anchor>
+      {allowBack ? (
+        <button onClick={() => router.back()} className={styles.headerIcon}>
+          <ColoredIcon icon={DappStore} color={ICON_COLOR.iconGrey} size={25} />
+        </button>
+      ) : (
+        <Anchor active openInNewTab href='https://my.jambo.earth/'>
+          <ColoredIcon icon={DappStore} color={ICON_COLOR.iconGrey} size={25} className={styles.headerIcon} />
+        </Anchor>
+      )}
       <SiteHeader
         displayLogo={!header && headerShowLogo}
         displayName={!!(header || headerShowName)}

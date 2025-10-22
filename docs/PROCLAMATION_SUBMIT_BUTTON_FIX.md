@@ -13,6 +13,7 @@ The "Submit" button in the proclamation review step was not displaying correctly
 The `ProclamationFormReview.tsx` component had a **different button implementation** than `CustomerFormReview.tsx`:
 
 **ProclamationFormReview (BEFORE)**:
+
 - Used a **custom button** inside the `<main>` element
 - Button had `className={styles.submitButton}` (which may not exist)
 - Button was rendered **before** the Footer component
@@ -20,6 +21,7 @@ The `ProclamationFormReview.tsx` component had a **different button implementati
 - MatrixAuthModal had incomplete props
 
 **CustomerFormReview (CORRECT)**:
+
 - Uses the **Footer component's `onCorrect` prop** to render the button
 - Button is part of the Footer component (consistent styling)
 - Has `submitting` state to disable button and show "Submitting..." text
@@ -45,18 +47,20 @@ The ProclamationFormReview component was created with a custom button implementa
 #### **1. Fixed Imports** (Lines 1-16)
 
 **BEFORE**:
+
 ```typescript
 import { FC, useCallback, useMemo, useState } from 'react';
 import { Survey } from 'survey-react-ui';
 import { Model } from 'survey-core';
 import cls from 'classnames';
 // ... other imports
-import { useContext } from 'react';  // ❌ Duplicate import
+import { useContext } from 'react'; // ❌ Duplicate import
 ```
 
 **AFTER**:
+
 ```typescript
-import { FC, useState, useContext } from 'react';  // ✅ Combined imports
+import { FC, useState, useContext } from 'react'; // ✅ Combined imports
 import { Survey } from 'survey-react-ui';
 import cls from 'classnames';
 // ... other imports (removed unused Model import)
@@ -67,6 +71,7 @@ import cls from 'classnames';
 #### **2. Added Submitting State** (Lines 27-31)
 
 **BEFORE**:
+
 ```typescript
 const ProclamationFormReview: FC<ProclamationFormReviewProps> = ({ onSuccess, onBack, formData, header }) => {
   const { wallet } = useContext(WalletContext);
@@ -75,6 +80,7 @@ const ProclamationFormReview: FC<ProclamationFormReviewProps> = ({ onSuccess, on
 ```
 
 **AFTER**:
+
 ```typescript
 const ProclamationFormReview: FC<ProclamationFormReviewProps> = ({ onSuccess, onBack, formData, header }) => {
   const [submitting, setSubmitting] = useState(false);  // ✅ Added submitting state
@@ -88,6 +94,7 @@ const ProclamationFormReview: FC<ProclamationFormReviewProps> = ({ onSuccess, on
 #### **3. Updated performSubmission Function** (Lines 103-154)
 
 **BEFORE**:
+
 ```typescript
 const performSubmission = async () => {
   console.log('Performing submission...');
@@ -109,10 +116,11 @@ const performSubmission = async () => {
 ```
 
 **AFTER**:
+
 ```typescript
 const performSubmission = async () => {
   console.log('Performing submission...');
-  setSubmitting(true);  // ✅ Set submitting state
+  setSubmitting(true); // ✅ Set submitting state
 
   try {
     // Get Matrix access token from secure storage
@@ -159,12 +167,13 @@ const performSubmission = async () => {
       error: error.message,
     });
   } finally {
-    setSubmitting(false);  // ✅ Reset submitting state
+    setSubmitting(false); // ✅ Reset submitting state
   }
 };
 ```
 
 **Key Changes**:
+
 - ✅ Added `setSubmitting(true)` at the start
 - ✅ Added `finally` block with `setSubmitting(false)`
 - ✅ Hardcoded API URL (matches CustomerFormReview)
@@ -175,6 +184,7 @@ const performSubmission = async () => {
 #### **4. Updated JSX Structure** (Lines 184-215)
 
 **BEFORE**:
+
 ```typescript
 return (
   <>
@@ -201,6 +211,7 @@ return (
 ```
 
 **AFTER**:
+
 ```typescript
 return (
   <>
@@ -237,6 +248,7 @@ return (
 ```
 
 **Key Changes**:
+
 - ✅ Removed custom button from `<main>`
 - ✅ Added `onCorrect` prop to Footer component
 - ✅ Added `correctLabel` prop with dynamic text
@@ -251,44 +263,45 @@ return (
 
 ### **Button Implementation**:
 
-| Aspect | Before (Wrong) | After (Correct) |
-|--------|----------------|-----------------|
-| **Location** | Inside `<main>` element | In Footer component via `onCorrect` prop |
-| **CSS Class** | `styles.submitButton` (doesn't exist) | Footer's internal styling |
-| **Disabled State** | No | Yes (during submission) |
-| **Label** | Static "Submit" | Dynamic "Submit" / "Submitting..." |
-| **Visibility** | ❌ Not visible | ✅ Visible |
+| Aspect             | Before (Wrong)                        | After (Correct)                          |
+| ------------------ | ------------------------------------- | ---------------------------------------- |
+| **Location**       | Inside `<main>` element               | In Footer component via `onCorrect` prop |
+| **CSS Class**      | `styles.submitButton` (doesn't exist) | Footer's internal styling                |
+| **Disabled State** | No                                    | Yes (during submission)                  |
+| **Label**          | Static "Submit"                       | Dynamic "Submit" / "Submitting..."       |
+| **Visibility**     | ❌ Not visible                        | ✅ Visible                               |
 
 ### **State Management**:
 
-| State | Before | After |
-|-------|--------|-------|
-| **submitting** | ❌ Not defined | ✅ Defined and used |
-| **showAuthModal** | ✅ Defined | ✅ Defined |
+| State             | Before         | After               |
+| ----------------- | -------------- | ------------------- |
+| **submitting**    | ❌ Not defined | ✅ Defined and used |
+| **showAuthModal** | ✅ Defined     | ✅ Defined          |
 
 ### **Context Usage**:
 
-| Context | Before | After |
-|---------|--------|-------|
-| **ChainContext** | `chainInfo` ❌ | `chain` ✅ |
-| **WalletContext** | `wallet` ✅ | `wallet` ✅ |
+| Context           | Before         | After       |
+| ----------------- | -------------- | ----------- |
+| **ChainContext**  | `chainInfo` ❌ | `chain` ✅  |
+| **WalletContext** | `wallet` ✅    | `wallet` ✅ |
 
 ### **MatrixAuthModal Props**:
 
-| Prop | Before | After |
-|------|--------|-------|
-| **isOpen** | ❌ Missing | ✅ Added |
-| **onClose** | ✅ Present | ✅ Present |
-| **onSuccess** | ✅ Present | ✅ Present |
-| **walletType** | ❌ Missing | ✅ Added |
-| **chainId** | ❌ Missing | ✅ Added |
-| **address** | ❌ Missing | ✅ Added |
+| Prop           | Before     | After      |
+| -------------- | ---------- | ---------- |
+| **isOpen**     | ❌ Missing | ✅ Added   |
+| **onClose**    | ✅ Present | ✅ Present |
+| **onSuccess**  | ✅ Present | ✅ Present |
+| **walletType** | ❌ Missing | ✅ Added   |
+| **chainId**    | ❌ Missing | ✅ Added   |
+| **address**    | ❌ Missing | ✅ Added   |
 
 ---
 
 ## ✅ Verification
 
 ### **Development Server**:
+
 ```
 ✅ Server started successfully on http://localhost:3000
 ✅ Compiled in 1107 ms (2218 modules)
@@ -297,7 +310,9 @@ return (
 ```
 
 ### **Code Alignment**:
+
 Both review components now have **identical structure**:
+
 - ✅ Same imports
 - ✅ Same state management
 - ✅ Same button implementation (via Footer)
@@ -309,6 +324,7 @@ Both review components now have **identical structure**:
 ## 🧪 Testing Instructions
 
 ### **1. Clear Browser Cache**:
+
 ```
 Chrome/Firefox: Ctrl+Shift+R (Windows/Linux) or Cmd+Shift+R (Mac)
 Safari: Cmd+Option+R
@@ -317,12 +333,14 @@ Safari: Cmd+Option+R
 ### **2. Test Proclamation Review Step**:
 
 **Step 1 - Navigate to Review**:
+
 1. Navigate to http://localhost:3000
 2. Click "1,000 Day Household" action
 3. Check the checkbox in entry form
 4. Click "Continue"
 
 **Step 2 - Verify Button Display**:
+
 1. **Verify**: "Review Your Proclamation" title is visible
 2. **Verify**: Description text is visible
 3. **Verify**: Survey form is displayed (checkbox is checked, read-only)
@@ -332,6 +350,7 @@ Safari: Cmd+Option+R
 7. **Verify**: Both buttons are styled correctly
 
 **Step 3 - Test Button Functionality**:
+
 1. Click "Submit" button
 2. **Verify**: Button changes to "Submitting..." ✅
 3. **Verify**: "Back" button is disabled during submission ✅
@@ -340,6 +359,7 @@ Safari: Cmd+Option+R
 6. **Verify**: Navigates to result step
 
 **Step 4 - Test Back Button**:
+
 1. From review step, click "Back"
 2. **Verify**: Returns to entry step
 3. **Verify**: Entry form still has checkbox checked
@@ -357,6 +377,7 @@ Safari: Cmd+Option+R
 **Fix**: Aligned ProclamationFormReview with CustomerFormReview implementation
 
 **Changes**:
+
 - ✅ Removed custom button from `<main>` element
 - ✅ Added `onCorrect` prop to Footer component
 - ✅ Added `submitting` state for button disable/label change
@@ -364,7 +385,8 @@ Safari: Cmd+Option+R
 - ✅ Fixed MatrixAuthModal props (added isOpen, walletType, chainId, address)
 - ✅ Updated performSubmission to use submitting state
 
-**Result**: 
+**Result**:
+
 - ✅ Submit button now visible in Footer
 - ✅ Button disabled during submission
 - ✅ Button label changes to "Submitting..."
@@ -380,4 +402,3 @@ Safari: Cmd+Option+R
 **Lines Changed**: ~50 lines  
 **Impact**: Critical - Fixes submit button visibility  
 **Testing**: Required - Test proclamation review step
-

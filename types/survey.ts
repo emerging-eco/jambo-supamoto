@@ -34,4 +34,3 @@ export interface ISurveyTheme {
   showQuestionNumbers: 'off' | 'on' | 'onPage';
   isPanelless: boolean;
 }
-

@@ -26,8 +26,8 @@ const Input: FC<InputProps> = ({ label, align = 'start', className, ...other }) 
           align === 'end' || align === 'right'
             ? styles.endAlign
             : align === 'center'
-            ? styles.centerAlign
-            : styles.startAlign,
+              ? styles.centerAlign
+              : styles.startAlign,
           className,
         )}
         {...other}
@@ -40,8 +40,8 @@ const Input: FC<InputProps> = ({ label, align = 'start', className, ...other }) 
         align === 'end' || align === 'right'
           ? styles.endAlign
           : align === 'center'
-          ? styles.centerAlign
-          : styles.startAlign,
+            ? styles.centerAlign
+            : styles.startAlign,
         className,
       )}
       {...other}

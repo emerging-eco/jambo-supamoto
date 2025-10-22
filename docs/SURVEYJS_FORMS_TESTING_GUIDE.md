@@ -49,6 +49,7 @@ This guide helps you verify that both updated SurveyJS forms work correctly.
    - All entered data should be displayed correctly
 
 ### **Expected Console Output**:
+
 ```
 Loading survey from URL...
 Survey loaded successfully
@@ -57,6 +58,7 @@ Form data: { ... all your entered data ... }
 ```
 
 ### **Expected Behavior**:
+
 - ✅ Form loads quickly (< 2 seconds)
 - ✅ All fields display correctly
 - ✅ Customer ID is pre-filled
@@ -95,6 +97,7 @@ Form data: { ... all your entered data ... }
    - Should navigate to next step or home page
 
 ### **Expected Console Output**:
+
 ```
 Loading survey from URL...
 Survey loaded successfully
@@ -103,6 +106,7 @@ Form data: { "ecs:1000DayHousehold": ["1000DayHousehold"] }
 ```
 
 ### **Expected Behavior**:
+
 - ✅ Form loads quickly (< 2 seconds)
 - ✅ Title and description display correctly
 - ✅ Checkbox displays correctly
@@ -115,6 +119,7 @@ Form data: { "ecs:1000DayHousehold": ["1000DayHousehold"] }
 ## 🔍 What to Check in Browser Console
 
 ### **Good Signs (Expected)**:
+
 ```
 ✅ "Loading survey from URL..."
 ✅ "Survey loaded successfully"
@@ -124,6 +129,7 @@ Form data: { "ecs:1000DayHousehold": ["1000DayHousehold"] }
 ```
 
 ### **Bad Signs (Should NOT appear)**:
+
 ```
 ❌ "Error loading survey"
 ❌ "Failed to fetch survey"
@@ -155,27 +161,27 @@ Form data: { "ecs:1000DayHousehold": ["1000DayHousehold"] }
 
 ### **Customer Form Fields**:
 
-| Field | Type | Required | Notes |
-|-------|------|----------|-------|
-| Customer ID | Text | Yes | Pre-filled, editable |
-| Client Group Type | Dropdown | Yes | Multiple options |
-| First Name | Text | Yes | - |
-| Last Name | Text | Yes | - |
-| National Registration Number | Text | Yes | Format: `xxxxxx/xx/x` |
-| Contact Number | Text | Yes | - |
-| Alternative Contact Number | Text | No | - |
-| Delivery Method | Radio | Yes | 3 options |
-| Profile Image | File | Yes | JPEG/PNG only |
-| Country | Text | No | In location panel |
-| Address | Text | No | In location panel |
-| Latitude | Text | No | In location panel |
-| Longitude | Text | No | In location panel |
+| Field                        | Type     | Required | Notes                 |
+| ---------------------------- | -------- | -------- | --------------------- |
+| Customer ID                  | Text     | Yes      | Pre-filled, editable  |
+| Client Group Type            | Dropdown | Yes      | Multiple options      |
+| First Name                   | Text     | Yes      | -                     |
+| Last Name                    | Text     | Yes      | -                     |
+| National Registration Number | Text     | Yes      | Format: `xxxxxx/xx/x` |
+| Contact Number               | Text     | Yes      | -                     |
+| Alternative Contact Number   | Text     | No       | -                     |
+| Delivery Method              | Radio    | Yes      | 3 options             |
+| Profile Image                | File     | Yes      | JPEG/PNG only         |
+| Country                      | Text     | No       | In location panel     |
+| Address                      | Text     | No       | In location panel     |
+| Latitude                     | Text     | No       | In location panel     |
+| Longitude                    | Text     | No       | In location panel     |
 
 ### **Proclamation Form Fields**:
 
-| Field | Type | Required | Notes |
-|-------|------|----------|-------|
-| 1000 Day Household | Checkbox | Yes | Single option |
+| Field              | Type     | Required | Notes         |
+| ------------------ | -------- | -------- | ------------- |
+| 1000 Day Household | Checkbox | Yes      | Single option |
 
 ---
 
@@ -184,15 +190,17 @@ Form data: { "ecs:1000DayHousehold": ["1000DayHousehold"] }
 ### **Issue: Form doesn't load**
 
 **Check**:
+
 1. Network tab - is the survey URL returning 200?
 2. Console - any errors about CORS or network?
 3. Survey URL is correct in the component
 
 **Fix**:
+
 ```javascript
 // In browser console
 fetch('https://devmx.ixo.earth/_matrix/media/v3/download/devmx.ixo.earth/UWRpYxNSeMJeRmAgBIIFNkCq')
-  .then(r => r.json())
+  .then((r) => r.json())
   .then(console.log);
 ```
 
@@ -201,6 +209,7 @@ fetch('https://devmx.ixo.earth/_matrix/media/v3/download/devmx.ixo.earth/UWRpYxN
 ### **Issue: Customer ID not pre-filled**
 
 **Check**:
+
 ```javascript
 // In CustomerFormEntry.tsx, check if customerId is generated
 console.log('Customer ID:', customerId);
@@ -213,11 +222,13 @@ console.log('Customer ID:', customerId);
 ### **Issue: File upload doesn't work**
 
 **Check**:
+
 1. Browser permissions for camera/file access
 2. File type is JPEG or PNG
 3. File size is reasonable (< 10MB)
 
 **Test**:
+
 - Try uploading a small test image
 - Try using camera (on mobile)
 - Check console for errors
@@ -227,11 +238,13 @@ console.log('Customer ID:', customerId);
 ### **Issue: Validation not working**
 
 **Check**:
+
 1. Required fields are marked with asterisk
 2. Error messages appear when invalid
 3. Form won't submit with errors
 
 **Test**:
+
 - Leave required fields empty
 - Enter invalid National ID format
 - Try to submit - should show errors
@@ -241,11 +254,13 @@ console.log('Customer ID:', customerId);
 ### **Issue: Proclamation action not found**
 
 **Check**:
+
 1. `config.json` has proclamation action defined
 2. Routing is updated in `[actionId].tsx`
 3. Component is imported correctly
 
 **Verify**:
+
 ```javascript
 // In browser console
 import config from '@constants/config.json';
@@ -258,6 +273,7 @@ console.log('Actions:', config.actions);
 ## 🎯 Success Criteria
 
 **All tests pass when**:
+
 - ✅ Customer form loads and displays all fields
 - ✅ Customer ID is pre-filled
 - ✅ All validations work correctly
@@ -338,6 +354,7 @@ Once all tests pass:
    - Different screen sizes
 
 4. **Test Production Build**:
+
    ```bash
    yarn build
    yarn start
@@ -354,4 +371,3 @@ Once all tests pass:
 **Critical Tests**: 2  
 **Success Rate**: Should be 100%  
 **Status**: Ready for testing
-

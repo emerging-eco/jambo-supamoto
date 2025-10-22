@@ -3,18 +3,21 @@
 ## Quick Start Testing
 
 ### 1. Verify Environment Configuration
+
 ```bash
 # Check current environment variables
 cat .env.local | grep -E "NEXT_PUBLIC_ENABLE_DEVELOPER_MODE|NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK"
 ```
 
 **Expected Output**:
+
 ```
 NEXT_PUBLIC_ENABLE_DEVELOPER_MODE=1
 NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK=devnet
 ```
 
 ### 2. Start Development Server
+
 ```bash
 npm run dev
 # or
@@ -26,11 +29,13 @@ yarn dev
 Open browser DevTools (F12) and check the console for:
 
 **Expected Log Output** (when submitting a form):
+
 ```
 Using RPC URL: https://devnet.ixo.earth/rpc/
 ```
 
 **NOT Expected** (this would indicate the bug):
+
 ```
 Using RPC URL: https://testnet.ixo.earth/rpc/
 ```
@@ -44,6 +49,7 @@ Using RPC URL: https://testnet.ixo.earth/rpc/
 5. Verify `chainNetwork` property shows `'devnet'`
 
 **Expected**:
+
 ```javascript
 chain: {
   chainId: "devnet-1",
@@ -53,6 +59,7 @@ chain: {
 ```
 
 **NOT Expected** (this would indicate the bug):
+
 ```javascript
 chain: {
   chainId: "pandora-8",
@@ -92,6 +99,7 @@ chain: {
 ### Test 3: Explicit Network Override
 
 **Test with Testnet**:
+
 ```bash
 # Update .env.local
 NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK=testnet
@@ -101,10 +109,12 @@ npm run dev
 ```
 
 **Verify**:
+
 - Console should show: `Using RPC URL: https://testnet.ixo.earth/rpc/`
 - React DevTools should show: `chainNetwork: "testnet"`
 
 **Test with Mainnet**:
+
 ```bash
 # Update .env.local
 NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK=mainnet
@@ -114,10 +124,12 @@ npm run dev
 ```
 
 **Verify**:
+
 - Console should show: `Using RPC URL: https://impacthub.ixo.world/rpc/`
 - React DevTools should show: `chainNetwork: "mainnet"`
 
 **Restore to Devnet**:
+
 ```bash
 # Update .env.local back to
 NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK=devnet
@@ -138,11 +150,13 @@ npm run dev
 ```
 
 **Verify**:
+
 - Should default to mainnet (since developer mode is disabled)
 - Console should show: `Using RPC URL: https://impacthub.ixo.world/rpc/`
 - React DevTools should show: `chainNetwork: "mainnet"`
 
 **Restore**:
+
 ```bash
 # Update .env.local back to
 NEXT_PUBLIC_ENABLE_DEVELOPER_MODE=1
@@ -191,6 +205,7 @@ Search for the transaction hash returned by the submission.
 ### Issue: Still seeing testnet RPC URL
 
 **Solution**:
+
 1. Clear browser cache (Ctrl+Shift+Delete)
 2. Restart dev server (Ctrl+C, then `npm run dev`)
 3. Hard refresh browser (Ctrl+Shift+R)
@@ -199,6 +214,7 @@ Search for the transaction hash returned by the submission.
 ### Issue: Chain selector shows wrong network
 
 **Solution**:
+
 1. Check React DevTools for actual `chainNetwork` value
 2. Verify environment variables are set correctly
 3. Restart dev server
@@ -207,11 +223,13 @@ Search for the transaction hash returned by the submission.
 ### Issue: Transaction fails with "Collection not found"
 
 **Possible Causes**:
+
 1. Wrong RPC URL (verify in console)
 2. Collection ID doesn't exist on selected network
 3. Wallet not connected to correct network
 
 **Solution**:
+
 1. Verify RPC URL in console
 2. Check collection ID in environment variables
 3. Ensure wallet is connected to correct chain
@@ -219,6 +237,7 @@ Search for the transaction hash returned by the submission.
 ## Success Criteria
 
 ✅ All tests pass when:
+
 - [ ] Console shows correct RPC URL for selected network
 - [ ] React DevTools shows correct `chainNetwork` value
 - [ ] Customer form submission succeeds
@@ -241,4 +260,3 @@ git checkout steps/CustomerFormReview.tsx
 # Restart dev server
 npm run dev
 ```
-

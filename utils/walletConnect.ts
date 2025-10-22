@@ -205,7 +205,7 @@ export const getAccounts = async (): Promise<readonly AccountData[]> => {
   }
 };
 
-export const signDirect = async (signerAddress: string, signDoc: SignDoc): Promise<DirectSignResponse> => {
+export const signDirect = async (signerAddress: string, signDoc: SignDoc | any): Promise<DirectSignResponse> => {
   try {
     const _session = getCurrentSession();
     const namespaceAccount = Object.values(_session.namespaces)?.[0]?.accounts?.[0];
@@ -223,9 +223,9 @@ export const signDirect = async (signerAddress: string, signDoc: SignDoc): Promi
     if (!result.signature) throw new Error('Failed to sign transaction with WalletConnect');
 
     return {
-      signed: signDoc,
+      signed: signDoc as any,
       signature: result,
-    };
+    } as DirectSignResponse;
   } catch (error) {
     console.error('walletConnect::signDirect::', error);
     throw error;

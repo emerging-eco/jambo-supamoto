@@ -13,12 +13,14 @@
 **Objective**: Verify the form loads once without flickering
 
 ### Steps:
+
 1. Open browser to `http://localhost:3000`
 2. Sign in with wallet (if required)
 3. Navigate to the "Customer" action
 4. Observe the form loading behavior
 
 ### Expected Results:
+
 - [ ] Form loads smoothly without flickering
 - [ ] No continuous re-rendering visible
 - [ ] Survey questions appear stable
@@ -27,6 +29,7 @@
 - [ ] Browser console shows no infinite loop warnings
 
 ### Signs of Success:
+
 - Form appears once and stays stable
 - No "Loading survey..." message flickering
 - CPU usage remains normal
@@ -39,12 +42,14 @@
 **Objective**: Verify user input is captured and persists
 
 ### Steps:
+
 1. Click on the first input field
 2. Type some text
 3. Click on another field
 4. Return to the first field
 
 ### Expected Results:
+
 - [ ] Text entered in first field is preserved
 - [ ] Cursor position is maintained
 - [ ] No data loss when switching fields
@@ -57,12 +62,14 @@
 **Objective**: Verify smooth navigation between form fields
 
 ### Steps:
+
 1. Fill out the first field
 2. Press Tab to move to next field
 3. Continue tabbing through all fields
 4. Use Shift+Tab to go backwards
 
 ### Expected Results:
+
 - [ ] Tab navigation works smoothly
 - [ ] Focus moves to correct fields
 - [ ] No flickering during navigation
@@ -75,12 +82,14 @@
 **Objective**: Verify validation works without triggering re-renders
 
 ### Steps:
+
 1. Leave a required field empty
 2. Try to proceed to next page
 3. Fill in the required field
 4. Observe validation messages
 
 ### Expected Results:
+
 - [ ] Validation errors appear correctly
 - [ ] Error messages don't cause flickering
 - [ ] Form remains stable during validation
@@ -93,11 +102,13 @@
 **Objective**: Verify navigation to review step works
 
 ### Steps:
+
 1. Fill out all required fields
 2. Click "Continue" button
 3. Observe transition to review step
 
 ### Expected Results:
+
 - [ ] Navigation to review step succeeds
 - [ ] All entered data appears in review
 - [ ] No errors in console
@@ -110,11 +121,13 @@
 **Objective**: Verify data persists when navigating back
 
 ### Steps:
+
 1. From review step, click "Back" button
 2. Observe the form entry step
 3. Check if previously entered data is present
 
 ### Expected Results:
+
 - [ ] Form loads with previous data
 - [ ] All fields show entered values
 - [ ] Customer ID is preserved
@@ -128,11 +141,13 @@
 **Objective**: Verify stability across multiple edit cycles
 
 ### Steps:
+
 1. Fill form → Continue → Back
 2. Edit data → Continue → Back
 3. Edit again → Continue → Submit
 
 ### Expected Results:
+
 - [ ] Form remains stable through all cycles
 - [ ] Data updates correctly each time
 - [ ] No performance degradation
@@ -145,12 +160,14 @@
 **Objective**: Verify no errors or warnings in console
 
 ### Steps:
+
 1. Open browser DevTools (F12)
 2. Go to Console tab
 3. Perform all above tests
 4. Monitor console output
 
 ### Expected Results:
+
 - [ ] No React warnings about dependencies
 - [ ] No "Maximum update depth exceeded" errors
 - [ ] No infinite loop warnings
@@ -164,6 +181,7 @@
 **Objective**: Verify render performance
 
 ### Steps:
+
 1. Install React DevTools extension
 2. Open Profiler tab
 3. Start recording
@@ -171,6 +189,7 @@
 5. Stop recording and analyze
 
 ### Expected Results:
+
 - [ ] Initial render count: 1-2 (normal)
 - [ ] Re-renders only on user interaction
 - [ ] No continuous render cycles
@@ -183,11 +202,13 @@
 **Objective**: Verify survey is fetched only once
 
 ### Steps:
+
 1. Open browser DevTools Network tab
 2. Reload the customer form page
 3. Observe network requests
 
 ### Expected Results:
+
 - [ ] Survey JSON fetched exactly once
 - [ ] No repeated fetches of the same survey
 - [ ] No unnecessary API calls
@@ -197,12 +218,14 @@
 ## Performance Benchmarks
 
 ### Before Fix (Broken State):
+
 - Renders: Infinite loop
 - User interaction: Blocked
 - CPU usage: High (>50%)
 - Form usability: Unusable
 
 ### After Fix (Expected):
+
 - Initial renders: 1-2
 - Re-renders: Only on prop changes
 - CPU usage: Normal (<5%)
@@ -220,11 +243,13 @@
 ## Rollback Plan (If Needed)
 
 If issues are found, revert these files:
+
 1. `hooks/useSurveyTheme.ts`
 2. `hooks/useSurveyModel.ts`
 3. `steps/CustomerFormEntry.tsx`
 
 Use git:
+
 ```bash
 git checkout HEAD -- hooks/useSurveyTheme.ts hooks/useSurveyModel.ts steps/CustomerFormEntry.tsx
 ```
@@ -277,6 +302,7 @@ git checkout HEAD -- hooks/useSurveyTheme.ts hooks/useSurveyModel.ts steps/Custo
 ## Reporting Issues
 
 If any test fails, please report:
+
 1. Which test failed
 2. Browser and version
 3. Console error messages
@@ -295,14 +321,16 @@ If any test fails, please report:
 
 ---
 
-**Testing Date**: _____________
+**Testing Date**: **\*\***\_**\*\***
 
-**Tested By**: _____________
+**Tested By**: **\*\***\_**\*\***
 
-**Result**: ☐ PASS  ☐ FAIL  ☐ NEEDS REVIEW
+**Result**: ☐ PASS ☐ FAIL ☐ NEEDS REVIEW
 
 **Notes**:
-_____________________________________________
-_____________________________________________
-_____________________________________________
 
+---
+
+---
+
+---

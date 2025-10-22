@@ -16,31 +16,33 @@ The issue where submit buttons on review pages were not functioning correctly du
 
 ### 1. Core Issue: `constants/chains.ts`
 
-**Problem**: 
+**Problem**:
+
 ```typescript
 // OLD - INCORRECT
 export const DefaultChainNetwork =
   process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK === 'mainnet'
     ? process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK
     : EnableDeveloperMode
-    ? 'testnet'  // ← Always forced to testnet
-    : 'mainnet';
+      ? 'testnet' // ← Always forced to testnet
+      : 'mainnet';
 ```
 
 **Solution**:
+
 ```typescript
 // NEW - CORRECT
-export const DefaultChainNetwork =
-  process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK
-    ? process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK
-    : EnableDeveloperMode
-    ? 'devnet'  // ← Defaults to devnet, respects env var
+export const DefaultChainNetwork = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK
+  ? process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK
+  : EnableDeveloperMode
+    ? 'devnet' // ← Defaults to devnet, respects env var
     : 'mainnet';
 ```
 
 ### 2. Debug Cleanup: `steps/CustomerFormReview.tsx`
 
 Removed debug console.log statements (lines 78-80):
+
 - `console.log('START');`
 - `console.log('chain: ', chain);`
 - `console.log('chain.chainNetwork: ', chain?.chainNetwork);`
@@ -52,21 +54,25 @@ Removed debug console.log statements (lines 78-80):
 ### What Now Works
 
 ✅ **Customer Form Review Page**
+
 - Submit button now uses correct devnet RPC endpoint
 - Blockchain queries use `https://devnet.ixo.earth/rpc/`
 - Transactions submit successfully to devnet
 
 ✅ **Proclamation Form Review Page**
+
 - Submit button now uses correct devnet RPC endpoint
 - Blockchain queries use `https://devnet.ixo.earth/rpc/`
 - Transactions submit successfully to devnet
 
 ✅ **Environment Variable Respect**
+
 - `NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK=devnet` is now honored
 - Can switch networks by changing environment variable
 - Testnet and mainnet still work when explicitly set
 
 ✅ **Chain Context**
+
 - Initializes with correct network
 - Provides correct chainNetwork to all consumers
 - Chain selector displays correct network
@@ -75,10 +81,10 @@ Removed debug console.log statements (lines 78-80):
 
 ## Files Changed
 
-| File | Change | Lines |
-|------|--------|-------|
-| `constants/chains.ts` | Fixed DefaultChainNetwork logic | 25-30 |
-| `steps/CustomerFormReview.tsx` | Removed debug logs | 78-80 |
+| File                           | Change                          | Lines |
+| ------------------------------ | ------------------------------- | ----- |
+| `constants/chains.ts`          | Fixed DefaultChainNetwork logic | 25-30 |
+| `steps/CustomerFormReview.tsx` | Removed debug logs              | 78-80 |
 
 **Total Changes**: 2 files, ~10 lines modified
 
@@ -87,6 +93,7 @@ Removed debug console.log statements (lines 78-80):
 ## Verification
 
 ### Code Review Checklist
+
 - ✅ Logic correctly respects environment variables
 - ✅ Defaults to 'devnet' for developer mode
 - ✅ Maintains backward compatibility
@@ -94,7 +101,9 @@ Removed debug console.log statements (lines 78-80):
 - ✅ No breaking changes
 
 ### Automatic Fixes
+
 The following components automatically benefit from the fix:
+
 - ✅ `contexts/chain.tsx` - Initializes with correct network
 - ✅ `steps/CustomerFormReview.tsx` - Uses correct RPC URL
 - ✅ `steps/ProclamationFormReview.tsx` - Uses correct RPC URL
@@ -105,13 +114,16 @@ The following components automatically benefit from the fix:
 ## Testing Instructions
 
 ### Quick Verification (2 minutes)
+
 1. Start dev server: `npm run dev`
 2. Open browser DevTools (F12)
 3. Check console for: `Using RPC URL: https://devnet.ixo.earth/rpc/`
 4. Verify React DevTools shows `chainNetwork: "devnet"`
 
 ### Full Testing (15 minutes)
+
 See `CHAIN_NETWORK_FIX_TESTING_GUIDE.md` for:
+
 - Customer form submission test
 - Proclamation form submission test
 - Environment variable override tests
@@ -123,12 +135,14 @@ See `CHAIN_NETWORK_FIX_TESTING_GUIDE.md` for:
 ## Environment Configuration
 
 **Current `.env.local`**:
+
 ```
 NEXT_PUBLIC_ENABLE_DEVELOPER_MODE=1
 NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK=devnet
 ```
 
 **Expected Behavior**:
+
 - Application uses devnet
 - RPC URL: `https://devnet.ixo.earth/rpc/`
 - Chain ID: `devnet-1`
@@ -172,6 +186,7 @@ Three comprehensive documents have been created:
 ## Next Steps
 
 ### Immediate Actions
+
 1. ✅ Code changes completed
 2. ⏳ Run tests to verify fix
 3. ⏳ Test customer form submission
@@ -179,6 +194,7 @@ Three comprehensive documents have been created:
 5. ⏳ Verify transactions on devnet explorer
 
 ### Recommended Actions
+
 1. Review the fix with team
 2. Run full test suite
 3. Test on staging environment
@@ -190,6 +206,7 @@ Three comprehensive documents have been created:
 ## Rollback Plan
 
 If issues occur, revert with:
+
 ```bash
 git checkout constants/chains.ts steps/CustomerFormReview.tsx
 npm run dev
@@ -200,6 +217,7 @@ npm run dev
 ## Questions & Support
 
 For questions about this fix, refer to:
+
 - **Root Cause**: See CHAIN_NETWORK_FIX_SUMMARY.md
 - **Verification**: See CHAIN_NETWORK_FIX_VERIFICATION.md
 - **Testing**: See CHAIN_NETWORK_FIX_TESTING_GUIDE.md
@@ -208,16 +226,15 @@ For questions about this fix, refer to:
 
 ## Summary
 
-| Aspect | Status |
-|--------|--------|
-| Root Cause Identified | ✅ Complete |
-| Fix Implemented | ✅ Complete |
-| Debug Code Cleaned | ✅ Complete |
-| Documentation Created | ✅ Complete |
-| Ready for Testing | ✅ Yes |
-| Ready for Deployment | ⏳ After Testing |
+| Aspect                | Status           |
+| --------------------- | ---------------- |
+| Root Cause Identified | ✅ Complete      |
+| Fix Implemented       | ✅ Complete      |
+| Debug Code Cleaned    | ✅ Complete      |
+| Documentation Created | ✅ Complete      |
+| Ready for Testing     | ✅ Yes           |
+| Ready for Deployment  | ⏳ After Testing |
 
 **Overall Status**: ✅ **READY FOR TESTING**
 
 The chain network selection issue has been successfully resolved. The application will now correctly use the devnet network as configured in the environment variables, and the submit buttons on review pages will function properly.
-

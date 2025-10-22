@@ -15,17 +15,20 @@
 **Location**: `utils/signX.tsx:35`
 
 **Error Message**:
+
 ```
 Error: Chains changed, please logout and login again
 ```
 
 **Root Cause**:
+
 - The application stores wallet user data in localStorage (including `chainId`)
 - When switching between different chain networks (mainnet/testnet/devnet), the stored `chainId` doesn't match the current chain
 - The code threw an error immediately, preventing the app from loading
 - This is particularly problematic after running a production build which may have different chain configuration
 
 **Impact**:
+
 - Application crashed on first load
 - Users couldn't access the app without manually clearing localStorage
 - Prevented wallet initialization completely
@@ -50,6 +53,7 @@ if (walletUser?.chainId && walletUser?.chainId !== chainInfo.chainId) {
 ```
 
 **Benefits**:
+
 - ✅ No more crashes on chain mismatch
 - ✅ Automatically clears stale wallet data
 - ✅ Allows app to continue loading
@@ -63,17 +67,20 @@ if (walletUser?.chainId && walletUser?.chainId !== chainInfo.chainId) {
 **Location**: `utils/signX.tsx:87-88`
 
 **Error Message**:
+
 ```
 TypeError: Cannot read properties of undefined (reading 'removeAllListeners')
 ```
 
 **Root Cause**:
+
 - The `finally` block always executes, even when errors occur early in the function
 - If an error is thrown before `signXClient` is initialized (like the chain mismatch error), `signXClient` remains `undefined`
 - Calling `signXClient.removeAllListeners()` on `undefined` causes a TypeError
 - This error masked the original chain mismatch error
 
 **Impact**:
+
 - Secondary error that obscured the root cause
 - Made debugging more difficult
 - Prevented proper error handling
@@ -94,6 +101,7 @@ if (signXClient) {
 ```
 
 **Also fixed in `signXBroadCastMessage` function** (Lines 169-172):
+
 ```typescript
 // Added same null check for consistency
 if (signXClient) {
@@ -103,6 +111,7 @@ if (signXClient) {
 ```
 
 **Benefits**:
+
 - ✅ No more TypeError on undefined
 - ✅ Proper error handling in finally block
 - ✅ Consistent error handling across both functions
@@ -117,10 +126,11 @@ if (signXClient) {
 **Changes Made**:
 
 1. **Line 22**: Changed type declaration
+
    ```typescript
    // Before
    let signXClient: SignX;
-   
+
    // After
    let signXClient: SignX | undefined;
    ```
@@ -175,6 +185,7 @@ if (signXClient) {
 ## ✅ Verification
 
 ### **Development Server**
+
 ```bash
 $ rm -rf .next && yarn dev
 ✅ Server started successfully on http://localhost:3000
@@ -183,12 +194,14 @@ $ rm -rf .next && yarn dev
 ```
 
 ### **Error Handling**
+
 - ✅ Chain mismatch handled gracefully
 - ✅ No TypeError on undefined
 - ✅ Logout event dispatched correctly
 - ✅ App continues to load normally
 
 ### **User Experience**
+
 - ✅ App loads without crashes
 - ✅ Users can connect wallet after chain mismatch
 - ✅ Clear warning in console for debugging
@@ -199,6 +212,7 @@ $ rm -rf .next && yarn dev
 ## 🎯 Impact Analysis
 
 ### **Before Fix**
+
 ```
 ❌ App crashes on first load
 ❌ "Chains changed" error blocks initialization
@@ -208,6 +222,7 @@ $ rm -rf .next && yarn dev
 ```
 
 ### **After Fix**
+
 ```
 ✅ App loads successfully
 ✅ Chain mismatch handled gracefully
@@ -221,21 +236,25 @@ $ rm -rf .next && yarn dev
 ## 🚀 Best Practices Implemented
 
 ### **1. Defensive Programming**
+
 - Always check for null/undefined before calling methods
 - Use optional chaining where appropriate
 - Add type guards for safety
 
 ### **2. Graceful Degradation**
+
 - Handle errors without crashing the app
 - Provide fallback behavior
 - Clear stale data automatically
 
 ### **3. Better Error Messages**
+
 - Use `console.warn` for non-critical issues
 - Provide context in error messages
 - Help developers understand what happened
 
 ### **4. Consistent Error Handling**
+
 - Apply same patterns across similar functions
 - Use finally blocks correctly
 - Clean up resources safely
@@ -245,18 +264,22 @@ $ rm -rf .next && yarn dev
 ## 📝 Recommendations for Future
 
 ### **Immediate**
+
 1. ✅ Test wallet connection flow
 2. ✅ Verify chain switching works
 3. ✅ Test with different wallet types
 
 ### **Short-Term**
+
 1. **Add localStorage versioning**:
+
    ```typescript
    const STORAGE_VERSION = '1.0';
    // Clear storage if version mismatch
    ```
 
 2. **Add chain migration helper**:
+
    ```typescript
    function migrateChainData(oldChain, newChain) {
      // Handle chain changes gracefully
@@ -271,6 +294,7 @@ $ rm -rf .next && yarn dev
    ```
 
 ### **Long-Term**
+
 1. **Implement proper state management**:
    - Use Redux/Zustand for wallet state
    - Persist state with versioning
@@ -293,6 +317,7 @@ $ rm -rf .next && yarn dev
 ### **For Developers**
 
 1. **When switching environments**:
+
    ```bash
    # Clear both build artifacts AND localStorage
    rm -rf .next
@@ -301,6 +326,7 @@ $ rm -rf .next && yarn dev
    ```
 
 2. **When changing chain configuration**:
+
    ```bash
    # Update .env file
    # Clear build and restart
@@ -317,6 +343,7 @@ $ rm -rf .next && yarn dev
 ### **For Users**
 
 If you encounter wallet connection issues:
+
 1. Refresh the page
 2. If issue persists, clear browser cache
 3. Reconnect your wallet
@@ -329,14 +356,17 @@ If you encounter wallet connection issues:
 **Problem**: Critical runtime errors prevented app from loading after production build
 
 **Root Causes**:
+
 1. Chain ID mismatch between stored wallet data and current chain
 2. Undefined signXClient when calling removeAllListeners()
 
 **Solutions**:
+
 1. Handle chain mismatch gracefully with automatic cleanup
 2. Add null checks before calling methods on potentially undefined objects
 
 **Results**:
+
 - ✅ App loads successfully
 - ✅ No more runtime crashes
 - ✅ Better error handling
@@ -346,11 +376,10 @@ If you encounter wallet connection issues:
 **Files Modified**: 1 file (`utils/signX.tsx`)  
 **Lines Changed**: ~15 lines  
 **Breaking Changes**: None  
-**Matrix Authentication**: Not affected  
+**Matrix Authentication**: Not affected
 
 ---
 
 **Date**: 2025-10-13  
 **Status**: ✅ COMPLETE - Runtime Errors Fixed  
 **Impact**: Critical - Prevents app crashes
-

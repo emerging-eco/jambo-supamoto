@@ -13,10 +13,12 @@ The SurveyJS form URLs were swapped between the Customer and Proclamation action
 The survey URLs in the code were **swapped**:
 
 **Before Fix**:
+
 - **CustomerFormEntry.tsx** had URL `...UWRpYxNSeMJeRmAgBIIFNkCq` → Returned **1000 Day Household** form ❌
 - **ProclamationFormEntry.tsx** had URL `...HJhNWZWdMIdKEysvAKJWDEQU` → Returned **Customer** form ❌
 
 ### **Symptoms**:
+
 1. **Customer action** showed a simple checkbox form (1000 Day Household) instead of the detailed customer registration form
 2. **Proclamation action** showed nothing or unexpected content because it was loading the customer form
 
@@ -29,11 +31,13 @@ The survey URLs in the code were **swapped**:
 #### **File 1: `steps/CustomerFormEntry.tsx` (Line 21)**
 
 **BEFORE**:
+
 ```typescript
 const SURVEY_URL = 'https://devmx.ixo.earth/_matrix/media/v3/download/devmx.ixo.earth/UWRpYxNSeMJeRmAgBIIFNkCq';
 ```
 
 **AFTER**:
+
 ```typescript
 const SURVEY_URL = 'https://devmx.ixo.earth/_matrix/media/v3/download/devmx.ixo.earth/HJhNWZWdMIdKEysvAKJWDEQU';
 ```
@@ -43,11 +47,13 @@ const SURVEY_URL = 'https://devmx.ixo.earth/_matrix/media/v3/download/devmx.ixo.
 #### **File 2: `steps/ProclamationFormEntry.tsx` (Line 21)**
 
 **BEFORE**:
+
 ```typescript
 const SURVEY_URL = 'https://devmx.ixo.earth/_matrix/media/v3/download/devmx.ixo.earth/HJhNWZWdMIdKEysvAKJWDEQU';
 ```
 
 **AFTER**:
+
 ```typescript
 const SURVEY_URL = 'https://devmx.ixo.earth/_matrix/media/v3/download/devmx.ixo.earth/UWRpYxNSeMJeRmAgBIIFNkCq';
 ```
@@ -56,16 +62,17 @@ const SURVEY_URL = 'https://devmx.ixo.earth/_matrix/media/v3/download/devmx.ixo.
 
 ## 📊 Correct Mapping (After Fix)
 
-| Action | Component | Survey URL (last part) | Form Title |
-|--------|-----------|------------------------|------------|
-| **Customer** | `CustomerFormEntry.tsx` | `HJhNWZWdMIdKEysvAKJWDEQU` | "SupaMoto Existing Customer Claim" ✅ |
-| **Proclamation** | `ProclamationFormEntry.tsx` | `UWRpYxNSeMJeRmAgBIIFNkCq` | "1000 Day Household" ✅ |
+| Action           | Component                   | Survey URL (last part)     | Form Title                            |
+| ---------------- | --------------------------- | -------------------------- | ------------------------------------- |
+| **Customer**     | `CustomerFormEntry.tsx`     | `HJhNWZWdMIdKEysvAKJWDEQU` | "SupaMoto Existing Customer Claim" ✅ |
+| **Proclamation** | `ProclamationFormEntry.tsx` | `UWRpYxNSeMJeRmAgBIIFNkCq` | "1000 Day Household" ✅               |
 
 ---
 
 ## 🧪 Verification
 
 ### **Development Server**:
+
 ```
 ✅ Server started successfully on http://localhost:3000
 ✅ Compiled in 1232 ms (2218 modules)
@@ -75,6 +82,7 @@ const SURVEY_URL = 'https://devmx.ixo.earth/_matrix/media/v3/download/devmx.ixo.
 ### **Expected Behavior After Fix**:
 
 #### **Customer Action** (http://localhost:3000/customer):
+
 - ✅ Shows "SupaMoto Existing Customer Claim" form
 - ✅ Contains fields:
   - Customer ID (pre-filled, read-only)
@@ -89,6 +97,7 @@ const SURVEY_URL = 'https://devmx.ixo.earth/_matrix/media/v3/download/devmx.ixo.
   - Location Information panel (Country, Address, Coordinates)
 
 #### **Proclamation Action** (http://localhost:3000/proclamation):
+
 - ✅ Shows "1000 Day Household" form
 - ✅ Contains:
   - Title: "1000 Day Household"
@@ -100,10 +109,12 @@ const SURVEY_URL = 'https://devmx.ixo.earth/_matrix/media/v3/download/devmx.ixo.
 ## 🔍 How This Happened
 
 The original URLs provided were:
+
 - **Action 1 (Customer)** = `UWRpYxNSeMJeRmAgBIIFNkCq`
 - **Action 2 (Proclamation)** = `HJhNWZWdMIdKEysvAKJWDEQU`
 
 However, when fetched from the Matrix server:
+
 - `UWRpYxNSeMJeRmAgBIIFNkCq` → Returns **1000 Day Household** (Proclamation)
 - `HJhNWZWdMIdKEysvAKJWDEQU` → Returns **SupaMoto Existing Customer Claim** (Customer)
 
@@ -114,12 +125,14 @@ The URLs were labeled incorrectly in the original request, so they were implemen
 ## 🧪 Testing Steps
 
 ### **1. Clear Browser Cache**:
+
 ```
 Chrome/Firefox: Ctrl+Shift+R (Windows/Linux) or Cmd+Shift+R (Mac)
 Safari: Cmd+Option+R
 ```
 
 ### **2. Test Customer Action**:
+
 1. Navigate to http://localhost:3000
 2. Click "Customer" action card
 3. **Verify**: Should see detailed customer registration form
@@ -129,6 +142,7 @@ Safari: Cmd+Option+R
 7. **Check**: Location Information panel is visible
 
 ### **3. Test Proclamation Action**:
+
 1. Navigate to http://localhost:3000
 2. Click "1,000 Day Household" action card
 3. **Verify**: Should see simple form with title and description
@@ -137,6 +151,7 @@ Safari: Cmd+Option+R
 6. **Check**: Can check the box and submit
 
 ### **4. Test Form Submission**:
+
 - Fill out customer form and submit
 - Fill out proclamation form and submit
 - Verify both navigate to next step correctly
@@ -189,6 +204,7 @@ Safari: Cmd+Option+R
 ## 📚 Reference
 
 ### **Customer Form Fields**:
+
 - Customer ID (text, read-only)
 - Client Group Type (dropdown)
 - First Name (text, regex validation)
@@ -205,6 +221,7 @@ Safari: Cmd+Option+R
   - Longitude (text)
 
 ### **Proclamation Form Fields**:
+
 - 1000 Day Household (checkbox, required)
 
 ---
@@ -214,6 +231,7 @@ Safari: Cmd+Option+R
 ### **If forms still show wrong content**:
 
 1. **Hard refresh browser**:
+
    ```
    Cmd+Shift+R (Mac) or Ctrl+Shift+R (Windows/Linux)
    ```
@@ -224,6 +242,7 @@ Safari: Cmd+Option+R
    - Safari: Develop → Empty Caches
 
 3. **Restart dev server**:
+
    ```bash
    # Stop server (Ctrl+C)
    yarn dev
@@ -237,11 +256,12 @@ Safari: Cmd+Option+R
    - Check response contains correct form
 
 5. **Verify URLs in code**:
+
    ```bash
    # Check CustomerFormEntry.tsx
    grep "SURVEY_URL" steps/CustomerFormEntry.tsx
    # Should show: ...HJhNWZWdMIdKEysvAKJWDEQU
-   
+
    # Check ProclamationFormEntry.tsx
    grep "SURVEY_URL" steps/ProclamationFormEntry.tsx
    # Should show: ...UWRpYxNSeMJeRmAgBIIFNkCq
@@ -257,7 +277,8 @@ Safari: Cmd+Option+R
 
 **Fix**: Swapped the URLs in both component files
 
-**Result**: 
+**Result**:
+
 - ✅ Customer action now shows correct customer registration form
 - ✅ Proclamation action now shows correct 1000 Day Household form
 - ✅ Both forms load and function correctly
@@ -271,4 +292,3 @@ Safari: Cmd+Option+R
 **Lines Changed**: 2  
 **Impact**: Critical - Fixes incorrect form display  
 **Testing**: Required - Clear cache and test both actions
-

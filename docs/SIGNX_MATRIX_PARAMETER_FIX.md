@@ -9,15 +9,18 @@ Successfully added the `matrix: true` parameter to the SignX login call to enabl
 ## 📋 Change Made
 
 ### **File**: `utils/signX.tsx`
+
 ### **Line**: 58 (previously line 57)
 
 **BEFORE**:
+
 ```typescript
 // get login data from client to display QR code and start polling
 const data = await signXClient.login({ pollingInterval: 1000 });
 ```
 
 **AFTER**:
+
 ```typescript
 // get login data from client to display QR code and start polling
 // matrix: true requests Matrix/Data Vault credentials from the mobile app
@@ -25,6 +28,7 @@ const data = await signXClient.login({ pollingInterval: 1000, matrix: true });
 ```
 
 **Changes**:
+
 - ✅ Added `matrix: true` parameter to `signXClient.login()` call
 - ✅ Added explanatory comment about the parameter's purpose
 
@@ -33,16 +37,21 @@ const data = await signXClient.login({ pollingInterval: 1000, matrix: true });
 ## 🎯 Root Cause Resolution
 
 ### **Original Problem**:
+
 Blockchain claim submission was failing with "Matrix authentication required" error because Matrix credentials were never being obtained from the SignX mobile app.
 
 ### **Root Cause**:
+
 The `signXClient.login()` call was missing the `matrix: true` parameter, which is required to request Matrix/Data Vault credentials from the IXO mobile app during the login process.
 
 ### **Why This Happened**:
+
 According to the SignX SDK documentation:
+
 > "Optionally, the user's matrix details can be included in the login request by setting the matrix parameter to true."
 
 Without this parameter:
+
 - SignX SDK does NOT request Matrix credentials from the mobile app
 - Mobile app returns user data WITHOUT the `matrix` field
 - `user.matrix` is `undefined`
@@ -55,6 +64,7 @@ Without this parameter:
 ## 🔄 Complete Flow (Now Fixed)
 
 ### **Before Fix** (Broken):
+
 ```
 1. signXClient.login({ pollingInterval: 1000 })
    ↓
@@ -74,6 +84,7 @@ Without this parameter:
 ```
 
 ### **After Fix** (Working):
+
 ```
 1. signXClient.login({ pollingInterval: 1000, matrix: true })
    ↓
@@ -193,10 +204,11 @@ Matrix credentials stored successfully  // ✅ THIS SHOULD APPEAR
 **Run in Console**:
 
 ```javascript
-localStorage.getItem('jambo-supamoto-secret-key-v1')
+localStorage.getItem('jambo-supamoto-secret-key-v1');
 ```
 
 **Expected Result**:
+
 ```
 "U2FsdGVkX1+abc123def456..."  // Encrypted data (not null)
 ```
@@ -210,10 +222,11 @@ localStorage.getItem('jambo-supamoto-secret-key-v1')
 **Run in Console**:
 
 ```javascript
-JSON.parse(localStorage.getItem('wallet'))
+JSON.parse(localStorage.getItem('wallet'));
 ```
 
 **Expected Result**:
+
 ```json
 {
   "walletType": "signX",
@@ -221,7 +234,8 @@ JSON.parse(localStorage.getItem('wallet'))
     "name": "jambo test account",
     "address": "ixo1...",
     "did": "did:ixo:...",
-    "matrix": {                    // ✅ THIS SHOULD NOW BE PRESENT
+    "matrix": {
+      // ✅ THIS SHOULD NOW BE PRESENT
       "accessToken": "syt_...",
       "userId": "@user:matrix.ixo.earth",
       "roomId": "!...",
@@ -245,6 +259,7 @@ JSON.parse(localStorage.getItem('wallet'))
 4. Click "Submit" button
 
 **Expected Console Output**:
+
 ```
 Submit button clicked!
 Performing blockchain claim submission...
@@ -260,6 +275,7 @@ Using SignX wallet for broadcasting...
 ```
 
 **Then**:
+
 - SignX QR code modal appears for transaction signing
 - Scan QR code with mobile app
 - Approve transaction
@@ -277,6 +293,7 @@ Using SignX wallet for broadcasting...
 4. Click "Submit" button
 
 **Expected Console Output**:
+
 ```
 Submit button clicked!
 Performing blockchain proclamation claim submission...
@@ -316,17 +333,20 @@ After implementing this fix, all of the following should be true:
 **Source**: https://github.com/ixofoundation/ixo-signx
 
 **Login Method Signature**:
+
 ```typescript
-signXClient.login({ 
-  pollingInterval?: number, 
-  matrix?: boolean 
+signXClient.login({
+  pollingInterval?: number,
+  matrix?: boolean
 })
 ```
 
 **Documentation Quote**:
+
 > "Optionally, the user's matrix details can be included in the login request by setting the matrix parameter to true."
 
 **Login Success Event (with `matrix: true`)**:
+
 ```typescript
 {
   message: 'Login request fetched successfully',
@@ -352,11 +372,13 @@ signXClient.login({
 ## 🔍 Comparison with Reference Implementation
 
 ### **Reference Implementation** (`temp-jambo-reference/utils/signX.tsx` - Line 50):
+
 ```typescript
 const data = await signXClient.login({ pollingInterval: 1000, matrix: true });
 ```
 
 ### **Current Implementation** (Now Fixed - `utils/signX.tsx` - Line 58):
+
 ```typescript
 const data = await signXClient.login({ pollingInterval: 1000, matrix: true });
 ```
@@ -368,16 +390,19 @@ const data = await signXClient.login({ pollingInterval: 1000, matrix: true });
 ## 📊 Impact Analysis
 
 ### **Files Modified**: 1
+
 - `utils/signX.tsx` - Added `matrix: true` parameter
 
 ### **Lines Changed**: 1 line (plus 1 comment line)
 
 ### **Impact Level**: **CRITICAL**
+
 - Fixes blockchain claim submission failure
 - Enables Matrix/Data Vault credential extraction
 - Unblocks entire claim submission workflow
 
 ### **Risk Level**: **MINIMAL**
+
 - Single parameter addition
 - Well-documented in SignX SDK
 - Used in reference implementation
@@ -439,4 +464,3 @@ const data = await signXClient.login({ pollingInterval: 1000, matrix: true });
 **Impact**: Critical - Fixes blockchain claim submission  
 **Testing**: Required - Test SignX login and blockchain submission  
 **Confidence**: 100% - Based on official SDK documentation and reference implementation
-

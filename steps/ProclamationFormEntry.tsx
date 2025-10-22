@@ -12,9 +12,9 @@ import useSurveyModel from '@hooks/useSurveyModel';
 import useSurveyData from '@hooks/useSurveyData';
 
 type ProclamationFormEntryProps = {
-  onSuccess: (data: StepDataType<STEPS.define_proposal_title>) => void;
+  onSuccess: (data: StepDataType<STEPS.proclamation_form_entry>) => void;
   onBack?: () => void;
-  data?: StepDataType<STEPS.define_proposal_title>;
+  data?: StepDataType<STEPS.proclamation_form_entry>;
   header?: string;
 };
 
@@ -84,4 +84,3 @@ const ProclamationFormEntry: FC<ProclamationFormEntryProps> = ({ onSuccess, onBa
 };
 
 export default ProclamationFormEntry;
-

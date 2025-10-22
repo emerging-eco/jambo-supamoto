@@ -19,16 +19,19 @@ Navigate to: **`http://localhost:3001/action_one`**
 ## 📋 What to Expect
 
 ### **Step 1: Enter Customer Details**
+
 - Survey form loads from remote URL
 - Fill out all required fields
 - Click "Continue" to proceed
 
 ### **Step 2: Review Details**
+
 - See your data in read-only mode
 - Click "Back" to edit
 - Click "Submit" to send to API
 
 ### **Step 3: Submission Result**
+
 - See success or error message
 - Navigate to Account or Actions
 
@@ -37,16 +40,19 @@ Navigate to: **`http://localhost:3001/action_one`**
 ## 🔧 Troubleshooting
 
 ### **Survey Not Loading**
+
 - Check network connection
 - Verify survey URL is accessible: `https://devmx.ixo.earth/_matrix/media/v3/download/devmx.ixo.earth/xpPfyzgHkigQPtXFuRRBLBwr`
 - Check browser console for errors
 
 ### **API Submission Fails**
+
 - Expected: API may return "NOT_IMPLEMENTED" error (backend not ready)
 - Check Matrix access token is available
 - Verify API endpoint is accessible
 
 ### **Styles Look Wrong**
+
 - Ensure `/survey-core.css` is accessible in public folder
 - Check browser console for CSS loading errors
 - Clear browser cache
@@ -58,6 +64,7 @@ Navigate to: **`http://localhost:3001/action_one`**
 ### **Change Survey URL**
 
 Edit both files:
+
 - `steps/CustomerFormEntry.tsx` (line 22)
 - `steps/CustomerFormReview.tsx` (line 22)
 
@@ -104,4 +111,3 @@ const response = await fetch('YOUR_API_ENDPOINT', {
 ## 🆘 Need Help?
 
 Check the browser console for errors and refer to the implementation summary for detailed information about each component.
-

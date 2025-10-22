@@ -7,4 +7,3 @@ export const cons = {
     BASE_URL: 'cinny_hs_base_url',
   },
 };
-

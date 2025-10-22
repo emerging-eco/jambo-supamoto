@@ -55,11 +55,11 @@ export const initializeSignX = async (
 
     // get login data from client to display QR code and start polling
     // matrix: true requests Matrix/Data Vault credentials from the mobile app
-    const data = await signXClient.login({ pollingInterval: 1000, matrix: true });
+    const data = await signXClient!.login({ pollingInterval: 1000, matrix: true });
 
     // callback for when modal is closed manually
     const onManualCloseModal = () => {
-      signXClient.stopPolling('Login cancelled', SIGN_X_LOGIN_ERROR);
+      signXClient!.stopPolling('Login cancelled', SIGN_X_LOGIN_ERROR);
     };
 
     removeModal = renderModal(
@@ -70,8 +70,8 @@ export const initializeSignX = async (
     const eventData: any = await new Promise((resolve, reject) => {
       const handleSuccess = (data: any) => resolve(data);
       const handleError = (error: any) => reject(error);
-      signXClient.on(SIGN_X_LOGIN_SUCCESS, handleSuccess);
-      signXClient.on(SIGN_X_LOGIN_ERROR, handleError);
+      signXClient!.on(SIGN_X_LOGIN_SUCCESS, handleSuccess);
+      signXClient!.on(SIGN_X_LOGIN_ERROR, handleError);
     });
     // removeModal();
 
@@ -118,7 +118,7 @@ export const signXBroadCastMessage = async (
   let removeModal: () => void;
   // callback for when modal is closed manually
   let onManualCloseModal = (clearSession = true) => {
-    signXClient.stopPolling('Transaction cancelled', SIGN_X_TRANSACT_ERROR, clearSession);
+    signXClient!.stopPolling('Transaction cancelled', SIGN_X_TRANSACT_ERROR, clearSession);
   };
 
   try {
@@ -132,7 +132,7 @@ export const signXBroadCastMessage = async (
     const txBody = toHex(registry.encodeTxBody({ messages: msgs as any, memo }));
 
     // get transact data from client to start polling, display QR code if new session
-    const data = await signXClient.transact({
+    const data = await signXClient!.transact({
       address: wallet.user.address,
       did: wallet.user.did!,
       pubkey: toHex(wallet.user.pubKey),
@@ -142,15 +142,15 @@ export const signXBroadCastMessage = async (
 
     // if already active session(aka no sessionHash), start polling for next transaction that was just added
     if (!data?.sessionHash) {
-      signXClient.pollNextTransaction();
+      signXClient!.pollNextTransaction();
     }
 
     removeModal = renderModal(
       <SignXModal
         title='SignX Transaction'
         data={data}
-        timeout={signXClient.timeout}
-        transactSequence={signXClient.transactSequence}
+        timeout={signXClient!.timeout}
+        transactSequence={signXClient!.transactSequence}
       />,
       onManualCloseModal,
     );
@@ -159,8 +159,8 @@ export const signXBroadCastMessage = async (
     const eventData: any = await new Promise((resolve, reject) => {
       const handleSuccess = (data: any) => resolve(data);
       const handleError = (error: any) => reject(error);
-      signXClient.on(SIGN_X_TRANSACT_SUCCESS, handleSuccess);
-      signXClient.on(SIGN_X_TRANSACT_ERROR, handleError);
+      signXClient!.on(SIGN_X_TRANSACT_SUCCESS, handleSuccess);
+      signXClient!.on(SIGN_X_TRANSACT_ERROR, handleError);
     });
 
     return eventData.data?.transactionHash;

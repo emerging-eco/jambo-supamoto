@@ -25,6 +25,4 @@ export const getChainRpcUrl = (chainNetwork?: CHAIN_NETWORK_TYPE | string): stri
  * Default RPC URL (devnet)
  * Can be overridden by environment variable for testing purposes
  */
-export const DEFAULT_CHAIN_RPC_URL = 
-  process.env.NEXT_PUBLIC_CHAIN_RPC_URL || CHAIN_RPC_URLS.devnet;
-
+export const DEFAULT_CHAIN_RPC_URL = process.env.NEXT_PUBLIC_CHAIN_RPC_URL || CHAIN_RPC_URLS.devnet;

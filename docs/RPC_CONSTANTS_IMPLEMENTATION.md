@@ -40,11 +40,11 @@ export const getChainRpcUrl = (chainNetwork?: CHAIN_NETWORK_TYPE | string): stri
  * Default RPC URL (devnet)
  * Can be overridden by environment variable for testing purposes
  */
-export const DEFAULT_CHAIN_RPC_URL = 
-  process.env.NEXT_PUBLIC_CHAIN_RPC_URL || CHAIN_RPC_URLS.devnet;
+export const DEFAULT_CHAIN_RPC_URL = process.env.NEXT_PUBLIC_CHAIN_RPC_URL || CHAIN_RPC_URLS.devnet;
 ```
 
 **Features**:
+
 - ✅ Network-specific RPC URLs (mainnet, testnet, devnet, local)
 - ✅ Helper function `getChainRpcUrl()` to get RPC URL by network
 - ✅ Defaults to devnet if network is not specified
@@ -56,6 +56,7 @@ export const DEFAULT_CHAIN_RPC_URL =
 ### **2. Updated `steps/CustomerFormReview.tsx`**
 
 #### **Added Import** (Line 22):
+
 ```typescript
 import { getChainRpcUrl } from '@constants/rpc';
 ```
@@ -63,14 +64,14 @@ import { getChainRpcUrl } from '@constants/rpc';
 #### **Updated Collection Query** (Lines 76-80):
 
 **BEFORE**:
+
 ```typescript
 // 4. Fetch collection details from blockchain
-const queryClient = await createQueryClient(
-  process.env.NEXT_PUBLIC_CHAIN_RPC_URL || 'https://rpc.testnet.ixo.earth'
-);
+const queryClient = await createQueryClient(process.env.NEXT_PUBLIC_CHAIN_RPC_URL || 'https://rpc.testnet.ixo.earth');
 ```
 
 **AFTER**:
+
 ```typescript
 // 4. Fetch collection details from blockchain
 // Use RPC URL based on current chain network
@@ -82,22 +83,22 @@ const queryClient = await createQueryClient(rpcUrl);
 #### **Updated Keplr/Opera Client** (Lines 154-157):
 
 **BEFORE**:
+
 ```typescript
 const client = await initStargateClient(
   process.env.NEXT_PUBLIC_CHAIN_RPC_URL || 'https://rpc.testnet.ixo.earth',
-  offlineSigner
+  offlineSigner,
 );
 ```
 
 **AFTER**:
+
 ```typescript
-const client = await initStargateClient(
-  rpcUrl,
-  offlineSigner
-);
+const client = await initStargateClient(rpcUrl, offlineSigner);
 ```
 
 **Changes**:
+
 - ✅ Import `getChainRpcUrl` from constants
 - ✅ Get RPC URL dynamically based on chain network
 - ✅ Log RPC URL for debugging
@@ -108,6 +109,7 @@ const client = await initStargateClient(
 ### **3. Updated `steps/ProclamationFormReview.tsx`**
 
 #### **Added Import** (Line 22):
+
 ```typescript
 import { getChainRpcUrl } from '@constants/rpc';
 ```
@@ -115,14 +117,14 @@ import { getChainRpcUrl } from '@constants/rpc';
 #### **Updated Collection Query** (Lines 76-80):
 
 **BEFORE**:
+
 ```typescript
 // 4. Fetch collection details from blockchain
-const queryClient = await createQueryClient(
-  process.env.NEXT_PUBLIC_CHAIN_RPC_URL || 'https://rpc.testnet.ixo.earth'
-);
+const queryClient = await createQueryClient(process.env.NEXT_PUBLIC_CHAIN_RPC_URL || 'https://rpc.testnet.ixo.earth');
 ```
 
 **AFTER**:
+
 ```typescript
 // 4. Fetch collection details from blockchain
 // Use RPC URL based on current chain network
@@ -134,19 +136,18 @@ const queryClient = await createQueryClient(rpcUrl);
 #### **Updated Keplr/Opera Client** (Lines 154-157):
 
 **BEFORE**:
+
 ```typescript
 const client = await initStargateClient(
   process.env.NEXT_PUBLIC_CHAIN_RPC_URL || 'https://rpc.testnet.ixo.earth',
-  offlineSigner
+  offlineSigner,
 );
 ```
 
 **AFTER**:
+
 ```typescript
-const client = await initStargateClient(
-  rpcUrl,
-  offlineSigner
-);
+const client = await initStargateClient(rpcUrl, offlineSigner);
 ```
 
 **Changes**: Identical to CustomerFormReview.tsx
@@ -156,12 +157,14 @@ const client = await initStargateClient(
 ### **4. Updated `.env.local.example`**
 
 **BEFORE**:
+
 ```bash
 # Chain RPC URL
 NEXT_PUBLIC_CHAIN_RPC_URL=https://rpc.devnet.ixo.earth
 ```
 
 **AFTER**:
+
 ```bash
 # Chain RPC URL (OPTIONAL - defaults to network-specific URLs in constants/rpc.ts)
 # Only set this if you need to override the default RPC URL for testing
@@ -174,6 +177,7 @@ NEXT_PUBLIC_CHAIN_RPC_URL=https://rpc.devnet.ixo.earth
 ```
 
 **Changes**:
+
 - ✅ Marked as OPTIONAL
 - ✅ Documented default URLs for each network
 - ✅ Commented out by default (uses constants)
@@ -221,38 +225,43 @@ NEXT_PUBLIC_CHAIN_RPC_URL=https://rpc.devnet.ixo.earth
 
 ## 📊 RPC URL Mapping
 
-| Network | RPC URL | Status |
-|---------|---------|--------|
-| **Mainnet** | `https://impacthub.ixo.world/rpc/` | ✅ Production |
-| **Testnet** | `https://testnet.ixo.earth/rpc/` | ✅ Testing |
-| **Devnet** | `https://devnet.ixo.earth/rpc/` | ✅ Development |
-| **Local** | `http://localhost:26657` | ✅ Local node |
+| Network     | RPC URL                            | Status         |
+| ----------- | ---------------------------------- | -------------- |
+| **Mainnet** | `https://impacthub.ixo.world/rpc/` | ✅ Production  |
+| **Testnet** | `https://testnet.ixo.earth/rpc/`   | ✅ Testing     |
+| **Devnet**  | `https://devnet.ixo.earth/rpc/`    | ✅ Development |
+| **Local**   | `http://localhost:26657`           | ✅ Local node  |
 
 ---
 
 ## ✅ Benefits
 
 ### **1. Automatic Network Selection**:
+
 - RPC URL automatically matches the selected chain network
 - No manual configuration needed
 - Switches automatically when network changes
 
 ### **2. Centralized Management**:
+
 - All RPC URLs defined in one place (`constants/rpc.ts`)
 - Easy to update URLs across the entire application
 - Consistent URL format
 
 ### **3. Correct URL Format**:
+
 - Uses correct domain pattern: `{network}.ixo.earth/rpc/`
 - Includes required `/rpc/` path
 - Matches reference implementation
 
 ### **4. Better Maintainability**:
+
 - No hardcoded URLs in components
 - Type-safe with TypeScript
 - Self-documenting code
 
 ### **5. Environment Variable Override**:
+
 - Still supports `NEXT_PUBLIC_CHAIN_RPC_URL` for testing
 - Optional override for special cases
 - Defaults to constants if not set
@@ -264,6 +273,7 @@ NEXT_PUBLIC_CHAIN_RPC_URL=https://rpc.devnet.ixo.earth
 ### **Step 1: Remove Old Environment Variable** (Optional)
 
 **Edit `.env.local`**:
+
 ```bash
 # Comment out or remove this line
 # NEXT_PUBLIC_CHAIN_RPC_URL=https://rpc.devnet.ixo.earth
@@ -289,6 +299,7 @@ yarn dev
 4. **Check console output**:
 
 **Expected Console Logs**:
+
 ```
 Submit button clicked!
 Performing blockchain claim submission...
@@ -347,6 +358,7 @@ export const getChainRpcUrl = (chainNetwork?: CHAIN_NETWORK_TYPE | string): stri
 ```
 
 **Differences**:
+
 - ✅ Uses `Record<string, string>` instead of enum keys (more flexible)
 - ✅ Adds helper function `getChainRpcUrl()` for easier usage
 - ✅ Supports environment variable override
@@ -359,9 +371,11 @@ export const getChainRpcUrl = (chainNetwork?: CHAIN_NETWORK_TYPE | string): stri
 ## 🎯 Summary
 
 ### **Files Created**: 1
+
 - `constants/rpc.ts` - RPC URL constants and helper function
 
 ### **Files Modified**: 3
+
 - `steps/CustomerFormReview.tsx` - Use constants-based RPC URLs
 - `steps/ProclamationFormReview.tsx` - Use constants-based RPC URLs
 - `.env.local.example` - Document optional environment variable
@@ -369,11 +383,13 @@ export const getChainRpcUrl = (chainNetwork?: CHAIN_NETWORK_TYPE | string): stri
 ### **Lines Changed**: ~20 lines total
 
 ### **Impact**: **CRITICAL**
+
 - Fixes DNS resolution failure for devnet RPC
 - Enables automatic network-specific RPC URL selection
 - Improves maintainability and consistency
 
 ### **Risk**: **MINIMAL**
+
 - Simple constant-based approach
 - Matches reference implementation
 - Backward compatible (supports env var override)
@@ -408,4 +424,3 @@ export const getChainRpcUrl = (chainNetwork?: CHAIN_NETWORK_TYPE | string): stri
 **Impact**: Critical - Fixes RPC URL configuration  
 **Testing**: Required - Test blockchain claim submission  
 **Confidence**: 100% - Matches reference implementation
-
