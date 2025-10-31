@@ -11,6 +11,7 @@ import { VALIDATOR } from 'types/validators';
 import { getLocalStorage, setLocalStorage } from '@utils/persistence';
 import { generateValidators } from '@utils/validators';
 import { initializeWallet } from '@utils/wallets';
+import { hasMnemonicSigningClient } from '@utils/mnemonic';
 import {
   queryAllBalances,
   queryDelegationTotalRewards,
@@ -27,8 +28,6 @@ export const WalletContext = createContext({
   updateWalletType: (newWalletType: WALLET_TYPE) => {},
   fetchAssets: () => {},
   clearAssets: () => {},
-  updateChainId: (chainId: string) => {},
-  updateChainNetwork: (chainNetwork: ChainNetwork) => {},
   logoutWallet: () => {},
   validators: [] as VALIDATOR[],
   updateValidators: async () => {},
@@ -45,7 +44,7 @@ export const WalletProvider = ({ children }: HTMLAttributes<HTMLDivElement>) => 
   const [wallet, setWallet] = useState<WALLET>(DEFAULT_WALLET);
   const [loaded, setLoaded] = useState<boolean>(false);
   const [validators, setValidators] = useState<VALIDATOR[]>();
-  const { chain, chainInfo, queryClient, updateChainId, updateChainNetwork } = useContext(ChainContext);
+  const { chain, queryClient } = useContext(ChainContext);
   const [balances, fetchBalances, clearBalances] = useWalletData(queryAllBalances, wallet?.user?.address);
   const [delegations, fetchDelegations, clearDelegations] = useWalletData(
     queryDelegatorDelegations,
@@ -69,7 +68,7 @@ export const WalletProvider = ({ children }: HTMLAttributes<HTMLDivElement>) => 
 
   const initializeWallets = async () => {
     try {
-      const user = await initializeWallet(wallet.walletType, chainInfo as KEPLR_CHAIN_INFO_TYPE, wallet.user);
+      const user = await initializeWallet(wallet.walletType, wallet.user);
 
       // Store Matrix credentials for SignX wallet
       if (wallet.walletType === WALLET_TYPE.signX && user?.matrix) {
@@ -206,7 +205,16 @@ export const WalletProvider = ({ children }: HTMLAttributes<HTMLDivElement>) => 
 
     // Comment out below to reset config
     // setLocalStorage('wallet', {});
-    const persistedWallet = getLocalStorage<WALLET>('wallet');
+    let persistedWallet = getLocalStorage<WALLET>('wallet');
+    // If mnemonic was last used but signing client isn't present (e.g., after refresh), clear persisted wallet
+    if (persistedWallet?.walletType === (WALLET_TYPE as any).mnemonic && !hasMnemonicSigningClient()) {
+      setLocalStorage('wallet', {});
+      persistedWallet = getLocalStorage<WALLET>('wallet');
+    }
+    if (persistedWallet?.walletType && !persistedWallet?.user?.address) {
+      setLocalStorage('wallet', {});
+      persistedWallet = getLocalStorage<WALLET>('wallet');
+    }
     const pubKey = persistedWallet?.user?.pubKey && new Uint8Array(Object.values(persistedWallet.user.pubKey));
     if (persistedWallet)
       setWallet({ ...persistedWallet, user: pubKey ? ({ ...persistedWallet.user, pubKey } as any) : undefined });
@@ -231,8 +239,6 @@ export const WalletProvider = ({ children }: HTMLAttributes<HTMLDivElement>) => 
     updateWalletType,
     fetchAssets,
     clearAssets,
-    updateChainId: updateChainId(clearAssets),
-    updateChainNetwork: updateChainNetwork(clearAssets),
     logoutWallet,
     updateValidators,
     updateValidatorAvatar,
@@ -250,6 +256,7 @@ export const WalletProvider = ({ children }: HTMLAttributes<HTMLDivElement>) => 
           <SiteHeader displayLogo displayName />
           <div className={utilsStyles.spacer3} />
           <Loader size={30} />
+          <p>Loading wallet...</p>
         </main>
       ) : (
         children

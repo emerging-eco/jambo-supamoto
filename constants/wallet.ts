@@ -26,6 +26,16 @@ export const WALLETS = {
     img: '/images/wallets/impacts-x.png',
     type: WALLET_TYPE.impactsX,
   },
+  [WALLET_TYPE.passkey]: {
+    name: 'Passkey',
+    img: '/images/wallets/impacts-x.png',
+    type: WALLET_TYPE.passkey,
+  },
+  [WALLET_TYPE.mnemonic]: {
+    name: 'Mnemonic',
+    img: '/images/wallets/impacts-x.png',
+    type: WALLET_TYPE.mnemonic,
+  },
 };
 
 export const WalletConnectProjectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID;

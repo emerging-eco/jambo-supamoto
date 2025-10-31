@@ -11,44 +11,34 @@
   "termsAndConditions": "https://my.jambo.earth/legal/termsOfUse",
   "actions": [
     {
-      "id": "customer",
+      "id": "claim_bulk_submission",
       "steps": [
         {
-          "id": "customer_form_entry",
-          "name": "Enter Customer Details"
-        },
-        {
-          "id": "customer_form_review",
-          "name": "Review Details"
-        },
-        {
-          "id": "customer_claim_result",
-          "name": "Submission Result"
+          "id": "claim_form_bulk",
+          "name": "Bulk Submission",
+          "data": {
+            "collectionId": "478"
+          }
         }
       ],
-      "name": "Customer",
-      "description": "Submit details of an existing customer",
+      "name": "Existing Customer (Bulk)",
+      "description": "Submit details of multiple existing customers",
       "image": "customer.svg"
     },
     {
-      "id": "proclamation",
+      "id": "existing_customer",
       "steps": [
         {
-          "id": "proclamation_form_entry",
-          "name": "Enter Details"
-        },
-        {
-          "id": "proclamation_form_review",
-          "name": "Review Details"
-        },
-        {
-          "id": "proclamation_form_result",
-          "name": "Submission Result"
+          "id": "claim_form",
+          "name": "Enter Customer Details",
+          "data": {
+            "collectionId": "478"
+          }
         }
       ],
-      "name": "1,000 Day Household",
-      "description": "Submit self-proclamation by customer to be 1,000-day household",
-      "image": "1000-day-household.svg"
+      "name": "Existing Customer",
+      "description": "Submit details of an existing customer",
+      "image": "customer.svg"
     }
   ]
 }

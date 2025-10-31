@@ -77,7 +77,6 @@ const ReviewAndSign: FC<ReviewAndSignProps> = ({
   const [description, setDescription] = useState<string | undefined>();
 
   const [trxCancelId, setTrxCancelId] = useState<number | undefined>();
-  const { chainInfo } = useChainContext();
   const { getProposal } = useGovContext();
 
   const showCancelTransactionModal = (index: number) => () => {
@@ -235,14 +234,7 @@ const ReviewAndSign: FC<ReviewAndSignProps> = ({
           throw new Error('Unsupported review type');
       }
 
-      const hash = await broadCastMessages(
-        wallet,
-        trxMsgs,
-        memo,
-        defaultTrxFeeOption,
-        (Array.isArray(token) ? token[0]?.denom : token?.denom) ?? '',
-        chainInfo as KEPLR_CHAIN_INFO_TYPE,
-      );
+      const hash = await broadCastMessages(wallet, trxMsgs, memo);
       if (hash) setSuccessHash(hash);
     } catch (error) {
       console.error(error);
@@ -257,21 +249,7 @@ const ReviewAndSign: FC<ReviewAndSignProps> = ({
         <Header header={header} />
 
         <main className={cls(utilsStyles.main, utilsStyles.columnJustifyCenter, styles.stepContainer)}>
-          <IconText title='Your transaction was successful!' Img={Success} imgSize={50}>
-            {chainInfo?.txExplorer && (
-              <Anchor active openInNewTab href={`${chainInfo.txExplorer.txUrl.replace(/\${txHash}/i, successHash)}`}>
-                <div className={utilsStyles.columnCenter}>
-                  <Button
-                    label={`View on ${chainInfo.txExplorer.name}`}
-                    size={BUTTON_SIZE.mediumLarge}
-                    rounded
-                    bgColor={BUTTON_BG_COLOR.lightGrey}
-                    borderColor={BUTTON_BORDER_COLOR.lightGrey}
-                  />
-                </div>
-              </Anchor>
-            )}
-          </IconText>
+          <IconText title='Your transaction was successful!' Img={Success} imgSize={50}></IconText>
         </main>
 
         <Footer showAccountButton={!!successHash} showActionsButton={!!successHash} />

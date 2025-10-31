@@ -21,6 +21,7 @@ import {
   getDisplayAmountFromCurrencyToken,
   getDisplayDenomFromCurrencyToken,
 } from '@utils/currency';
+import { CHAIN_ID, CHAIN_NETWORK } from '@constants/chains';
 
 type ProposalDepositProps = {
   onSuccess: (data: StepDataType<STEPS.define_proposal_deposit>) => void;
@@ -37,7 +38,7 @@ const ProposalDeposit: FC<ProposalDepositProps> = ({ onSuccess, onBack, header }
   const loadingRef = useRef<boolean>(false);
 
   const { wallet, fetchAssets } = useContext(WalletContext);
-  const { queryClient, chainInfo, chain } = useChainContext();
+  const { queryClient } = useChainContext();
 
   useEffect(() => {
     fetchAssets();
@@ -59,7 +60,7 @@ const ProposalDeposit: FC<ProposalDepositProps> = ({ onSuccess, onBack, header }
           token: {
             token: undefined,
             ibc: false,
-            chain: chainInfo?.chainName ?? chain.chainId,
+            chain: 'ixo',
             amount: '',
             denom: '',
           } as CURRENCY_TOKEN,
@@ -71,7 +72,7 @@ const ProposalDeposit: FC<ProposalDepositProps> = ({ onSuccess, onBack, header }
         setToken({
           token: minDepositToken,
           ibc: validateIbcDenom(minDeposit.denom) ?? '',
-          chain: chainInfo?.chainName ?? chain.chainId,
+          chain: 'ixo',
           amount: minDeposit.amount,
           denom: minDeposit.denom,
         });
@@ -119,7 +120,7 @@ const ProposalDeposit: FC<ProposalDepositProps> = ({ onSuccess, onBack, header }
                 <p className={styles.label}>
                   Submitting Proposals to{' '}
                   <strong>
-                    {chainInfo?.chainName ?? chain?.chainId ?? 'unknown chain'} {chain.chainNetwork}
+                    {CHAIN_ID ?? 'unknown chain'} {CHAIN_NETWORK}
                   </strong>{' '}
                   requires a deposit of{' '}
                   <strong>

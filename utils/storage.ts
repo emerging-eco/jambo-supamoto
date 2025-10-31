@@ -1,23 +1,36 @@
 import SecureStorage from 'secure-web-storage';
 import CryptoJS from 'crypto-js';
 
-// Use a consistent secret key for encryption
-// In production, this should be more secure
-const SECRET_KEY = 'jambo-supamoto-secret-key-v1';
+// =================================================================================================
+// LOCAL STORAGE
+// =================================================================================================
+const STORAGE = new Map<string, string>();
+
+export function setStorage(key: string, value: string) {
+  STORAGE.set(key, value);
+}
+
+export function getStorage(key: string) {
+  return STORAGE.get(key);
+}
+
+export function removeStorage(key: string) {
+  STORAGE.delete(key);
+}
+
+export function clearStorage() {
+  STORAGE.clear();
+}
+
+// =================================================================================================
+// SECURE STORAGE
+// =================================================================================================
+const SECRET_KEY = 'my secret key';
 
 // Check if we're in a browser environment
-const isBrowser = typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
+const storage = typeof window !== 'undefined' ? window.localStorage : null;
 
-// Create a mock storage for SSR
-const mockStorage = {
-  getItem: () => null,
-  setItem: () => {},
-  removeItem: () => {},
-  clear: () => {},
-};
-
-// Initialize secure storage only in browser environment
-const secureStorage = isBrowser
+const secureStorage = storage
   ? new SecureStorage(localStorage, {
       hash: function (key: string) {
         return CryptoJS.SHA256(key).toString();
@@ -30,29 +43,49 @@ const secureStorage = isBrowser
         return bytes.toString(CryptoJS.enc.Utf8);
       },
     })
-  : mockStorage;
+  : null;
 
+/**
+ * Saves credentials that were already saved.
+ * @param key The key to fetch.
+ * @param value The value to store.
+ * @returns The value that was saved.
+ */
 export function secureSave(key: string, value: string) {
   const valueStringified = JSON.stringify({ data: value });
+  // @ts-ignore
   secureStorage.setItem(key, valueStringified);
   return value;
 }
 
-export function secureGet(key: string): string | null {
-  try {
-    const value = secureStorage.getItem(key);
-    if (!value) return null;
-    const parsed = JSON.parse(value);
-    return parsed?.data ?? null;
-  } catch {
-    return null;
-  }
+/**
+ * Loads credentials that were already saved.
+ * @param key The key to fetch.
+ * @returns The value that was saved.
+ */
+export function secureLoad(key: string) {
+  // @ts-ignore
+  const valueStringified = secureStorage.getItem(key);
+  const value = JSON.parse(valueStringified || '{}');
+  return value.data;
 }
 
-export function secureRemove(key: string) {
+/**
+ * Resets any existing credentials for the given key.
+ * @param key The key to reset.
+ */
+export function secureReset(key: string) {
+  // @ts-ignore
   secureStorage.removeItem(key);
+  return true;
 }
 
-export function secureClear() {
+/**
+ * Resets all credentials saved.
+ * @returns True if the operation was successful.
+ */
+export function secureResetAll() {
+  // @ts-ignore
   secureStorage.clear();
+  return true;
 }

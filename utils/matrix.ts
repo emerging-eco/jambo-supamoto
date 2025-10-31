@@ -1,111 +1,445 @@
-import createClient from 'matrix-js-sdk';
 import md5 from 'md5';
-import { cons } from '@constants/matrix';
-import { secureSave, secureRemove } from './storage';
+import { sha256 } from '@cosmjs/crypto';
+import { AuthDict, ClientEvent, createClient, IndexedDBStore, MatrixClient } from 'matrix-js-sdk';
+import { CryptoApi } from 'matrix-js-sdk/lib/crypto-api';
+import { encrypt as eciesEncrypt } from 'eciesjs';
 
-export type AuthResponse = {
+import { secureReset, secureSave } from './storage';
+import { isAuthenticated, secret } from './secrets';
+import { cacheSecretStorageKey, clearSecretStorageKeys, getSecretStorageKey } from './secretStorageKeys';
+import { delay } from './timestamp';
+import { cons } from '@constants/matrix';
+
+const WELL_KNOWN_URI = '/.well-known/matrix/client';
+
+// =================================================================================================
+// AUTH
+// =================================================================================================
+interface AuthResponse {
   accessToken: string;
   deviceId: string;
   userId: string;
   baseUrl: string;
+}
+export const mxLogin = async (
+  { homeServerUrl, username, password }: { homeServerUrl: string; username: string; password: string },
+  localMatrix = false,
+) => {
+  let mxHomeServerUrl = homeServerUrl;
+  let mxUsername = username;
+  const mxIdMatch = mxUsername.match(/^@(.+):(.+\..+)$/);
+  if (mxIdMatch) {
+    mxUsername = mxIdMatch[1] as string;
+    mxHomeServerUrl = mxIdMatch[2] as string;
+    mxHomeServerUrl = localMatrix ? mxHomeServerUrl : await getBaseUrl(mxHomeServerUrl);
+  }
+
+  try {
+    const client = createTemporaryClient(mxHomeServerUrl);
+    const response = await client.login('m.login.password', {
+      identifier: {
+        type: 'm.id.user',
+        user: normalizeUsername(mxUsername),
+      },
+      password,
+      initial_device_display_name: cons.DEVICE_DISPLAY_NAME,
+    });
+    const data: AuthResponse = {
+      accessToken: response.access_token,
+      deviceId: response.device_id,
+      userId: response.user_id,
+      baseUrl: localMatrix ? mxHomeServerUrl : response?.well_known?.['m.homeserver']?.base_url || client.baseUrl,
+    };
+    updateLocalStore(data.accessToken, data.deviceId, data.userId, data.baseUrl);
+    return data;
+  } catch (error) {
+    let msg = (error as any).message;
+    if (msg === 'Unknown message') {
+      msg = 'Please check your credentials';
+    }
+    console.error(`mxLogin::`, msg);
+    throw new Error(msg);
+  }
 };
 
-/**
- * Generate Matrix username from wallet address
- * Format: did-ixo-{address}
- */
-export function generateUsernameFromAddress(address: string): string {
-  return `did-ixo-${address}`;
+// =================================================================================================
+// NEW API-BASED REGISTRATION
+// =================================================================================================
+
+interface PublicKeyResponse {
+  publicKey: string;
+  fingerprint: string;
+  algorithm: string;
+  usage: string;
+}
+
+interface UserCreationChallenge {
+  timestamp: string;
+  address: string;
+  service: string;
+  type: string;
+}
+
+interface UserCreationRequest {
+  address: string;
+  encryptedPassword: string;
+  publicKeyFingerprint: string;
+  authnResult?: any;
+  secpResult?: {
+    signature: string;
+    challenge: string;
+  };
+}
+
+interface UserCreationResponse {
+  success: boolean;
+  matrixUserId: string;
+  address: string;
+  message: string;
 }
 
 /**
- * Generate Matrix password from mnemonic
- * Uses MD5 hash of the mnemonic
+ * Fetch the public key for password encryption from the user creation API
+ * @returns Public key information for encryption
  */
-export function generatePasswordFromMnemonic(mnemonic: string): string {
-  return md5(mnemonic);
+export async function getPublicKeyForEncryption(): Promise<PublicKeyResponse> {
+  const response = await fetch('/api/matrix/public-key', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch public key for encryption');
+  }
+
+  return await response.json();
 }
 
 /**
- * Generate Matrix password from wallet signature
- * Uses MD5 hash of the signature (similar to mnemonic approach)
+ * Create a structured challenge for user creation
+ * @param address The user's address (without did:ixo: prefix)
+ * @returns The challenge object and its base64 representation
  */
-export function generatePasswordFromSignature(signature: string): string {
-  return md5(signature);
+export function createUserCreationChallenge(address: string): {
+  challenge: UserCreationChallenge;
+  challengeBase64: string;
+} {
+  const challenge: UserCreationChallenge = {
+    timestamp: new Date().toISOString(),
+    address: address,
+    service: 'matrix',
+    type: 'create-account',
+  };
+
+  const challengeBase64 = Buffer.from(JSON.stringify(challenge)).toString('base64');
+
+  return { challenge, challengeBase64 };
 }
 
 /**
- * Generate a challenge for wallet signature authentication
- * Returns ISO timestamp encoded in base64
+ * Encrypt password using ECIES with the provided public key
+ * @param password The password to encrypt
+ * @param publicKey The public key in hex format
+ * @returns The encrypted password in hex format
  */
-export function generateMatrixAuthChallenge(): string {
-  const timestamp = new Date().toISOString();
-  return Buffer.from(timestamp).toString('base64');
+export function encryptPasswordWithECIES(password: string, publicKey: string): string {
+  const publicKeyBytes = new Uint8Array(Buffer.from(publicKey, 'hex'));
+  const passwordBytes = new Uint8Array(Buffer.from(password, 'utf8'));
+  const encryptedPassword = eciesEncrypt(publicKeyBytes, passwordBytes);
+  return Array.from(encryptedPassword, (byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
 /**
- * Sign a challenge with the wallet using signArbitrary
- * Returns the signature string that can be used to generate Matrix password
+ * Create user account using WebAuthn/Passkey authentication
+ * @param address The user's address
+ * @param password The matrix password
+ * @param authnResult The WebAuthn assertion result
+ * @returns The user creation response
  */
-export async function signChallengeWithWallet(
-  walletType: string,
-  chainId: string,
+export async function createUserAccountWithPasskey(
   address: string,
+  password: string,
+  authnResult: any,
+): Promise<UserCreationResponse> {
+  const publicKeyInfo = await getPublicKeyForEncryption();
+  const encryptedPassword = encryptPasswordWithECIES(password, publicKeyInfo.publicKey);
+
+  const request: UserCreationRequest = {
+    address,
+    encryptedPassword,
+    publicKeyFingerprint: publicKeyInfo.fingerprint,
+    authnResult,
+  };
+
+  const response = await fetch('/api/matrix/create-user', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(request),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Failed to create user account');
+  }
+
+  return await response.json();
+}
+
+/**
+ * Create user account using secp256k1 signature authentication
+ * @param address The user's address
+ * @param password The matrix password
+ * @param signature The secp256k1 signature (base64)
+ * @param challenge The challenge that was signed (base64)
+ * @returns The user creation response
+ */
+export async function createUserAccountWithSecp(
+  address: string,
+  password: string,
+  signature: string,
   challenge: string,
-): Promise<string> {
+): Promise<UserCreationResponse> {
+  const publicKeyInfo = await getPublicKeyForEncryption();
+  const encryptedPassword = encryptPasswordWithECIES(password, publicKeyInfo.publicKey);
+
+  const request: UserCreationRequest = {
+    address,
+    encryptedPassword,
+    publicKeyFingerprint: publicKeyInfo.fingerprint,
+    secpResult: {
+      signature,
+      challenge,
+    },
+  };
+
+  const response = await fetch('/api/matrix/create-user', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(request),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Failed to create user account');
+  }
+
+  return await response.json();
+}
+
+// =================================================================================================
+// UPDATED REGISTRATION FUNCTIONS
+// =================================================================================================
+
+/**
+ * Register matrix account using the new API with WebAuthn/Passkey authentication
+ * @param address The user's address
+ * @param password The matrix password
+ * @param authnResult The WebAuthn assertion result
+ * @returns AuthResponse with access token and user details
+ */
+export async function mxRegisterWithPasskey(
+  address: string,
+  password: string,
+  authnResult: any,
+): Promise<AuthResponse> {
   try {
-    // Get the appropriate wallet instance based on wallet type
-    let walletInstance: any;
+    const userCreationResult = await createUserAccountWithPasskey(address, password, authnResult);
 
-    if (walletType === 'keplr' || walletType === 'opera') {
-      // For Keplr and Opera, use window.keplr
-      if (typeof window !== 'undefined' && (window as any).keplr) {
-        walletInstance = (window as any).keplr;
-      } else {
-        throw new Error('Keplr wallet not found');
-      }
-    } else if (walletType === 'walletConnect') {
-      // For WalletConnect, we need to handle it differently
-      // This is a simplified version - you may need to adjust based on your WC implementation
-      throw new Error('WalletConnect signature support coming soon');
-    } else {
-      throw new Error(`Unsupported wallet type: ${walletType}`);
+    if (!userCreationResult.success) {
+      throw new Error('Failed to create matrix account via API');
     }
 
-    // Use signArbitrary method available in Keplr and other wallets
-    if (walletInstance && walletInstance.signArbitrary) {
-      const result = await walletInstance.signArbitrary(chainId, address, challenge);
-      return result.signature;
-    } else {
-      throw new Error('Wallet does not support signArbitrary method');
-    }
-  } catch (error: any) {
-    console.error('Error signing challenge:', error);
-    throw new Error(`Failed to sign challenge: ${error.message}`);
+    // Now login to get the access token
+    const homeServerUrl = process.env.NEXT_PUBLIC_MATRIX_HOMESERVER_URL as string;
+    const username = generateUsernameFromAddress(address);
+
+    const loginResult = await mxLogin({
+      homeServerUrl,
+      username,
+      password,
+    });
+
+    return loginResult;
+  } catch (error) {
+    console.error('mxRegisterWithPasskey error:', error);
+    throw error;
   }
 }
 
 /**
- * Normalize username for Matrix (remove @ and domain if present)
+ * Register matrix account using the new API with secp256k1 signature authentication
+ * @param address The user's address
+ * @param password The matrix password
+ * @param wallet The secp wallet for signing
+ * @returns AuthResponse with access token and user details
  */
-function normalizeUsername(username: string): string {
-  const usernameLowerCase = username.toLowerCase();
-  if (usernameLowerCase.startsWith('@')) {
-    return usernameLowerCase.slice(1).split(':')[0];
+export async function mxRegisterWithSecp(
+  address: string,
+  password: string,
+  wallet: { sign: (message: string) => Promise<Uint8Array> },
+): Promise<AuthResponse> {
+  try {
+    // Create challenge and sign it
+    const { challengeBase64 } = createUserCreationChallenge(address);
+    const signatureBytes = await wallet.sign(challengeBase64);
+    const signature = Buffer.from(signatureBytes).toString('base64');
+
+    const userCreationResult = await createUserAccountWithSecp(address, password, signature, challengeBase64);
+
+    if (!userCreationResult.success) {
+      throw new Error('Failed to create matrix account via API');
+    }
+
+    // Now login to get the access token
+    const homeServerUrl = process.env.NEXT_PUBLIC_MATRIX_HOMESERVER_URL as string;
+    const username = generateUsernameFromAddress(address);
+
+    const loginResult = await mxLogin({
+      homeServerUrl,
+      username,
+      password,
+    });
+
+    return loginResult;
+  } catch (error) {
+    console.error('mxRegisterWithSecp error:', error);
+    throw error;
   }
-  return usernameLowerCase.split(':')[0];
 }
 
-/**
- * Create a temporary Matrix client for authentication
- */
-function createTemporaryClient(homeServerUrl: string) {
-  return createClient({ baseUrl: homeServerUrl });
+// =================================================================================================
+// UPDATED LEGACY REGISTRATION (DEPRECATED)
+// =================================================================================================
+
+// Keep the old functions for backward compatibility but mark as deprecated
+async function getRegisterFlow(homeServerUrl: string) {
+  try {
+    const client = createTemporaryClient(homeServerUrl);
+    // @ts-ignore
+    const [registerResponse] = await Promise.allSettled([client.register()]);
+    const registerFlow = registerResponse.status === 'rejected' ? registerResponse?.reason?.data : undefined;
+    console.log('registerFlow', registerFlow);
+    if (registerFlow === undefined) {
+      throw new Error('Failed to setup home server config.');
+    }
+    return registerFlow;
+  } catch (error) {
+    if ((error as any).data) {
+      console.log('registerFlow', (error as any).data);
+      return (error as any).data;
+    }
+    throw new Error('Failed to get matrix register flow.');
+  }
 }
 
-/**
- * Store Matrix credentials in secure storage
- */
+async function _register({
+  homeServerUrl,
+  username,
+  password,
+  auth,
+}: {
+  homeServerUrl: string;
+  username: string;
+  password: string;
+  auth: AuthDict;
+}) {
+  const client = createTemporaryClient(homeServerUrl);
+  let payload: AuthResponse | undefined;
+
+  try {
+    const response = await client.registerRequest({
+      username,
+      password,
+      auth,
+      initial_device_display_name: cons.DEVICE_DISPLAY_NAME,
+    });
+    if (response.access_token) {
+      payload = {
+        accessToken: response.access_token,
+        baseUrl: homeServerUrl,
+        deviceId: response.device_id ?? '',
+        userId: response.user_id,
+      };
+    }
+  } catch (error) {
+    console.error(`_register:: ${(error as Error).message}`);
+    const data = (error as any)?.data;
+    if (data?.access_token) {
+      payload = {
+        accessToken: data.access_token,
+        baseUrl: homeServerUrl,
+        deviceId: data.device_id,
+        userId: data.user_id,
+      };
+    }
+  }
+  if (payload?.accessToken) {
+    updateLocalStore(payload.accessToken, payload.deviceId, payload.userId, payload.baseUrl);
+  }
+  return payload;
+}
+
+export async function loginOrRegisterMatrixAccount({
+  homeServerUrl,
+  username,
+  password,
+  wallet,
+}: {
+  homeServerUrl: string;
+  username: string;
+  password: string;
+  wallet?: { sign: (message: string) => Promise<Uint8Array>; baseAccount: { address: string } };
+}) {
+  clearLocalStore();
+  let isUsernameAvailable = await checkIsUsernameAvailable({ homeServerUrl, username });
+  let res: AuthResponse | undefined;
+  if (isUsernameAvailable && wallet) {
+    // Use new API-based registration with secp256k1 authentication
+    res = await mxRegisterWithSecp(wallet.baseAccount.address, password, wallet);
+    if (!res?.accessToken) {
+      throw new Error('Failed to register matrix account');
+    }
+    console.log('mxRegisterWithSecp', res);
+  }
+  if (!isAuthenticated()) {
+    res = await mxLogin({
+      homeServerUrl,
+      username,
+      password,
+    });
+    if (!res?.accessToken) {
+      throw new Error('Failed to login to matrix account');
+    }
+    console.log('mxLogin', res);
+  }
+  return res;
+}
+
+export async function checkIsUsernameAvailable({
+  homeServerUrl,
+  username,
+}: {
+  homeServerUrl: string;
+  username: string;
+}) {
+  const client = createTemporaryClient(homeServerUrl);
+  try {
+    const isUsernameAvailable = await client.isUsernameAvailable(username);
+    return !!isUsernameAvailable;
+  } catch (error) {
+    return false;
+  }
+}
+
+// =================================================================================================
+// STORE
+// =================================================================================================
 function updateLocalStore(accessToken: string, deviceId: string, userId: string, baseUrl: string) {
   secureSave(cons.secretKey.ACCESS_TOKEN, accessToken);
   secureSave(cons.secretKey.DEVICE_ID, deviceId);
@@ -113,182 +447,347 @@ function updateLocalStore(accessToken: string, deviceId: string, userId: string,
   secureSave(cons.secretKey.BASE_URL, baseUrl);
 }
 
+export function clearLocalStore() {
+  secureReset(cons.secretKey.ACCESS_TOKEN);
+  secureReset(cons.secretKey.DEVICE_ID);
+  secureReset(cons.secretKey.USER_ID);
+  secureReset(cons.secretKey.BASE_URL);
+}
+
+// =================================================================================================
+// CLIENT
+// =================================================================================================
 /**
- * Clear Matrix credentials from storage
+ * Creates a temporary matrix client, used for matrix login or registration to get access tokens
+ * @param homeServerUrl - the home server url to instantiate the matrix client
+ * @returns matrix client
  */
-export function clearMatrixCredentials() {
-  secureRemove(cons.secretKey.ACCESS_TOKEN);
-  secureRemove(cons.secretKey.DEVICE_ID);
-  secureRemove(cons.secretKey.USER_ID);
-  secureRemove(cons.secretKey.BASE_URL);
+export function createTemporaryClient(homeServerUrl: string) {
+  if (!homeServerUrl) {
+    throw new Error('Home server URL is required to instantiate matrix client');
+  }
+  return createClient({
+    baseUrl: homeServerUrl,
+  });
+}
+
+export async function createMatrixClient() {
+  const homeServerUrl = secret.baseUrl;
+  const accessToken = secret.accessToken;
+  const userId = secret.userId;
+  const deviceId = secret.deviceId;
+
+  console.log('createMatrixClient::', { homeServerUrl, accessToken, userId, deviceId });
+
+  if (!homeServerUrl || !accessToken || !userId || !deviceId) {
+    throw new Error('Login to Matrix account before trying to instantiate Matrix client.');
+  }
+
+  const indexedDBStore = new IndexedDBStore({
+    indexedDB: global.indexedDB,
+    dbName: 'matrix-sync-store',
+  });
+  // const legacyCryptoStore = new IndexedDBCryptoStore()
+
+  const mxClient = createClient({
+    baseUrl: homeServerUrl,
+    accessToken,
+    userId,
+    store: indexedDBStore,
+    // cryptoStore: legacyCryptoStore,
+    deviceId,
+    timelineSupport: true,
+    cryptoCallbacks: {
+      getSecretStorageKey: getSecretStorageKey,
+      cacheSecretStorageKey: cacheSecretStorageKey,
+    },
+    verificationMethods: ['m.sas.v1'],
+  });
+  await indexedDBStore.startup();
+  await mxClient.initRustCrypto();
+  mxClient.setGlobalErrorOnUnknownDevices(false);
+  mxClient.setMaxListeners(20);
+  // const filter = new Filter(userId);
+  // filter.setDefinition({
+  //   room: {
+  //     state: {
+  //       lazy_load_members: true,
+  //       types: [],
+  //     },
+  //     timeline: {
+  //       types: [],
+  //     },
+  //   },
+  //   // Disable unnecessary features
+  //   presence: {
+  //     types: [], // No presence updates needed
+  //   },
+  //   account_data: {
+  //     types: ['m.cross_signing.master'], // No account data needed
+  //   },
+  // });
+  await mxClient.startClient({
+    lazyLoadMembers: true,
+    // initialSyncLimit: 1,
+    includeArchivedRooms: false,
+    // pollTimeout: 2 * 60 * 1000, // poll every 2 minutes
+    // filter: filter,
+  });
+  await new Promise<void>((resolve, reject) => {
+    const sync = {
+      NULL: () => {
+        console.info('[NULL] state');
+      },
+      SYNCING: () => {
+        void 0;
+      },
+      PREPARED: () => {
+        console.info(`[PREPARED] state: user ${userId}`);
+        resolve();
+      },
+      RECONNECTING: () => {
+        console.info('[RECONNECTING] state');
+      },
+      CATCHUP: () => {
+        console.info('[CATCHUP] state');
+      },
+      ERROR: () => {
+        reject(new Error('[ERROR] state: starting matrix client'));
+      },
+      STOPPED: () => {
+        console.info('[STOPPED] state');
+      },
+    };
+    mxClient.on(ClientEvent.Sync, (state) => {
+      sync[state]();
+    });
+  });
+  return mxClient;
+}
+
+export async function logoutMatrixClient({ mxClient, baseUrl }: { mxClient?: MatrixClient; baseUrl?: string }) {
+  let client = mxClient;
+  if (!client) {
+    const homeServerUrl = secret.baseUrl;
+    const accessToken = secret.accessToken;
+    const userId = secret.userId;
+    const deviceId = secret.deviceId;
+    client = createClient({
+      baseUrl: (homeServerUrl ?? baseUrl)!,
+      accessToken: accessToken!,
+      userId: userId!,
+      deviceId: deviceId!,
+    });
+  }
+  if (client) {
+    client.stopClient();
+    await client.logout().catch(console.error);
+    client.clearStores();
+    clearLocalStore();
+  }
+}
+
+// =================================================================================================
+// CROSS SIGNING
+// =================================================================================================
+/**
+ * Check if the user has cross-signing account data.
+ * @param {MatrixClient} mxClient - The matrix client to check.
+ * @returns {boolean} True if the user has cross-signing account data, otherwise false.
+ */
+export function hasCrossSigningAccountData(mxClient: MatrixClient): boolean {
+  const masterKeyData = mxClient.getAccountData('m.cross_signing.master');
+  console.log('hasCrossSigningAccountData::masterKeyData', masterKeyData);
+  return !!masterKeyData;
 }
 
 /**
- * Login to Matrix server
+ * Setup cross signing and secret storage for the current user
+ * @param {MatrixClient} mxClient - The matrix client to setup cross signing for
+ * @param {string} securityPhrase - the security phrase to use for secret storage
+ * @param {string} password - the password for the matrix account
+ * @param {boolean} forceReset - if to force reset the cross signing keys (NB, only do if you know what you are doing!!!)
+ * @param {boolean} skipBootstrapSS - if to skip bootstrapping secret storage
+ * @returns {boolean} True if the cross signing was setup successfully, otherwise false.
  */
-export async function mxLogin({
-  homeServerUrl,
-  username,
-  password,
-}: {
-  homeServerUrl: string;
-  username: string;
-  password: string;
-}): Promise<AuthResponse> {
-  const client = createTemporaryClient(homeServerUrl);
+export async function setupCrossSigning(
+  mxClient: MatrixClient,
+  {
+    securityPhrase,
+    password,
+    forceReset = false,
+    skipBootstrapSecureStorage = false,
+  }: { securityPhrase: string; password: string; forceReset?: boolean; skipBootstrapSecureStorage?: boolean },
+): Promise<boolean> {
+  if (forceReset) {
+    clearSecretStorageKeys();
+  }
 
-  const response = await client.login('m.login.password', {
+  const mxCrypto = mxClient.getCrypto() as CryptoApi;
+  if (!mxCrypto) {
+    throw new Error('Failed to setup matrix cross signing - failed to get matrix crypto api');
+  }
+  if (!skipBootstrapSecureStorage) {
+    const recoveryKey = await mxCrypto.createRecoveryKeyFromPassphrase(securityPhrase);
+    clearSecretStorageKeys();
+    await mxCrypto.bootstrapSecretStorage({
+      createSecretStorageKey: async () => recoveryKey!,
+      setupNewSecretStorage: forceReset,
+    });
+  }
+  const userId = mxClient.getUserId()!;
+  await mxCrypto.bootstrapCrossSigning({
+    authUploadDeviceSigningKeys: async function (makeRequest) {
+      await makeRequest(getAuthId({ userId, password }));
+    },
+    setupNewCrossSigning: forceReset,
+  });
+  await mxCrypto.resetKeyBackup();
+
+  await delay(300);
+
+  return !!mxClient.getAccountData('m.cross_signing.master');
+}
+
+// =================================================================================================
+// GENERAL
+// =================================================================================================
+/**
+ * Generates a username from an address, used for matrix login, generated an account did
+ * @param {string} address - the address to generate the username from
+ * @returns {string} username
+ */
+export function generateUsernameFromAddress(address: string): string {
+  if (!address) {
+    throw new Error('Address is required to generate matrix username');
+  }
+  return 'did-ixo-' + address;
+}
+
+/**
+ * Generates a password from a mnemonic, used for matrix login, generated using the first 24 bytes of the base64 encoded md5 hash of the mnemonic
+ * @param {string} mnemonic - the mnemonic to generate the password from
+ * @returns {string} password
+ */
+export function generatePasswordFromMnemonic(mnemonic: string): string {
+  const base64 = Buffer.from(md5(mnemonic.replace(/ /g, ''))).toString('base64');
+  return base64.slice(0, 24);
+}
+
+/**
+ * Generates a recovery phrase from a mnemonic, used for matrix recovery, generated using the first 32 bytes of the base64 encoded sha256 hash of the mnemonic
+ * @param {string} mnemonic - the mnemonic to generate the recovery phrase from
+ * @returns {string} recoveryPhrase
+ */
+export function generateRecoveryPhraseFromMnemonic(mnemonic: string): string {
+  const hash = sha256(new TextEncoder().encode(mnemonic.replace(/ /g, '')));
+  const base64 = Buffer.from(hash).toString('base64');
+  return base64.slice(0, 32);
+}
+
+/**
+ * Extracts the home server URL from a user ID.
+ * @param {string} userId - The user ID to extract the homeserver URL from.
+ * @returns {string} The homeserver URL.
+ */
+export function extractHomeServerUrlFromUserId(userId: string): string {
+  const parts = userId.split(':');
+  if (parts.length < 2) {
+    throw new Error('Invalid userId');
+  }
+  return parts.slice(1).join(':');
+}
+
+/**
+ * Generates a recovery phrase from a mnemonic, used for matrix recovery, generated using the first 32 bytes of the base64 encoded sha256 hash of the mnemonic
+ * @param {string} mnemonic - the mnemonic to generate the recovery phrase from
+ * @returns {string} passphrase
+ */
+export function generatePassphraseFromMnemonic(mnemonic: string): string {
+  const hash = sha256(new TextEncoder().encode(mnemonic.replace(/ /g, '')));
+  const base64 = Buffer.from(hash).toString('base64');
+  return base64.slice(0, 32);
+}
+
+/**
+ * Cleans a home server URL by removing protocol and trailing slashes
+ * @param {string} homeServer - the homeserver URL to clean
+ * @returns {string} cleaned homeserver URL
+ */
+export function cleanMatrixHomeServerUrl(homeServer: string): string {
+  return homeServer.replace(/^(https?:\/\/)/, '').replace(/\/$/, '');
+}
+
+/**
+ * Generates a room name from an account address, used for matrix user room where user can manage their own data
+ * @param {string} address - the address of the user
+ * @param {string} postpend - the postpend of the room name (for testing)
+ * @returns {string} roomName
+ */
+export function generateUserRoomNameFromAddress(address: string, postpend = ''): string {
+  return 'did-ixo-' + address + postpend;
+}
+
+/**
+ * Generates a room alias from an account address, used for matrix user room where user can manage their own data
+ * @param {string} address - the address of the user
+ * @param {string} postpend - the postpend of the room alias (for testing)
+ * @returns {string} roomAlias
+ */
+export function generateUserRoomAliasFromAddress(address: string, homeServerUrl: string): string {
+  return '#' + generateUserRoomNameFromAddress(address) + ':' + cleanMatrixHomeServerUrl(homeServerUrl);
+}
+
+/**
+ * Get the base URL for a given servername.
+ * @param servername The servername to get the base URL for.
+ * @returns The base URL for the servername.
+ */
+export async function getBaseUrl(servername: string): Promise<string> {
+  let protocol = 'https://';
+  if (/^https?:\/\//.test(servername)) {
+    protocol = '';
+  }
+  const serverDiscoveryUrl = `${protocol}${servername}${WELL_KNOWN_URI}`;
+  try {
+    const response = await fetch(serverDiscoveryUrl, { method: 'GET' });
+    const result = await response.json();
+    const baseUrl = result?.['m.homeserver']?.base_url;
+    if (baseUrl === undefined) {
+      throw new Error();
+    }
+    return baseUrl;
+  } catch (e) {
+    return `${protocol}${servername}`;
+  }
+}
+
+/**
+ * Normalize a username by removing leading '@' and trimming whitespace.
+ * @param {string} rawUsername - The raw username to normalize.
+ * @returns {string} The normalized username.
+ */
+export function normalizeUsername(rawUsername: string): string {
+  const noLeadingAt = rawUsername.indexOf('@') === 0 ? rawUsername.substring(1) : rawUsername;
+  return noLeadingAt.trim();
+}
+
+/**
+ * Generates the authentication identifier for matrix login
+ * @param {string} password - the password for the matrix account
+ * @returns {object} authId - the authentication identifier
+ */
+export function getAuthId({ userId, password }: { userId: string; password: string }): {
+  type: string;
+  password: string;
+  identifier: { type: string; user: string };
+} {
+  return {
+    type: 'm.login.password',
+    password,
     identifier: {
       type: 'm.id.user',
-      user: normalizeUsername(username),
+      user: userId,
     },
-    password,
-    initial_device_display_name: cons.DEVICE_DISPLAY_NAME,
-  });
-
-  const data: AuthResponse = {
-    accessToken: response.access_token,
-    deviceId: response.device_id,
-    userId: response.user_id,
-    baseUrl: response?.well_known?.['m.homeserver']?.base_url || client.baseUrl,
   };
-
-  updateLocalStore(data.accessToken, data.deviceId, data.userId, data.baseUrl);
-
-  return data;
-}
-
-/**
- * Register a new Matrix account
- */
-export async function mxRegister({
-  homeServerUrl,
-  username,
-  password,
-}: {
-  homeServerUrl: string;
-  username: string;
-  password: string;
-}): Promise<AuthResponse> {
-  const client = createTemporaryClient(homeServerUrl);
-
-  const response = await client.register(normalizeUsername(username), password, undefined, {
-    type: 'm.login.dummy',
-  });
-
-  const data: AuthResponse = {
-    accessToken: response.access_token,
-    deviceId: response.device_id,
-    userId: response.user_id,
-    baseUrl: response?.well_known?.['m.homeserver']?.base_url || client.baseUrl,
-  };
-
-  updateLocalStore(data.accessToken, data.deviceId, data.userId, data.baseUrl);
-
-  return data;
-}
-
-/**
- * Check if a Matrix username is available
- */
-export async function checkIsUsernameAvailable({
-  homeServerUrl,
-  username,
-}: {
-  homeServerUrl: string;
-  username: string;
-}): Promise<boolean> {
-  try {
-    const client = createTemporaryClient(homeServerUrl);
-    const response = await client.isUsernameAvailable(normalizeUsername(username));
-    return response;
-  } catch (error: any) {
-    // If error is M_USER_IN_USE, username is taken
-    if (error?.errcode === 'M_USER_IN_USE') {
-      return false;
-    }
-    throw error;
-  }
-}
-
-/**
- * Login or register Matrix account
- * Tries to login first, if fails, registers a new account
- */
-export async function loginOrRegisterMatrixAccount({
-  homeServerUrl,
-  username,
-  password,
-}: {
-  homeServerUrl: string;
-  username: string;
-  password: string;
-}): Promise<AuthResponse> {
-  try {
-    // Try to login first
-    return await mxLogin({ homeServerUrl, username, password });
-  } catch (loginError: any) {
-    console.log('Login failed, attempting registration:', loginError.message);
-
-    // If login fails, try to register
-    try {
-      return await mxRegister({ homeServerUrl, username, password });
-    } catch (registerError: any) {
-      console.error('Registration failed:', registerError);
-      throw new Error(`Failed to login or register: ${registerError.message}`);
-    }
-  }
-}
-
-/**
- * Logout from Matrix (clear local credentials)
- */
-export async function logoutMatrixClient({ baseUrl }: { baseUrl: string }) {
-  try {
-    clearMatrixCredentials();
-  } catch (error) {
-    console.error('Error during logout:', error);
-  }
-}
-
-/**
- * Authenticate SignX wallet users with Matrix using address-based credentials
- * This provides a seamless authentication experience for SignX users without requiring wallet signatures
- *
- * @param address - The wallet address from SignX
- * @returns AuthResponse with access token and user details
- */
-export async function authenticateSignXWithMatrix(address: string): Promise<AuthResponse> {
-  try {
-    const homeServerUrl = process.env.NEXT_PUBLIC_MATRIX_HOMESERVER_URL;
-    if (!homeServerUrl) {
-      throw new Error('Matrix homeserver URL not configured');
-    }
-
-    console.log('SignX Matrix authentication starting for address:', address);
-
-    // Generate Matrix credentials from address
-    const mxUsername = generateUsernameFromAddress(address);
-    // Use MD5 of address as password - deterministic but less secure than signature
-    const mxPassword = md5(address);
-
-    console.log('Generated Matrix username:', mxUsername);
-
-    // Login or register with Matrix server
-    const account = await loginOrRegisterMatrixAccount({
-      homeServerUrl,
-      username: mxUsername,
-      password: mxPassword,
-    });
-
-    if (!account?.accessToken) {
-      throw new Error('Failed to obtain Matrix access token for SignX user');
-    }
-
-    console.log('SignX Matrix authentication successful!');
-    return account;
-  } catch (error: any) {
-    console.error('SignX Matrix authentication error:', error);
-    throw new Error(`Failed to authenticate SignX with Matrix: ${error.message}`);
-  }
 }

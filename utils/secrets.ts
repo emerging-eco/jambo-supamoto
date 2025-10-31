@@ -1,10 +1,14 @@
 import { cons } from '@constants/matrix';
-import { secureGet } from './storage';
+import { secureLoad } from './storage';
 
 export const KADO_API_KEY = process.env.NEXT_PUBLIC_KADO_API_KEY;
 
 function getSecret(key: string): string | null {
-  return secureGet(key);
+  try {
+    return secureLoad(key) ?? null;
+  } catch (e) {
+    return null;
+  }
 }
 
 class Secrets {

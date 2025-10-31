@@ -4,8 +4,6 @@ import type { NextPage } from 'next';
 import cls from 'classnames';
 
 import utilsStyles from '@styles/utils.module.scss';
-import styles from '@styles/accountPage.module.scss';
-import Button, { BUTTON_BG_COLOR, BUTTON_COLOR, BUTTON_SIZE } from '@components/Button/Button';
 import AddressActionButton from '@components/AddressActionButton/AddressActionButton';
 import BottomSheetAddress from '@components/BottomSheetAddress/BottomSheetAddress';
 import BottomSheetLogout from '@components/BottomSheetLogout/BottomSheetLogout';
@@ -75,18 +73,6 @@ const Account: NextPage = () => {
             <div className={utilsStyles.spacer3} />
             <TokenList onTokenClick={handleTokenClick} displayGradient />
             <div style={{ flex: 1 }} />
-            <Button
-              rounded
-              label='Buy Tokens'
-              textCentered
-              className={styles.button}
-              color={query.kado ? BUTTON_COLOR.white : BUTTON_COLOR.primary}
-              size={BUTTON_SIZE.mediumLarge}
-              bgColor={query.kado ? BUTTON_BG_COLOR.primary : BUTTON_BG_COLOR.lightGrey}
-              onClick={() => {
-                replace('/account?kado=true');
-              }}
-            />
             {QRVisible && <BottomSheetAddress show={QRVisible} onClose={hideQR} />}
             {logoutVisible && <BottomSheetLogout show={logoutVisible} onClose={hideLogout} />}
           </>

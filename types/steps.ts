@@ -34,6 +34,12 @@ export enum STEPS {
   proclamation_form_entry = 'proclamation_form_entry',
   proclamation_form_review = 'proclamation_form_review',
   proclamation_form_result = 'proclamation_form_result',
+
+  // claims
+  claim_form = 'claim_form',
+  claim_MsgSubmitClaim = 'claim_MsgSubmitClaim',
+
+  claim_form_bulk = 'claim_form_bulk',
 }
 
 export type STEP = {
@@ -172,6 +178,21 @@ export const steps: { [key in STEPS]: STEP } = {
     id: STEPS.proclamation_form_result,
     name: 'Submission Result',
   },
+
+  // claims
+  [STEPS.claim_form]: {
+    id: STEPS.claim_form,
+    name: 'Enter Claim Details',
+  },
+  [STEPS.claim_MsgSubmitClaim]: {
+    id: STEPS.claim_MsgSubmitClaim,
+    name: 'Review and sign',
+  },
+
+  [STEPS.claim_form_bulk]: {
+    id: STEPS.claim_form_bulk,
+    name: 'Bulk Submission',
+  },
 };
 
 export type ReviewStepsTypes =
@@ -182,7 +203,8 @@ export type ReviewStepsTypes =
   | STEPS.gov_MsgSubmitProposal
   | STEPS.staking_MsgDelegate
   | STEPS.staking_MsgUndelegate
-  | STEPS.staking_MsgRedelegate;
+  | STEPS.staking_MsgRedelegate
+  | STEPS.claim_MsgSubmitClaim;
 
 interface Select_token_and_amount_config {
   optional?: boolean;
@@ -274,6 +296,16 @@ interface Proclamation_form_result {
   errorDetails?: string;
 }
 
+// claims
+interface Claim_form {
+  collectionId: string;
+  data: string;
+}
+
+interface Claim_form_bulk {
+  collectionId: string;
+}
+
 export type AllStepDataTypes =
   | Get_receiver_address
   | Get_receiver_addresses
@@ -293,7 +325,9 @@ export type AllStepDataTypes =
   | Customer_claim_result
   | Proclamation_form_entry
   | Proclamation_form_review
-  | Proclamation_form_result;
+  | Proclamation_form_result
+  | Claim_form
+  | Claim_form_bulk;
 
 export type StepDataType<T> = T extends STEPS.kado_buy_crypto
   ? Kado_buy_crypto
@@ -349,4 +383,10 @@ export type StepDataType<T> = T extends STEPS.kado_buy_crypto
                                                     ? Proclamation_form_review
                                                     : T extends STEPS.proclamation_form_result
                                                       ? Proclamation_form_result
-                                                      : never;
+                                                      : T extends STEPS.claim_form
+                                                        ? Claim_form
+                                                        : T extends STEPS.claim_MsgSubmitClaim
+                                                          ? Review_and_sign
+                                                          : T extends STEPS.claim_form_bulk
+                                                            ? Claim_form_bulk
+                                                            : never;

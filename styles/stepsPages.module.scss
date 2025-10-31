@@ -154,3 +154,38 @@
 .plusIcon {
   font-size: 1.5rem;
 }
+
+.errorMessage {
+  color: var(--error-color);
+  font-size: 0.8rem;
+}
+
+.modalContainer {
+  width: 96%;
+  max-width: 1400px;
+}
+
+.fullWidthContainer {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.buttonRow {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.fullWidthStepContainer {
+  max-width: 100% !important;
+
+  .fullWidthContainer {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+}

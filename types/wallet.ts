@@ -18,6 +18,8 @@ export enum WALLET_TYPE {
   walletConnect = 'walletConnect',
   signX = 'signX',
   impactsX = 'impactsX',
+  passkey = 'passkey',
+  mnemonic = 'mnemonic',
 }
 
 export type WALLET = {

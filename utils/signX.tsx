@@ -15,38 +15,27 @@ import { WALLET } from 'types/wallet';
 import { renderModal } from '@components/Modal/Modal';
 import SignXModal from '@components/SignX/SignX';
 import { EVENT_LISTENER_TYPE } from '@constants/events';
-import { KEPLR_CHAIN_INFO_TYPE } from 'types/chain';
 import config from '@constants/config.json';
 import { SIGN_X_RELAYERS } from '@constants/urls';
+import { CHAIN_ID, CHAIN_NETWORK } from '@constants/chains';
 
 let signXClient: SignX | undefined;
 
 let signXInitializing = false;
-export const initializeSignX = async (
-  chainInfo: KEPLR_CHAIN_INFO_TYPE,
-  walletUser?: USER,
-): Promise<USER | undefined> => {
-  if (signXInitializing) return;
+export const initializeSignX = async (walletUser?: USER): Promise<USER | undefined> => {
+  console.log('initializeSignX::start', { walletUser });
+  if (signXInitializing) {
+    console.log('SignX already initializing');
+    return;
+  }
   signXInitializing = true;
 
   let removeModal: () => void;
   try {
-    // Handle chain mismatch gracefully - clear stale wallet data and continue
-    if (walletUser?.chainId && walletUser?.chainId !== chainInfo.chainId) {
-      console.warn('Chain ID mismatch detected. Clearing stale wallet data.');
-      // Dispatch logout event to clear stale data
-      const event = new Event(EVENT_LISTENER_TYPE.wallet_logout);
-      window.dispatchEvent(event);
-      // Return undefined to allow re-initialization with correct chain
-      return undefined;
-    }
-    if (!chainInfo || !chainInfo.chainId) throw new Error('No chain info found to initialize SignX');
-    if (chainInfo.chainName !== 'ixo') throw new Error('SignX only works on ixo chain');
-
     signXClient = new SignX({
-      endpoint: SIGN_X_RELAYERS[chainInfo.chainNetwork || 'mainnet'],
+      endpoint: SIGN_X_RELAYERS[CHAIN_NETWORK],
       // endpoint: 'http://localhost:8000',
-      network: chainInfo.chainNetwork || 'mainnet',
+      network: CHAIN_NETWORK,
       sitename: config.siteName ?? 'JAMBO dApp',
     });
 
@@ -75,17 +64,14 @@ export const initializeSignX = async (
     });
     // removeModal();
 
-    // Extract matrix credentials from response payload
-    const matrix = eventData.data.matrix;
-
     return {
       name: eventData.data.name,
       address: eventData.data.address,
       pubKey: fromHex(eventData.data.pubKey),
       did: eventData.data.did,
       algo: eventData.data.algo,
-      chainId: chainInfo.chainId,
-      matrix,
+      chainId: CHAIN_ID,
+      matrix: eventData.data.matrix,
     };
   } catch (e) {
     console.error('ERROR::initializeSignX::', e);
@@ -95,23 +81,14 @@ export const initializeSignX = async (
     signXInitializing = false;
     // @ts-ignore
     if (removeModal) removeModal();
-    // remove event listeners only if signXClient was initialized
-    if (signXClient) {
-      signXClient.removeAllListeners(SIGN_X_LOGIN_ERROR);
-      signXClient.removeAllListeners(SIGN_X_LOGIN_SUCCESS);
-    }
+    // remove event listeners
+    signXClient?.removeAllListeners?.(SIGN_X_LOGIN_ERROR);
+    signXClient?.removeAllListeners?.(SIGN_X_LOGIN_SUCCESS);
   }
 };
 
 let signXBroadCastMessageBusy = false;
-export const signXBroadCastMessage = async (
-  msgs: TRX_MSG[],
-  memo = '',
-  fee: TRX_FEE_OPTION,
-  feeDenom: string,
-  chainInfo: KEPLR_CHAIN_INFO_TYPE,
-  wallet: WALLET,
-): Promise<string | null> => {
+export const signXBroadCastMessage = async (msgs: TRX_MSG[], memo = '', wallet: WALLET): Promise<string | null> => {
   if (signXBroadCastMessageBusy) return null;
   signXBroadCastMessageBusy = true;
 
@@ -122,9 +99,6 @@ export const signXBroadCastMessage = async (
   };
 
   try {
-    if (!chainInfo || !chainInfo.chainId) throw new Error('No chain info found');
-    if (chainInfo.chainName !== 'ixo') throw new Error('SignX only works on ixo chain');
-
     if (!wallet.user) throw new Error('No user found to broadcast transaction');
     if (!signXClient) throw new Error('No signXClient found to broadcast transaction');
 
@@ -174,10 +148,8 @@ export const signXBroadCastMessage = async (
     if (removeModal) removeModal();
     // @ts-ignore
     if (onManualCloseModal) onManualCloseModal(false);
-    // remove event listeners only if signXClient exists
-    if (signXClient) {
-      signXClient.removeAllListeners(SIGN_X_TRANSACT_ERROR);
-      signXClient.removeAllListeners(SIGN_X_TRANSACT_SUCCESS);
-    }
+    // remove event listeners
+    signXClient?.removeAllListeners?.(SIGN_X_TRANSACT_ERROR);
+    signXClient?.removeAllListeners?.(SIGN_X_TRANSACT_SUCCESS);
   }
 };

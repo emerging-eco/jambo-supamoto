@@ -21,12 +21,8 @@ import ShortTextInput from '@steps/ShortTextInput';
 import LongTextInput from '@steps/LongTextInput';
 import ProposalDeposit from '@steps/ProposalDeposit';
 import KadoBuyCrypto from '@steps/KadoBuyCrypto';
-import CustomerFormEntry from '@steps/CustomerFormEntry';
-import CustomerFormReview from '@steps/CustomerFormReview';
-import CustomerClaimResult from '@steps/CustomerClaimResult';
-import ProclamationFormEntry from '@steps/ProclamationFormEntry';
-import ProclamationFormReview from '@steps/ProclamationFormReview';
-import ProclamationFormResult from '@steps/ProclamationFormResult';
+import ClaimForm from '@steps/ClaimForm';
+import ClaimFormBulk from '@steps/ClaimFormBulk';
 
 type ActionPageProps = {
   actionData: ACTION;
@@ -234,6 +230,7 @@ const ActionExecution: NextPage<ActionPageProps> = ({ actionData }) => {
       case STEPS.staking_MsgDelegate:
       case STEPS.staking_MsgUndelegate:
       case STEPS.staking_MsgRedelegate:
+      case STEPS.claim_MsgSubmitClaim:
         return (
           <ReviewAndSign
             onSuccess={handleOnNext<STEPS.review_and_sign>}
@@ -245,65 +242,19 @@ const ActionExecution: NextPage<ActionPageProps> = ({ actionData }) => {
             message={step.id}
           />
         );
-      case STEPS.customer_form_entry:
+      case STEPS.claim_form:
         return (
-          <CustomerFormEntry
-            onSuccess={handleOnNext<STEPS.customer_form_entry>}
-            onBack={handleBack}
-            data={step.data as StepDataType<STEPS.customer_form_entry>}
+          <ClaimForm
+            onSuccess={handleOnNext<STEPS.claim_form>}
+            data={step.data as StepDataType<STEPS.claim_form>}
             header={action?.name}
           />
         );
-      case STEPS.customer_form_review:
+      case STEPS.claim_form_bulk:
         return (
-          <CustomerFormReview
-            onSuccess={handleOnNext<STEPS.customer_form_review>}
-            onBack={handleBack}
-            formData={
-              (
-                action?.steps.find((s) => s.id === STEPS.customer_form_entry)
-                  ?.data as StepDataType<STEPS.customer_form_entry>
-              )?.surveyData || {}
-            }
-            header={action?.name}
-          />
-        );
-      case STEPS.customer_claim_result:
-        return (
-          <CustomerClaimResult
-            onSuccess={handleOnNext<STEPS.customer_claim_result>}
-            data={step.data as StepDataType<STEPS.customer_claim_result>}
-            header={action?.name}
-          />
-        );
-      case STEPS.proclamation_form_entry:
-        return (
-          <ProclamationFormEntry
-            onSuccess={handleOnNext<STEPS.proclamation_form_entry>}
-            onBack={handleBack}
-            data={step.data as StepDataType<STEPS.proclamation_form_entry>}
-            header={action?.name}
-          />
-        );
-      case STEPS.proclamation_form_review:
-        return (
-          <ProclamationFormReview
-            onSuccess={handleOnNext<STEPS.proclamation_form_review>}
-            onBack={handleBack}
-            formData={
-              (
-                action?.steps.find((s) => s.id === STEPS.proclamation_form_entry)
-                  ?.data as StepDataType<STEPS.proclamation_form_entry>
-              )?.surveyData || {}
-            }
-            header={action?.name}
-          />
-        );
-      case STEPS.proclamation_form_result:
-        return (
-          <ProclamationFormResult
-            onSuccess={handleOnNext<STEPS.proclamation_form_result>}
-            data={step.data as StepDataType<STEPS.proclamation_form_result>}
+          <ClaimFormBulk
+            onSuccess={handleOnNext<STEPS.claim_form_bulk>}
+            data={step.data as StepDataType<STEPS.claim_form_bulk>}
             header={action?.name}
           />
         );

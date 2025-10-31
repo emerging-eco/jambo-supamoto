@@ -1,4 +1,4 @@
-import { cosmos } from '@ixo/impactxclient-sdk';
+import { cosmos, ixo } from '@ixo/impactxclient-sdk';
 import { longify } from '@cosmjs/stargate/build/queryclient';
 import { Coin } from '@ixo/impactxclient-sdk/types/codegen/cosmos/base/v1beta1/coin';
 import { VoteOption } from '@ixo/impactxclient-sdk/types/codegen/cosmos/gov/v1beta1/gov';
@@ -225,3 +225,53 @@ export const generateSubmitProposalTrx = ({
     }),
   };
 };
+
+export const generateSubmitTrx = (
+  {
+    adminAddress,
+    agentAddress,
+    agentDid,
+    claimId,
+    collectionId,
+  }: {
+    adminAddress: string;
+    agentAddress: string;
+    agentDid: string;
+    claimId: string;
+    collectionId: string;
+  },
+  encode = false,
+) => {
+  const value = {
+    collectionId,
+    claimId,
+    agentDid,
+    agentAddress,
+    adminAddress,
+    useIntent: false,
+    amount: [],
+    cw20Payment: [],
+    cw1155Payment: [],
+  };
+  return {
+    typeUrl: '/ixo.claims.v1beta1.MsgSubmitClaim',
+    value: !encode ? value : ixo.claims.v1beta1.MsgSubmitClaim.encode(value).finish(),
+  };
+};
+
+export const generateExecTrx = ({
+  grantee,
+  msgs,
+}: {
+  grantee: string;
+  msgs: {
+    typeUrl: string;
+    value: any;
+  }[];
+}) => ({
+  typeUrl: '/cosmos.authz.v1beta1.MsgExec',
+  value: cosmos.authz.v1beta1.MsgExec.fromPartial({
+    grantee,
+    msgs: msgs as any[],
+  }),
+});
