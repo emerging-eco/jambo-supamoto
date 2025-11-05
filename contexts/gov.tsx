@@ -65,14 +65,14 @@ const GovProvider = ({ children }: GovProviderProps) => {
               proposal.status === 1
                 ? 'DEPOSIT'
                 : proposal.status === 2
-                ? 'VOTING'
-                : proposal.status === 3
-                ? 'PASSED'
-                : proposal.status === 4
-                ? 'REJECTED'
-                : proposal.status === 5
-                ? 'FAILED'
-                : 'UNKNOWN',
+                  ? 'VOTING'
+                  : proposal.status === 3
+                    ? 'PASSED'
+                    : proposal.status === 4
+                      ? 'REJECTED'
+                      : proposal.status === 5
+                        ? 'FAILED'
+                        : 'UNKNOWN',
             votingEndTime: timestampToDate(proposal.votingEndTime!)?.getTime() ?? 0,
             depositEndTime: timestampToDate(proposal.depositEndTime!)?.getTime() ?? 0,
             yesVotes: Number(proposal.finalTallyResult?.yes ?? 0),

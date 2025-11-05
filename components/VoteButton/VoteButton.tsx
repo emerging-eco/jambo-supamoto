@@ -36,12 +36,12 @@ const VoteButton: FC<VoteButtonProps> = ({ voteOption, onVoteClick, disabled }) 
           voteOption === VoteOptions.VOTE_OPTION_YES
             ? BUTTON_ROUND_COLOR.primary
             : voteOption === VoteOptions.VOTE_OPTION_NO
-            ? BUTTON_ROUND_COLOR.warning
-            : voteOption === VoteOptions.VOTE_OPTION_ABSTAIN
-            ? BUTTON_ROUND_COLOR.grey
-            : voteOption === VoteOptions.VOTE_OPTION_NO_WITH_VETO
-            ? BUTTON_ROUND_COLOR.error
-            : BUTTON_ROUND_COLOR.lightGrey
+              ? BUTTON_ROUND_COLOR.warning
+              : voteOption === VoteOptions.VOTE_OPTION_ABSTAIN
+                ? BUTTON_ROUND_COLOR.grey
+                : voteOption === VoteOptions.VOTE_OPTION_NO_WITH_VETO
+                  ? BUTTON_ROUND_COLOR.error
+                  : BUTTON_ROUND_COLOR.lightGrey
         }
       >
         <ColoredIcon
@@ -49,12 +49,12 @@ const VoteButton: FC<VoteButtonProps> = ({ voteOption, onVoteClick, disabled }) 
             voteOption === VoteOptions.VOTE_OPTION_YES
               ? YesIcon
               : voteOption === VoteOptions.VOTE_OPTION_NO
-              ? NoIcon
-              : voteOption === VoteOptions.VOTE_OPTION_ABSTAIN
-              ? AbstainIcon
-              : voteOption === VoteOptions.VOTE_OPTION_NO_WITH_VETO
-              ? VetoIcon
-              : DotsIcon
+                ? NoIcon
+                : voteOption === VoteOptions.VOTE_OPTION_ABSTAIN
+                  ? AbstainIcon
+                  : voteOption === VoteOptions.VOTE_OPTION_NO_WITH_VETO
+                    ? VetoIcon
+                    : DotsIcon
           }
           color={voteOption === undefined ? (disabled ? ICON_COLOR.white : ICON_COLOR.primary) : ICON_COLOR.white}
           size={24}

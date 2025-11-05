@@ -69,12 +69,12 @@ const Proposal = ({
         vote?.options?.[0]?.option === 1
           ? styles.votedYes
           : vote?.options?.[0]?.option === 2
-          ? styles.votedAbstain
-          : vote?.options?.[0]?.option === 3
-          ? styles.votedNo
-          : vote?.options?.[0]?.option === 4
-          ? styles.votedVeto
-          : styles.votedUnknown,
+            ? styles.votedAbstain
+            : vote?.options?.[0]?.option === 3
+              ? styles.votedNo
+              : vote?.options?.[0]?.option === 4
+                ? styles.votedVeto
+                : styles.votedUnknown,
       ])}
     >
       <div className={utilsStyles.rowJustifySpaceBetween}>
@@ -86,12 +86,12 @@ const Proposal = ({
               status === 'DEPOSIT'
                 ? styles.warning
                 : status === 'VOTING'
-                ? styles.primary
-                : status === 'PASSED'
-                ? styles.success
-                : status === 'FAILED' || status === 'REJECTED'
-                ? styles.error
-                : styles.grey,
+                  ? styles.primary
+                  : status === 'PASSED'
+                    ? styles.success
+                    : status === 'FAILED' || status === 'REJECTED'
+                      ? styles.error
+                      : styles.grey,
             )}
           >
             {status}

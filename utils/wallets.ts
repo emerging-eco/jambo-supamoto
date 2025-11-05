@@ -13,6 +13,7 @@ import { getFeeDenom, TOKEN_ASSET } from './currency';
 import { DELEGATION, UNBONDING_DELEGATION } from 'types/validators';
 import { sumArray } from './misc';
 import { initializeSignX, signXBroadCastMessage } from './signX';
+import { initializeMnemonic, mnemonicBroadCastMessage } from './mnemonic';
 
 // TODO: add address regex validations
 export const shortenAddress = (address: string) =>
@@ -82,21 +83,13 @@ export const groupWalletAssets = (
 
 export const initializeWallet = async (
   walletType: WALLET_TYPE | undefined,
-  chain: KEPLR_CHAIN_INFO_TYPE,
   walletUser?: USER,
 ): Promise<USER | undefined> => {
-  if (!chain) return;
   switch (walletType) {
-    case WALLET_TYPE.keplr:
-      return await initializeKeplr(chain);
-    case WALLET_TYPE.opera:
-      return await initializeOpera(chain);
-    case WALLET_TYPE.impactsX:
-      return await initializeImpactsX(chain as ChainInfo);
-    case WALLET_TYPE.walletConnect:
-      return await initializeWC(chain);
     case WALLET_TYPE.signX:
-      return await initializeSignX(chain, walletUser);
+      return await initializeSignX(walletUser);
+    case WALLET_TYPE.mnemonic:
+      return await initializeMnemonic(walletUser);
     default:
       return;
   }
@@ -106,23 +99,12 @@ export const broadCastMessages = async (
   wallet: WALLET,
   msgs: TRX_MSG[],
   memo: string | undefined,
-  fee: TRX_FEE_OPTION,
-  suggestedFeeDenom: string,
-  chain: KEPLR_CHAIN_INFO_TYPE,
 ): Promise<string | null> => {
-  if (!chain) return null;
-  const feeDenom = getFeeDenom(suggestedFeeDenom, chain.feeCurrencies as TOKEN_ASSET[]);
   switch (wallet.walletType) {
-    case WALLET_TYPE.keplr:
-      return await keplrBroadCastMessage(msgs, memo, fee, feeDenom, chain);
-    case WALLET_TYPE.impactsX:
-      return await impactsXBroadCastMessage(msgs, memo, fee, feeDenom, chain as ChainInfo);
-    case WALLET_TYPE.opera:
-      return await operaBroadCastMessage(msgs, memo, fee, feeDenom, chain);
-    case WALLET_TYPE.walletConnect:
-      return await WCBroadCastMessage(msgs, memo, fee, feeDenom, chain);
     case WALLET_TYPE.signX:
-      return await signXBroadCastMessage(msgs, memo, fee, feeDenom, chain, wallet);
+      return await signXBroadCastMessage(msgs, memo, wallet);
+    case WALLET_TYPE.mnemonic:
+      return await mnemonicBroadCastMessage(msgs, memo, wallet);
     default:
       return null;
   }

@@ -26,7 +26,7 @@ type ReceiverAddressProps = {
 const ReceiverAddress: FC<ReceiverAddressProps> = ({ onSuccess, onBack, data, header }) => {
   const [showQRCamera, setShowQRCamera] = useState(false);
   const [address, setAddress] = useState(
-    data?.data ? data.data[data.currentIndex ?? data.data.length - 1]?.address ?? '' : '',
+    data?.data ? (data.data[data.currentIndex ?? data.data.length - 1]?.address ?? '') : '',
   );
   const { wallet } = useContext(WalletContext);
 

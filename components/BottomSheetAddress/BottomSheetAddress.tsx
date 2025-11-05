@@ -10,7 +10,7 @@ import BottomSheet from '@components/BottomSheet/BottomSheet';
 import { CARD_BG_COLOR } from '@components/Card/Card';
 import useWindowDimensions from '@hooks/useWindowDimensions';
 import { WalletContext } from '@contexts/wallet';
-import { ChainContext } from '@contexts/chain';
+import { chainSymbolImageUrl } from '@constants/chains';
 
 type BottomSheetAddressProps = {
   show: boolean;
@@ -19,7 +19,6 @@ type BottomSheetAddressProps = {
 
 const BottomSheetAddress = ({ show, onClose = () => undefined }: BottomSheetAddressProps) => {
   const { wallet } = useContext(WalletContext);
-  const { chainInfo } = useContext(ChainContext);
   const { width } = useWindowDimensions();
 
   if (!show) return null;
@@ -30,7 +29,7 @@ const BottomSheetAddress = ({ show, onClose = () => undefined }: BottomSheetAddr
         <div className={styles.usernameWrapper}>
           <ImageWithFallback
             fallbackSrc={'/images/chain-logos/fallback.png'}
-            src={chainInfo?.chainSymbolImageUrl ?? ''}
+            src={chainSymbolImageUrl ?? ''}
             width={32}
             height={32}
             alt='account'

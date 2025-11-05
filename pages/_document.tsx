@@ -26,9 +26,12 @@ class MyDocument extends Document {
 
           {/* Font Setup */}
           <link rel='preconnect' href='https://fonts.googleapis.com' />
-          <link rel='preconnect' href='https://fonts.gstatic.com' crossOrigin='true' />
+          <link rel='preconnect' href='https://fonts.gstatic.com' crossOrigin='anonymous' />
           <link href={config.fontUrl} rel='stylesheet' />
           <style>{`:root { --font-family-name: ${config.fontName}; }`}</style>
+
+          {/* SurveyJS CSS */}
+          <link rel='stylesheet' href='/survey-core.css' />
         </Head>
 
         <body>

@@ -1,5 +1,11 @@
-import React from 'react';
-import { Html5Qrcode, Html5QrcodeScanType, Html5QrcodeSupportedFormats, Html5QrcodeScanner } from 'html5-qrcode';
+import React, { JSX } from 'react';
+import {
+  Html5Qrcode,
+  Html5QrcodeScanType,
+  Html5QrcodeSupportedFormats,
+  Html5QrcodeScanner,
+  Html5QrcodeCameraScanConfig,
+} from 'html5-qrcode';
 import { IObjectKeys } from 'types/general';
 
 const qrcodeRegionId = 'html5qr-code-ixo';
@@ -49,12 +55,12 @@ class QRScanner extends React.Component<QRScannerProps> {
   }
 
   componentDidMount() {
-    function createConfig(props: QRScannerProps) {
-      var config: IObjectKeys = {
+    function createConfig(props: QRScannerProps): any {
+      var config: any = {
+        fps: props.fps || 10,
         supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
         formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE],
       };
-      if (props.fps) config.fps = props.fps;
       if (props.qrbox) config.qrbox = { width: props.qrbox, height: props.qrbox };
       if (props.aspectRatio) config.aspectRatio = props.aspectRatio;
       if (props.disableFlip !== undefined) config.disableFlip = props.disableFlip;

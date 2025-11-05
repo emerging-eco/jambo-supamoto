@@ -43,7 +43,7 @@ const calculateRemainingMax = (currentToken: CURRENCY_TOKEN, prevData: StepDataT
 
 const DefineAmountToken: FC<DefineAmountTokenProps> = ({ onSuccess, onBack, config, data, header }) => {
   const [amount, setAmount] = useState(
-    data?.data ? data.data[data.currentIndex ?? data.data.length - 1]?.amount?.toString() ?? '' : '',
+    data?.data ? (data.data[data.currentIndex ?? data.data.length - 1]?.amount?.toString() ?? '') : '',
   );
   const [selectedOption, setSelectedOption] = useState<CURRENCY_TOKEN | undefined>();
   const { wallet, fetchAssets } = useContext(WalletContext);

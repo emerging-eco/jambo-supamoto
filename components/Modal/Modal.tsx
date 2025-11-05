@@ -39,7 +39,7 @@ function Modal({ onClose, children, title, className, ...other }: ModalProps) {
     <div className={styles.modalOverlay}>
       <div className={cls(styles.modal, className)} ref={modalRef} {...other}>
         <div className={styles.modalHeader}>
-          {title && <h1 className={styles.modalTitle}>{title}</h1>}
+          <h1 className={styles.modalTitle}>{title ?? ''}</h1>
           <a href='#' onClick={handleCloseClick} className={styles.closeCross}>
             <Cross color='black' />
           </a>
@@ -64,7 +64,7 @@ export default Modal;
  * @param onClose Function to execute when manually close the modal through clicking the close button or backdrop
  * @returns Function to close the modal, only removing the React component, not executing the onClose function
  */
-export const renderModal = (content: ReactNode, onClose: () => void) => {
+export const renderModal = (content: ReactNode, onClose: () => void, title?: string) => {
   const modalDiv = document.getElementById('custom-root') as HTMLElement;
   const root = createRoot(modalDiv);
 
@@ -79,7 +79,11 @@ export const renderModal = (content: ReactNode, onClose: () => void) => {
   };
 
   // Render your Modal component into the div
-  root.render(<Modal onClose={handleManualClose}>{content}</Modal>);
+  root.render(
+    <Modal onClose={handleManualClose} title={title}>
+      {content}
+    </Modal>,
+  );
 
   return handleClose;
 };

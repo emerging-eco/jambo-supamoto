@@ -1,0 +1,44 @@
+yarn upgrade v1.22.22
+(node:37057) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[1/4] Resolving packages...
+[2/4] Fetching packages...
+[3/4] Linking dependencies...
+[4/4] Rebuilding all packages...
+success Saved lockfile.
+success Saved 22 new dependencies.
+info Direct dependencies
+├─ bignumber.js@9.3.1
+├─ bs58@6.0.0
+├─ classnames@2.5.1
+├─ html5-qrcode@2.3.8
+├─ react-loader-spinner@7.0.3
+├─ react-lottie-player@2.1.0
+├─ react-qr-code@2.0.18
+├─ react-select@5.10.2
+├─ react-toastify@11.0.5
+└─ swiper@12.0.2
+info All dependencies
+├─ @emotion/is-prop-valid@1.2.2
+├─ @emotion/unitless@0.8.1
+├─ @types/stylis@4.2.5
+├─ base-x@5.0.1
+├─ bignumber.js@9.3.1
+├─ bs58@6.0.0
+├─ classnames@2.5.1
+├─ clsx@2.1.1
+├─ css-to-react-native@3.2.0
+├─ html5-qrcode@2.3.8
+├─ lottie-web@5.13.0
+├─ memoize-one@6.0.0
+├─ react-loader-spinner@7.0.3
+├─ react-lottie-player@2.1.0
+├─ react-qr-code@2.0.18
+├─ react-select@5.10.2
+├─ react-toastify@11.0.5
+├─ shallowequal@1.1.0
+├─ styled-components@6.1.19
+├─ swiper@12.0.2
+├─ tinycolor2@1.6.0
+└─ use-isomorphic-layout-effect@1.2.1
+Done in 6.29s.

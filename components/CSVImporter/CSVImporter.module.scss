@@ -1,0 +1,383 @@
+.csvImporter {
+  width: 96%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+
+  input[type='checkbox'] {
+    cursor: pointer;
+  }
+}
+
+.checkboxLabelStrong {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.headersNotice {
+  padding: 10px 12px;
+  border: 1px solid var(--primary-color);
+  // background-color: rgba(245, 130, 3, 0.08);
+  border-radius: var(--card-border-radius);
+  display: inline-flex;
+}
+
+.mappingTitle,
+.previewTitle {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.uploadBox {
+  width: 100%;
+  min-height: 160px;
+  border: 2px dashed var(--light-grey-color);
+  border-radius: var(--card-border-radius);
+  background-color: var(--bg-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  text-align: center;
+}
+
+.uploadBoxOver {
+  border-color: var(--primary-color);
+  background-color: rgba(245, 130, 3, 0.08);
+}
+
+.uploadTitle {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.uploadHint {
+  font-size: 0.85rem;
+  color: var(--lighter-font-color);
+}
+
+.mappingContainer {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid var(--light-grey-color);
+  border-radius: var(--card-border-radius);
+  padding: 1rem;
+  background-color: var(--bg-color);
+}
+
+.mappingRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.mappingLabel {
+  min-width: 150px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--main-font-color);
+}
+
+.mappingSelect {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid var(--light-grey-color);
+  border-radius: var(--card-border-radius);
+  background-color: var(--bg-color);
+  color: var(--main-font-color);
+  font-size: 0.9rem;
+  cursor: pointer;
+
+  &:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+  }
+}
+
+.previewTable {
+  max-height: 400px;
+  overflow: auto;
+  border: 1px solid var(--light-grey-color);
+  border-radius: var(--card-border-radius);
+  background-color: var(--bg-color);
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    text-transform: none; // ensure no global capitalization affects headers
+
+    th {
+      background-color: var(--primary-color);
+      color: var(--main-font-color-inverted);
+      padding: 0.75rem;
+      text-align: left;
+      font-weight: 600;
+      text-transform: none; // keep CSV header text unchanged
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    td {
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--light-grey-color);
+      color: var(--main-font-color);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+  }
+}
+
+.fullFlex {
+  flex: 1;
+}
+
+.typeBadge {
+  // margin-left: 8px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  background-color: var(--grey-color);
+  color: var(--main-font-color-inverted);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.typeNumber {
+  background-color: #2b7a2b;
+}
+
+.typeDate {
+  background-color: #365425;
+}
+
+.rowCount {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--lighter-font-color);
+  font-weight: 500;
+}
+
+.buttonRow {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+
+/* New responsive mapping UI */
+.csvChipsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px;
+  border: 1px dashed var(--light-grey-color);
+  border-radius: var(--card-border-radius);
+  background-color: var(--bg-color);
+}
+
+.csvChipCard {
+  // background-color: var(--light-grey-color);
+  border: 1px solid var(--light-grey-color);
+  color: var(--main-font-color);
+  border-radius: var(--card-border-radius);
+  padding: 8px 10px;
+  width: 200px;
+  cursor: grab;
+  user-select: none;
+  text-transform: none; // keep CSV header text unchanged
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.csvChipHeader {
+  border-bottom: 1px solid var(--light-grey-color);
+  padding-bottom: 4px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+}
+
+.csvChipBody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--lighter-font-color);
+}
+
+.csvChipSample {
+  font-size: 0.8rem;
+  color: var(--lighter-font-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fieldsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+@media (min-width: 800px) {
+  .fieldsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1200px) {
+  .fieldsGrid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+.fieldCard {
+  border: 1px solid var(--light-grey-color);
+  border-radius: var(--card-border-radius);
+  background-color: var(--bg-color);
+  padding: 14px;
+}
+
+.fieldHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.fieldTitle {
+  font-weight: 600;
+}
+
+.modeSelect,
+.select,
+.input {
+  width: 100%;
+  border: 1px solid var(--light-grey-color);
+  border-radius: var(--card-border-radius);
+  padding: 6px 8px;
+  background-color: var(--bg-color);
+  color: var(--main-font-color);
+}
+
+.fieldBody {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fieldDropZone {
+  min-height: 44px;
+  border: 1px dashed var(--grey-color);
+  border-radius: var(--card-border-radius);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+}
+
+.fieldDropZoneOver {
+  border-color: var(--primary-color);
+  background-color: rgba(245, 130, 3, 0.08);
+}
+
+.assignedChip {
+  background-color: var(--primary-color);
+  color: var(--main-font-color-inverted);
+  border-radius: 12px;
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dropHint {
+  color: var(--grey-color);
+  font-size: 0.85rem;
+}
+
+.dropHintInline {
+  color: var(--grey-color);
+  font-size: 0.85rem;
+  flex: 1;
+}
+
+.assignedChipsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.removeChip {
+  background: transparent;
+  border: none;
+  color: var(--main-font-color-inverted);
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.dropControlsRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modeSelectInline {
+  border: 1px solid var(--light-grey-color);
+  border-radius: var(--card-border-radius);
+  padding: 4px 6px;
+  background-color: var(--bg-color);
+  color: var(--main-font-color);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.inlineLabel {
+  min-width: 90px;
+  font-size: 0.85rem;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mapPairs {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mapRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}

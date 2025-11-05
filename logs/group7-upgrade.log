@@ -1,0 +1,38 @@
+yarn upgrade v1.22.22
+(node:42255) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[1/4] Resolving packages...
+[2/4] Fetching packages...
+warning bare-fs@4.4.7: The engine "bare" appears to be invalid.
+warning bare-os@3.6.2: The engine "bare" appears to be invalid.
+[3/4] Linking dependencies...
+warning "@keplr-wallet/cosmos > @keplr-wallet/crypto@0.12.279" has unmet peer dependency "bitcoinjs-lib@^6".
+warning "@keplr-wallet/cosmos > @keplr-wallet/crypto@0.12.279" has unmet peer dependency "starknet@^7".
+warning " > @keplr-wallet/types@0.12.279" has unmet peer dependency "starknet@^7".
+warning " > @keplr-wallet/wc-client@0.12.279" has unmet peer dependency "starknet@^7".
+warning "@keplr-wallet/wc-client > @keplr-wallet/provider@0.12.279" has unmet peer dependency "starknet@^7".
+warning "eslint-config-next > @typescript-eslint/eslint-plugin@8.46.0" has incorrect peer dependency "typescript@>=4.8.4 <6.0.0".
+warning "eslint-config-next > @typescript-eslint/parser@8.46.0" has incorrect peer dependency "typescript@>=4.8.4 <6.0.0".
+warning "eslint-config-next > @typescript-eslint/eslint-plugin > @typescript-eslint/type-utils@8.46.0" has incorrect peer dependency "typescript@>=4.8.4 <6.0.0".
+warning "eslint-config-next > @typescript-eslint/eslint-plugin > @typescript-eslint/utils@8.46.0" has incorrect peer dependency "typescript@>=4.8.4 <6.0.0".
+warning "eslint-config-next > @typescript-eslint/eslint-plugin > ts-api-utils@2.1.0" has incorrect peer dependency "typescript@>=4.8.4".
+warning "eslint-config-next > @typescript-eslint/parser > @typescript-eslint/typescript-estree@8.46.0" has incorrect peer dependency "typescript@>=4.8.4 <6.0.0".
+warning "eslint-config-next > @typescript-eslint/parser > @typescript-eslint/typescript-estree > @typescript-eslint/project-service@8.46.0" has incorrect peer dependency "typescript@>=4.8.4 <6.0.0".
+warning "eslint-config-next > @typescript-eslint/parser > @typescript-eslint/typescript-estree > @typescript-eslint/tsconfig-utils@8.46.0" has incorrect peer dependency "typescript@>=4.8.4 <6.0.0".
+warning Workspaces can only be enabled in private projects.
+[4/4] Rebuilding all packages...
+success Saved lockfile.
+warning Workspaces can only be enabled in private projects.
+success Saved 5 new dependencies.
+info Direct dependencies
+├─ @dnd-kit/core@6.3.1
+├─ @dnd-kit/modifiers@9.0.0
+├─ @dnd-kit/sortable@10.0.0
+└─ @dnd-kit/utilities@3.2.2
+info All dependencies
+├─ @dnd-kit/accessibility@3.1.1
+├─ @dnd-kit/core@6.3.1
+├─ @dnd-kit/modifiers@9.0.0
+├─ @dnd-kit/sortable@10.0.0
+└─ @dnd-kit/utilities@3.2.2
+Done in 7.24s.

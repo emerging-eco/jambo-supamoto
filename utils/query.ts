@@ -27,7 +27,7 @@ export const queryAllBalances = async (
   address: string,
 ): Promise<CURRENCY_TOKEN[]> => {
   try {
-    const response = await queryClient.cosmos.bank.v1beta1.allBalances({ address });
+    const response = await queryClient.cosmos.bank.v1beta1.allBalances({ address, resolveDenom: true });
     let balances: CURRENCY_TOKEN[] = [];
     for (const balance of response.balances) {
       const isIbc = /^ibc\//i.test(balance.denom);
@@ -224,8 +224,8 @@ export const queryProposals = async (
     voter: voter ?? '',
     depositor: depositor ?? '',
     pagination: cosmos.base.query.v1beta1.PageRequest.fromPartial({
-      limit: longify(limit),
-      offset: longify(offset),
+      limit: longify(limit) as any,
+      offset: longify(offset) as any,
       reverse: true,
     }),
   });
@@ -235,7 +235,10 @@ export const queryProposals = async (
 
 export const queryVote = async (queryClient: QUERY_CLIENT, address: string, proposalId: number) => {
   try {
-    const { vote } = await queryClient.cosmos.gov.v1beta1.vote({ voter: address, proposalId: longify(proposalId) });
+    const { vote } = await queryClient.cosmos.gov.v1beta1.vote({
+      voter: address,
+      proposalId: longify(proposalId) as any,
+    });
     return vote;
   } catch (error) {
     console.error('queryVote::', error);

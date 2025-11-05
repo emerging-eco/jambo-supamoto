@@ -1,4 +1,4 @@
-import * as base58 from 'bs58';
+import base58 from 'bs58';
 import { BigNumber } from 'bignumber.js';
 import { toBase64, fromBase64, toHex } from '@cosmjs/encoding';
 import { SignDoc } from '@ixo/impactxclient-sdk/types/codegen/cosmos/tx/v1beta1/tx';

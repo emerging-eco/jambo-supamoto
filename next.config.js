@@ -12,14 +12,8 @@ const nextConfig = {
 
     return config;
   },
-  typescript: {
-    // !! WARN !!
-    // Dangerously allow production builds to successfully complete even if
-    // your project has type errors.
-    // !! WARN !!
-    ignoreBuildErrors: true,
-  },
   images: {
+    unoptimized: true,
     domains: ['raw.githubusercontent.com', 'app.osmosis.zone', 's3.amazonaws.com'],
   },
 };

@@ -28,6 +28,18 @@ export enum STEPS {
   distribution_MsgWithdrawDelegatorReward = 'distribution_MsgWithdrawDelegatorReward',
   gov_MsgVote = 'gov_MsgVote',
   gov_MsgSubmitProposal = 'gov_MsgSubmitProposal',
+  customer_form_entry = 'customer_form_entry',
+  customer_form_review = 'customer_form_review',
+  customer_claim_result = 'customer_claim_result',
+  proclamation_form_entry = 'proclamation_form_entry',
+  proclamation_form_review = 'proclamation_form_review',
+  proclamation_form_result = 'proclamation_form_result',
+
+  // claims
+  claim_form = 'claim_form',
+  claim_MsgSubmitClaim = 'claim_MsgSubmitClaim',
+
+  claim_form_bulk = 'claim_form_bulk',
 }
 
 export type STEP = {
@@ -142,6 +154,45 @@ export const steps: { [key in STEPS]: STEP } = {
     id: STEPS.gov_MsgSubmitProposal,
     name: 'Review and sign',
   },
+  [STEPS.customer_form_entry]: {
+    id: STEPS.customer_form_entry,
+    name: 'Enter Customer Details',
+  },
+  [STEPS.customer_form_review]: {
+    id: STEPS.customer_form_review,
+    name: 'Review Details',
+  },
+  [STEPS.customer_claim_result]: {
+    id: STEPS.customer_claim_result,
+    name: 'Submission Result',
+  },
+  [STEPS.proclamation_form_entry]: {
+    id: STEPS.proclamation_form_entry,
+    name: 'Enter Details',
+  },
+  [STEPS.proclamation_form_review]: {
+    id: STEPS.proclamation_form_review,
+    name: 'Review Details',
+  },
+  [STEPS.proclamation_form_result]: {
+    id: STEPS.proclamation_form_result,
+    name: 'Submission Result',
+  },
+
+  // claims
+  [STEPS.claim_form]: {
+    id: STEPS.claim_form,
+    name: 'Enter Claim Details',
+  },
+  [STEPS.claim_MsgSubmitClaim]: {
+    id: STEPS.claim_MsgSubmitClaim,
+    name: 'Review and sign',
+  },
+
+  [STEPS.claim_form_bulk]: {
+    id: STEPS.claim_form_bulk,
+    name: 'Bulk Submission',
+  },
 };
 
 export type ReviewStepsTypes =
@@ -152,7 +203,8 @@ export type ReviewStepsTypes =
   | STEPS.gov_MsgSubmitProposal
   | STEPS.staking_MsgDelegate
   | STEPS.staking_MsgUndelegate
-  | STEPS.staking_MsgRedelegate;
+  | STEPS.staking_MsgRedelegate
+  | STEPS.claim_MsgSubmitClaim;
 
 interface Select_token_and_amount_config {
   optional?: boolean;
@@ -208,6 +260,52 @@ interface Review_and_sign {
   done: boolean;
 }
 
+interface Customer_form_entry {
+  surveyData?: Record<string, any>;
+}
+
+interface Customer_form_review {
+  confirmed?: boolean;
+  apiResponse?: any;
+  success?: boolean;
+  error?: string;
+}
+
+interface Customer_claim_result {
+  success?: boolean;
+  message?: string;
+  errorDetails?: string;
+  apiResponse?: any;
+  error?: string;
+}
+
+interface Proclamation_form_entry {
+  surveyData?: Record<string, any>;
+}
+
+interface Proclamation_form_review {
+  confirmed?: boolean;
+  apiResponse?: any;
+  success?: boolean;
+  error?: string;
+}
+
+interface Proclamation_form_result {
+  success?: boolean;
+  message?: string;
+  errorDetails?: string;
+}
+
+// claims
+interface Claim_form {
+  collectionId: string;
+  data: string;
+}
+
+interface Claim_form_bulk {
+  collectionId: string;
+}
+
 export type AllStepDataTypes =
   | Get_receiver_address
   | Get_receiver_addresses
@@ -221,48 +319,74 @@ export type AllStepDataTypes =
   | Define_proposal_title
   | Define_proposal_description
   | Define_proposal_deposit
-  | Review_and_sign;
+  | Review_and_sign
+  | Customer_form_entry
+  | Customer_form_review
+  | Customer_claim_result
+  | Proclamation_form_entry
+  | Proclamation_form_review
+  | Proclamation_form_result
+  | Claim_form
+  | Claim_form_bulk;
 
 export type StepDataType<T> = T extends STEPS.kado_buy_crypto
   ? Kado_buy_crypto
   : T extends STEPS.check_user_balance
-  ? Check_user_balance
-  : T extends STEPS.get_receiver_address
-  ? Get_receiver_addresses
-  : T extends STEPS.get_validator_delegate
-  ? Get_validator_address
-  : T extends STEPS.get_delegated_validator_undelegate
-  ? Get_validator_address
-  : T extends STEPS.get_delegated_validator_redelegate
-  ? Get_validator_address
-  : T extends STEPS.get_validator_redelegate
-  ? Get_validator_address
-  : T extends STEPS.select_token_and_amount
-  ? Select_tokens_and_amounts
-  : T extends STEPS.select_amount_delegate
-  ? Select_token_and_amount
-  : T extends STEPS.select_amount_undelegate
-  ? Select_token_and_amount
-  : T extends STEPS.select_amount_redelegate
-  ? Select_token_and_amount
-  : T extends STEPS.define_amount
-  ? Define_amount
-  : T extends STEPS.send_token_to_receiver
-  ? Send_token_to_receiver
-  : T extends STEPS.select_proposal
-  ? Select_proposal
-  : T extends STEPS.define_proposal_title
-  ? Define_proposal_title
-  : T extends STEPS.define_proposal_description
-  ? Define_proposal_description
-  : T extends STEPS.define_proposal_deposit
-  ? Define_proposal_deposit
-  : T extends STEPS.review_and_sign
-  ? Review_and_sign
-  : T extends STEPS.distribution_MsgWithdrawDelegatorReward
-  ? Review_and_sign
-  : T extends STEPS.gov_MsgVote
-  ? Review_and_sign
-  : T extends STEPS.gov_MsgSubmitProposal
-  ? Review_and_sign
-  : never;
+    ? Check_user_balance
+    : T extends STEPS.get_receiver_address
+      ? Get_receiver_addresses
+      : T extends STEPS.get_validator_delegate
+        ? Get_validator_address
+        : T extends STEPS.get_delegated_validator_undelegate
+          ? Get_validator_address
+          : T extends STEPS.get_delegated_validator_redelegate
+            ? Get_validator_address
+            : T extends STEPS.get_validator_redelegate
+              ? Get_validator_address
+              : T extends STEPS.select_token_and_amount
+                ? Select_tokens_and_amounts
+                : T extends STEPS.select_amount_delegate
+                  ? Select_token_and_amount
+                  : T extends STEPS.select_amount_undelegate
+                    ? Select_token_and_amount
+                    : T extends STEPS.select_amount_redelegate
+                      ? Select_token_and_amount
+                      : T extends STEPS.define_amount
+                        ? Define_amount
+                        : T extends STEPS.send_token_to_receiver
+                          ? Send_token_to_receiver
+                          : T extends STEPS.select_proposal
+                            ? Select_proposal
+                            : T extends STEPS.define_proposal_title
+                              ? Define_proposal_title
+                              : T extends STEPS.define_proposal_description
+                                ? Define_proposal_description
+                                : T extends STEPS.define_proposal_deposit
+                                  ? Define_proposal_deposit
+                                  : T extends STEPS.review_and_sign
+                                    ? Review_and_sign
+                                    : T extends STEPS.distribution_MsgWithdrawDelegatorReward
+                                      ? Review_and_sign
+                                      : T extends STEPS.gov_MsgVote
+                                        ? Review_and_sign
+                                        : T extends STEPS.gov_MsgSubmitProposal
+                                          ? Review_and_sign
+                                          : T extends STEPS.customer_form_entry
+                                            ? Customer_form_entry
+                                            : T extends STEPS.customer_form_review
+                                              ? Customer_form_review
+                                              : T extends STEPS.customer_claim_result
+                                                ? Customer_claim_result
+                                                : T extends STEPS.proclamation_form_entry
+                                                  ? Proclamation_form_entry
+                                                  : T extends STEPS.proclamation_form_review
+                                                    ? Proclamation_form_review
+                                                    : T extends STEPS.proclamation_form_result
+                                                      ? Proclamation_form_result
+                                                      : T extends STEPS.claim_form
+                                                        ? Claim_form
+                                                        : T extends STEPS.claim_MsgSubmitClaim
+                                                          ? Review_and_sign
+                                                          : T extends STEPS.claim_form_bulk
+                                                            ? Claim_form_bulk
+                                                            : never;

@@ -1,0 +1,48 @@
+yarn run v1.22.22
+$ next build
+info  - Loaded env from /Users/alwynvanwyk/Workspaces/ecs/jambo-supamoto/.env
+warn  - You have enabled experimental feature(s).
+warn  - Experimental features are not covered by semver, and may cause unexpected or broken application behavior. Use them at your own risk.
+
+info  - Skipping validation of types...
+error - ESLint: Invalid Options: - Unknown options: useEslintrc, extensions - 'extensions' has been removed.
+info  - Creating an optimized production build...
+warn  - You are using the experimental Edge Runtime with `experimental.runtime`.
+warn  - Compiled with warnings
+
+./utils/encoding.ts
+Attempted import error: 'decode' is not exported from 'bs58' (imported as 'base58').
+
+Import trace for requested module:
+./pages/account/index.tsx
+
+./utils/encoding.ts
+Attempted import error: 'decode' is not exported from 'bs58' (imported as 'base58').
+
+Import trace for requested module:
+./pages/account/index.tsx
+
+./utils/encoding.ts
+Attempted import error: 'encode' is not exported from 'bs58' (imported as 'base58').
+
+Import trace for requested module:
+./pages/account/index.tsx
+
+info  - Collecting page data...
+
+> Build error occurred
+ReferenceError: localStorage is not defined
+    at 5838 (/Users/alwynvanwyk/Workspaces/ecs/jambo-supamoto/.next/server/chunks/520.js:1010:87)
+    at __webpack_require__ (/Users/alwynvanwyk/Workspaces/ecs/jambo-supamoto/.next/server/webpack-runtime.js:25:42)
+    at 2511 (/Users/alwynvanwyk/Workspaces/ecs/jambo-supamoto/.next/server/chunks/520.js:963:66)
+    at __webpack_require__ (/Users/alwynvanwyk/Workspaces/ecs/jambo-supamoto/.next/server/webpack-runtime.js:25:42)
+    at /Users/alwynvanwyk/Workspaces/ecs/jambo-supamoto/.next/server/chunks/520.js:350:72
+    at __webpack_require__.a (/Users/alwynvanwyk/Workspaces/ecs/jambo-supamoto/.next/server/webpack-runtime.js:103:13)
+    at 3099 (/Users/alwynvanwyk/Workspaces/ecs/jambo-supamoto/.next/server/chunks/520.js:338:21)
+    at __webpack_require__ (/Users/alwynvanwyk/Workspaces/ecs/jambo-supamoto/.next/server/webpack-runtime.js:25:42)
+    at /Users/alwynvanwyk/Workspaces/ecs/jambo-supamoto/.next/server/pages/account.js:768:89
+    at __webpack_require__.a (/Users/alwynvanwyk/Workspaces/ecs/jambo-supamoto/.next/server/webpack-runtime.js:103:13) {
+  type: 'ReferenceError'
+}
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.

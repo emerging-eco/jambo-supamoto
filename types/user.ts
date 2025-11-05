@@ -6,4 +6,10 @@ export type USER = {
   ledgered?: boolean;
   did?: string;
   chainId?: string;
+  matrix?: {
+    accessToken?: string;
+    userId?: string;
+    deviceId?: string;
+    baseUrl?: string;
+  };
 };

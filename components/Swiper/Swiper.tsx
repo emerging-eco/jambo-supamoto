@@ -1,5 +1,6 @@
 import { useState, MouseEvent } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import type { Swiper as SwiperType } from 'swiper';
 import cls from 'classnames';
 import 'swiper/css';
 
@@ -62,7 +63,7 @@ const CustomSwiper = ({ actions, swiper = true }: SwiperProps) => {
         <Swiper
           spaceBetween={20}
           slidesPerView='auto'
-          onSlideChange={(s) => setActive(s.activeIndex)}
+          onSlideChange={(s: SwiperType) => setActive(s.activeIndex)}
           centeredSlides
           className={styles.swiper}
           initialSlide={0}

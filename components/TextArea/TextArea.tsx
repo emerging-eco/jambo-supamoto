@@ -35,8 +35,8 @@ const TextArea: FC<TextAreaProps> = ({
             align === 'end' || align === 'right'
               ? styles.endAlign
               : align === 'center'
-              ? styles.centerAlign
-              : styles.startAlign,
+                ? styles.centerAlign
+                : styles.startAlign,
             className,
           )}
           {...other}
@@ -51,8 +51,8 @@ const TextArea: FC<TextAreaProps> = ({
           align === 'end' || align === 'right'
             ? styles.endAlign
             : align === 'center'
-            ? styles.centerAlign
-            : styles.startAlign,
+              ? styles.centerAlign
+              : styles.startAlign,
           className,
         )}
         {...other}

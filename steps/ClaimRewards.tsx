@@ -36,7 +36,6 @@ const ClaimRewards: FC<ValidatorAddressProps> = ({ onSuccess, onBack, header, me
   const [loading, setLoading] = useState(true);
   const { wallet } = useContext(WalletContext);
   const { validators, validatorsLoading } = useGlobalValidators({ rewardedValidatorsOnly: true });
-  const { chainInfo } = useContext(ChainContext);
 
   useEffect(() => {
     if (loading && validators !== null) setLoading(false);
@@ -51,14 +50,7 @@ const ClaimRewards: FC<ValidatorAddressProps> = ({ onSuccess, onBack, header, me
         validatorAddress: validator.address,
       }),
     );
-    const hash = await broadCastMessages(
-      wallet,
-      trxs,
-      undefined,
-      defaultTrxFeeOption,
-      '',
-      chainInfo as KEPLR_CHAIN_INFO_TYPE,
-    );
+    const hash = await broadCastMessages(wallet, trxs, undefined);
     if (hash) setSuccessHash(hash);
 
     setLoading(false);
@@ -70,13 +62,7 @@ const ClaimRewards: FC<ValidatorAddressProps> = ({ onSuccess, onBack, header, me
         <Header header={header} />
 
         <main className={cls(utilsStyles.main, utilsStyles.columnJustifyCenter, styles.stepContainer)}>
-          <IconText title='Your transaction was successful!' Img={Success} imgSize={50}>
-            {chainInfo?.txExplorer && (
-              <Anchor active openInNewTab href={`${chainInfo.txExplorer.txUrl.replace(/\${txHash}/i, successHash)}`}>
-                <ViewOnExplorerButton explorer={chainInfo.txExplorer.name} />
-              </Anchor>
-            )}
-          </IconText>
+          <IconText title='Your transaction was successful!' Img={Success} imgSize={50}></IconText>
         </main>
 
         <Footer showAccountButton={!!successHash} showActionsButton={!!successHash} />

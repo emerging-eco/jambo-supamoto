@@ -21,6 +21,8 @@ import ShortTextInput from '@steps/ShortTextInput';
 import LongTextInput from '@steps/LongTextInput';
 import ProposalDeposit from '@steps/ProposalDeposit';
 import KadoBuyCrypto from '@steps/KadoBuyCrypto';
+import ClaimForm from '@steps/ClaimForm';
+import ClaimFormBulk from '@steps/ClaimFormBulk';
 
 type ActionPageProps = {
   actionData: ACTION;
@@ -228,6 +230,7 @@ const ActionExecution: NextPage<ActionPageProps> = ({ actionData }) => {
       case STEPS.staking_MsgDelegate:
       case STEPS.staking_MsgUndelegate:
       case STEPS.staking_MsgRedelegate:
+      case STEPS.claim_MsgSubmitClaim:
         return (
           <ReviewAndSign
             onSuccess={handleOnNext<STEPS.review_and_sign>}
@@ -237,6 +240,22 @@ const ActionExecution: NextPage<ActionPageProps> = ({ actionData }) => {
             steps={action!.steps}
             header={action?.name}
             message={step.id}
+          />
+        );
+      case STEPS.claim_form:
+        return (
+          <ClaimForm
+            onSuccess={handleOnNext<STEPS.claim_form>}
+            data={step.data as StepDataType<STEPS.claim_form>}
+            header={action?.name}
+          />
+        );
+      case STEPS.claim_form_bulk:
+        return (
+          <ClaimFormBulk
+            onSuccess={handleOnNext<STEPS.claim_form_bulk>}
+            data={step.data as StepDataType<STEPS.claim_form_bulk>}
+            header={action?.name}
           />
         );
       default:

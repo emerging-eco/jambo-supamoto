@@ -1,0 +1,52 @@
+// Custom SurveyJS overrides for Jambo theme
+// Note: SurveyJS CSS is imported in _app.tsx
+.sv-root-modern {
+  // Match app container
+  max-width: var(--max-width);
+  margin: 0 auto;
+
+  // Question spacing
+  .sv-question {
+    margin-bottom: 20px;
+  }
+
+  // Input fields
+  .sv-text,
+  .sv-comment {
+    font-family: var(--font-name);
+    font-size: var(--main-font-size);
+  }
+
+  // Buttons
+  .sv-btn {
+    border-radius: var(--button-border-radius);
+    font-weight: 500;
+    padding: 12px 24px;
+  }
+
+  // Error messages
+  .sv-question__erbox {
+    color: var(--error-color);
+    font-size: 14px;
+  }
+
+  // Progress bar
+  .sv-progress {
+    background-color: var(--light-grey-color);
+  }
+
+  .sv-progress__bar {
+    background-color: var(--primary-color);
+  }
+
+  // Question title
+  .sv-question__title {
+    font-weight: 500;
+    color: var(--main-font-color);
+  }
+
+  // Required indicator
+  .sv-question__required-text {
+    color: var(--error-color);
+  }
+}
