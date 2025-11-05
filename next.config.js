@@ -2,12 +2,6 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: false,
-  experimental: {
-    runtime: 'edge',
-    // Enable below when using React Server Components
-    // serverComponents: true,
-    // concurrentFeatures: true,
-  },
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/i,
