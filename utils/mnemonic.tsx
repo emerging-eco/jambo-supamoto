@@ -63,9 +63,8 @@ export const createMnemonicApprovalSession = (): MnemonicApprovalSession => {
 
 let mnemonicInitializing = false;
 export const initializeMnemonic = async (walletUser?: USER): Promise<USER | undefined> => {
-  console.log('initializeMnemonic::start', { walletUser });
   if (mnemonicInitializing) {
-    console.log('SignX already initializing');
+    console.log('Mnemonic already initializing');
     return;
   }
   mnemonicInitializing = true;
@@ -75,7 +74,6 @@ export const initializeMnemonic = async (walletUser?: USER): Promise<USER | unde
     // if user already has an address or pubkey, return
     if (walletUser?.address || walletUser?.pubKey) {
       const account = await (signingClient as SigningClient)?.getAccount(walletUser.address);
-      console.log('signingClient.getAccount', account);
       return walletUser;
     }
 
@@ -95,12 +93,9 @@ export const initializeMnemonic = async (walletUser?: USER): Promise<USER | unde
       );
     });
 
-    console.log('result', result);
-
     // Initialize signing client from the ephemeral offline signer, then drop wallet reference
     try {
       signingClient = await createSigningClient(CHAIN_RPC_URL, result?.wallet as unknown as OfflineSigner);
-      console.log('signingClient', signingClient);
     } catch (e) {
       console.error('Failed to initialize signing client:', e);
       throw e;

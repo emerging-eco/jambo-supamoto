@@ -109,7 +109,6 @@ const VerifiableClaim: FC<VerifiableClaimProps> = ({ collection, surveyTemplate 
       );
     }
     const saveClaimResponseData = await saveClaimResponse.json();
-    console.log('saveClaimResponseData', saveClaimResponseData);
     const cid = saveClaimResponseData?.data?.cid;
     const submitTrx = generateSubmitTrx(
       {
@@ -188,7 +187,6 @@ const ContributorBid: FC<ContributorBidProps> = ({ collectionId, isPending, surv
   }
 
   async function handleSubmit(data: any) {
-    console.log('submit', data);
     const baseUrl = BID_BOT_URLS[chain?.chainNetwork as keyof typeof BID_BOT_URLS];
     if (!baseUrl) {
       throw new Error('Failed to load the bid bot URL');
@@ -208,7 +206,6 @@ const ContributorBid: FC<ContributorBidProps> = ({ collectionId, isPending, surv
         },
       }),
     });
-    console.log('response', response);
     if (!response.ok) {
       let errData;
       try {
@@ -216,7 +213,6 @@ const ContributorBid: FC<ContributorBidProps> = ({ collectionId, isPending, surv
       } catch (error) {
         throw new Error(`Failed to submit bid - ${response.statusText}`);
       }
-      console.log('errorData', errData);
       throw new Error(
         errData?.data?.error ??
           errData?.error ??

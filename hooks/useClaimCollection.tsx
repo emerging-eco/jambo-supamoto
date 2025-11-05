@@ -331,13 +331,11 @@ function useClaimCollection(collectionId: string) {
         .map((g) => {
           try {
             const decoded = registry.decode(g?.authorization as unknown as DecodeObject);
-            console.log('decoded', decoded);
             return {
               typeUrl: g?.authorization?.typeUrl,
               value: decoded,
             };
           } catch {
-            console.log('error', g?.authorization);
             return g?.authorization;
           }
         })
@@ -366,7 +364,6 @@ function useClaimCollection(collectionId: string) {
       const entity = await queryClient?.ixo.entity.v1beta1.entity({
         id: collection.protocol,
       });
-      console.log('entity', entity);
       if (!entity?.entity?.id) {
         throw new Error('Protocol Entity not found');
       }
@@ -374,7 +371,6 @@ function useClaimCollection(collectionId: string) {
         throw new Error('Protocol Entity IID Document not found');
       }
       CACHE.setProtocol(collectionId, { entity: entity.entity, iidDocument: entity.iidDocument });
-      console.log(collectionId, CACHE.get(collectionId));
       return CACHE.getProtocol(collectionId);
     } catch (error) {
       console.error('loadProtocol', error);
@@ -452,13 +448,6 @@ function useClaimCollection(collectionId: string) {
         throw new Error(`Collection ${collectionId} not found - cannot load bids`);
       }
       const url = baseUrl + '/action';
-      console.log(url, {
-        action: 'get-bids-by-did',
-        flags: {
-          collection: collectionId,
-          did: wallet?.user?.did,
-        },
-      });
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -473,7 +462,6 @@ function useClaimCollection(collectionId: string) {
           },
         }),
       });
-      console.log('response', response);
       if (!response.ok) {
         const data = await response.json();
         if (data.errcode === 'IXO_BIDS_NOT_FOUND') {
@@ -506,19 +494,16 @@ function useClaimCollection(collectionId: string) {
     try {
       setStepToLoadCollection();
       const collection = await loadCollection({ collectionId });
-      console.log('collection', collection);
       if (!collection) {
         return;
       }
       setStepToLoadProtocol();
       const protocol = await loadProtocol({ collectionId });
-      console.log('protocol', protocol);
       if (!protocol) {
         return;
       }
       setStepToLoadGrants();
       const grants = await loadGrants({ collectionId });
-      console.log('grants', grants);
       if (!grants?.length) {
         setStepToLoadBids();
         const bids = await loadBids({ collectionId });
@@ -528,7 +513,6 @@ function useClaimCollection(collectionId: string) {
         if (!bids.length) {
           setStepToLoadBco();
           const bco = await loadBco({ collectionId });
-          console.log('bco', bco);
           if (!bco) {
             return;
           }
@@ -540,7 +524,6 @@ function useClaimCollection(collectionId: string) {
       }
       setStepToLoadVct();
       const vct = await loadVct({ collectionId });
-      console.log('vct', vct);
       if (!vct) {
         return;
       }

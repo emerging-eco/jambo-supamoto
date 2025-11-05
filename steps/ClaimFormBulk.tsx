@@ -600,7 +600,6 @@ const ContributorBid: FC<ContributorBidProps> = ({ collectionId, isPending, surv
         },
       }),
     });
-    console.log('response', response);
     if (!response.ok) {
       let errData;
       try {
@@ -608,7 +607,6 @@ const ContributorBid: FC<ContributorBidProps> = ({ collectionId, isPending, surv
       } catch (error) {
         throw new Error(`Failed to submit bid - ${response.statusText}`);
       }
-      console.log('errorData', errData);
       throw new Error(
         errData?.data?.error ??
           errData?.error ??

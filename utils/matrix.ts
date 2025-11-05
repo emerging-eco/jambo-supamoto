@@ -1,7 +1,11 @@
 import md5 from 'md5';
 import { sha256 } from '@cosmjs/crypto';
-import { AuthDict, ClientEvent, createClient, IndexedDBStore, MatrixClient } from 'matrix-js-sdk';
+import { createClient } from 'matrix-js-sdk/lib/matrix';
+import { ClientEvent, MatrixClient } from 'matrix-js-sdk/lib/client';
+import { IndexedDBStore } from 'matrix-js-sdk/lib/store/indexeddb';
+import { AuthDict, UIAuthCallback } from 'matrix-js-sdk/lib/interactive-auth';
 import { CryptoApi } from 'matrix-js-sdk/lib/crypto-api';
+import { SyncState } from 'matrix-js-sdk/lib/sync';
 import { encrypt as eciesEncrypt } from 'eciesjs';
 
 import { secureReset, secureSave } from './storage';
@@ -324,7 +328,6 @@ async function getRegisterFlow(homeServerUrl: string) {
     // @ts-ignore
     const [registerResponse] = await Promise.allSettled([client.register()]);
     const registerFlow = registerResponse.status === 'rejected' ? registerResponse?.reason?.data : undefined;
-    console.log('registerFlow', registerFlow);
     if (registerFlow === undefined) {
       throw new Error('Failed to setup home server config.');
     }
@@ -405,7 +408,6 @@ export async function loginOrRegisterMatrixAccount({
     if (!res?.accessToken) {
       throw new Error('Failed to register matrix account');
     }
-    console.log('mxRegisterWithSecp', res);
   }
   if (!isAuthenticated()) {
     res = await mxLogin({
@@ -416,7 +418,6 @@ export async function loginOrRegisterMatrixAccount({
     if (!res?.accessToken) {
       throw new Error('Failed to login to matrix account');
     }
-    console.log('mxLogin', res);
   }
   return res;
 }
@@ -477,8 +478,6 @@ export async function createMatrixClient() {
   const userId = secret.userId;
   const deviceId = secret.deviceId;
 
-  console.log('createMatrixClient::', { homeServerUrl, accessToken, userId, deviceId });
-
   if (!homeServerUrl || !accessToken || !userId || !deviceId) {
     throw new Error('Login to Matrix account before trying to instantiate Matrix client.');
   }
@@ -534,7 +533,7 @@ export async function createMatrixClient() {
     // filter: filter,
   });
   await new Promise<void>((resolve, reject) => {
-    const sync = {
+    const sync: Record<string, () => void> = {
       NULL: () => {
         console.info('[NULL] state');
       },
@@ -558,8 +557,8 @@ export async function createMatrixClient() {
         console.info('[STOPPED] state');
       },
     };
-    mxClient.on(ClientEvent.Sync, (state) => {
-      sync[state]();
+    mxClient.on(ClientEvent.Sync, (state: SyncState) => {
+      sync[state]?.();
     });
   });
   return mxClient;
@@ -597,7 +596,6 @@ export async function logoutMatrixClient({ mxClient, baseUrl }: { mxClient?: Mat
  */
 export function hasCrossSigningAccountData(mxClient: MatrixClient): boolean {
   const masterKeyData = mxClient.getAccountData('m.cross_signing.master');
-  console.log('hasCrossSigningAccountData::masterKeyData', masterKeyData);
   return !!masterKeyData;
 }
 
@@ -637,7 +635,7 @@ export async function setupCrossSigning(
   }
   const userId = mxClient.getUserId()!;
   await mxCrypto.bootstrapCrossSigning({
-    authUploadDeviceSigningKeys: async function (makeRequest) {
+    authUploadDeviceSigningKeys: async function (makeRequest: (authData: AuthDict | null) => Promise<any>) {
       await makeRequest(getAuthId({ userId, password }));
     },
     setupNewCrossSigning: forceReset,
