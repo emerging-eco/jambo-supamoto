@@ -11,7 +11,6 @@ import { VALIDATOR } from 'types/validators';
 import { getLocalStorage, setLocalStorage } from '@utils/persistence';
 import { generateValidators } from '@utils/validators';
 import { initializeWallet } from '@utils/wallets';
-import { hasMnemonicSigningClient } from '@utils/mnemonic';
 import {
   queryAllBalances,
   queryDelegationTotalRewards,
@@ -203,22 +202,32 @@ export const WalletProvider = ({ children }: HTMLAttributes<HTMLDivElement>) => 
     if (firstLoad.current) return;
     firstLoad.current = true;
 
-    // Comment out below to reset config
-    // setLocalStorage('wallet', {});
-    let persistedWallet = getLocalStorage<WALLET>('wallet');
-    // If mnemonic was last used but signing client isn't present (e.g., after refresh), clear persisted wallet
-    if (persistedWallet?.walletType === (WALLET_TYPE as any).mnemonic && !hasMnemonicSigningClient()) {
-      setLocalStorage('wallet', {});
-      persistedWallet = getLocalStorage<WALLET>('wallet');
-    }
-    if (persistedWallet?.walletType && !persistedWallet?.user?.address) {
-      setLocalStorage('wallet', {});
-      persistedWallet = getLocalStorage<WALLET>('wallet');
-    }
-    const pubKey = persistedWallet?.user?.pubKey && new Uint8Array(Object.values(persistedWallet.user.pubKey));
-    if (persistedWallet)
-      setWallet({ ...persistedWallet, user: pubKey ? ({ ...persistedWallet.user, pubKey } as any) : undefined });
-    setTimeout(() => setLoaded(true), 500);
+    const initializePersistedWallet = async () => {
+      // Comment out below to reset config
+      // setLocalStorage('wallet', {});
+      let persistedWallet = getLocalStorage<WALLET>('wallet');
+
+      // If mnemonic was last used but signing client isn't present (e.g., after refresh), clear persisted wallet
+      // Dynamically import to avoid circular dependency
+      if (persistedWallet?.walletType === (WALLET_TYPE as any).mnemonic) {
+        const { hasMnemonicSigningClient } = await import('@utils/mnemonic');
+        if (!hasMnemonicSigningClient()) {
+          setLocalStorage('wallet', {});
+          persistedWallet = getLocalStorage<WALLET>('wallet');
+        }
+      }
+
+      if (persistedWallet?.walletType && !persistedWallet?.user?.address) {
+        setLocalStorage('wallet', {});
+        persistedWallet = getLocalStorage<WALLET>('wallet');
+      }
+      const pubKey = persistedWallet?.user?.pubKey && new Uint8Array(Object.values(persistedWallet.user.pubKey));
+      if (persistedWallet)
+        setWallet({ ...persistedWallet, user: pubKey ? ({ ...persistedWallet.user, pubKey } as any) : undefined });
+      setTimeout(() => setLoaded(true), 500);
+    };
+
+    initializePersistedWallet();
     window.addEventListener(EVENT_LISTENER_TYPE.wallet_logout, logoutWallet);
   }, []);
 

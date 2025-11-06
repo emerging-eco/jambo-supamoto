@@ -13,7 +13,6 @@ import { getFeeDenom, TOKEN_ASSET } from './currency';
 import { DELEGATION, UNBONDING_DELEGATION } from 'types/validators';
 import { sumArray } from './misc';
 import { initializeSignX, signXBroadCastMessage } from './signX';
-import { initializeMnemonic, mnemonicBroadCastMessage } from './mnemonic';
 
 // TODO: add address regex validations
 export const shortenAddress = (address: string) =>
@@ -89,6 +88,7 @@ export const initializeWallet = async (
     case WALLET_TYPE.signX:
       return await initializeSignX(walletUser);
     case WALLET_TYPE.mnemonic:
+      const { initializeMnemonic } = await import('./mnemonic');
       return await initializeMnemonic(walletUser);
     default:
       return;
@@ -104,6 +104,7 @@ export const broadCastMessages = async (
     case WALLET_TYPE.signX:
       return await signXBroadCastMessage(msgs, memo, wallet);
     case WALLET_TYPE.mnemonic:
+      const { mnemonicBroadCastMessage } = await import('./mnemonic');
       return await mnemonicBroadCastMessage(msgs, memo, wallet);
     default:
       return null;

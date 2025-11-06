@@ -1,0 +1,13 @@
+node_modules
+.next
+.git
+.gitignore
+.env*.local
+.DS_Store
+*.log
+README.md
+DEVELOPER.md
+
+# Don't ignore .tgz files (local package dependencies)
+!*.tgz
+

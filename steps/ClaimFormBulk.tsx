@@ -26,8 +26,8 @@ import useWindowDimensions from '@hooks/useWindowDimensions';
 import { CHAIN_NETWORK } from '@constants/chains';
 import { TRX_MSG } from 'types/transactions';
 import { delay } from '@utils/timestamp';
-import { createMnemonicApprovalSession } from '@utils/mnemonic';
 import { WALLET_TYPE } from 'types/wallet';
+import type { MnemonicApprovalSession } from '@utils/mnemonic';
 
 type ClaimFormBulkProps = {
   onSuccess: (data: StepDataType<STEPS.claim_form_bulk>) => void;
@@ -141,7 +141,16 @@ const BulkClaims: FC<BulkClaimsProps> = ({ collection, surveyTemplate, title }) 
     // return saveClaimResponseData?.data?.cid;
   }
 
-  const mnemonicSessionRef = useRef(createMnemonicApprovalSession());
+  const mnemonicSessionRef = useRef<MnemonicApprovalSession | null>(null);
+
+  // Lazy initialization of mnemonic session to avoid circular dependency
+  const getMnemonicSession = async () => {
+    if (!mnemonicSessionRef.current) {
+      const { createMnemonicApprovalSession } = await import('@utils/mnemonic');
+      mnemonicSessionRef.current = createMnemonicApprovalSession();
+    }
+    return mnemonicSessionRef.current;
+  };
 
   async function submitChunk(chunkRows: Array<{ index: number; data: any }>) {
     const submitMsgs: TRX_MSG[] = [];
@@ -177,7 +186,8 @@ const BulkClaims: FC<BulkClaimsProps> = ({ collection, surveyTemplate, title }) 
     });
 
     if (wallet?.walletType === WALLET_TYPE.mnemonic) {
-      await mnemonicSessionRef.current.sign([execTrx], undefined, wallet);
+      const mnemonicSession = await getMnemonicSession();
+      await mnemonicSession.sign([execTrx], undefined, wallet);
     } else {
       await broadCastMessages(wallet, [execTrx], undefined);
     }
@@ -313,7 +323,7 @@ const BulkClaims: FC<BulkClaimsProps> = ({ collection, surveyTemplate, title }) 
           });
           stopProcessing = true;
           try {
-            mnemonicSessionRef.current.stop();
+            mnemonicSessionRef.current?.stop();
           } catch {}
           break;
         }
@@ -355,7 +365,7 @@ const BulkClaims: FC<BulkClaimsProps> = ({ collection, surveyTemplate, title }) 
               setRowStatuses((prev) => ({ ...prev, [row.index]: 'failed-twice' }));
               stopProcessing = true;
               try {
-                mnemonicSessionRef.current.stop();
+                mnemonicSessionRef.current?.stop();
               } catch {}
               break;
             }

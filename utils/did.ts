@@ -4,7 +4,6 @@ import { AccountData, OfflineSigner } from '@cosmjs/proto-signing';
 import { decodeGrants, isAllowanceExpired, isAllowanceLimitReached, queryAddressAllowances } from './feegrant';
 // import { signAndBroadcastWithMnemonic } from './transaction';
 import { CHAIN_RPC_URL } from '@constants/chains';
-import { signAndBroadcastWithMnemonic } from './mnemonic';
 
 /**
  * Checks if an iid document (did) exists
@@ -63,6 +62,7 @@ export async function createIidDocument(did: string, offlineSigner: OfflineSigne
       }),
     };
     // throw new Error('Sign and broadcast with mnemonic is not supported');
+    const { signAndBroadcastWithMnemonic } = await import('./mnemonic');
     await signAndBroadcastWithMnemonic({
       offlineSigner: offlineSigner,
       messages: [trx],
