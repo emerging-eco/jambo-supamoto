@@ -9,6 +9,7 @@ import { ACTION } from 'types/actions';
 import Head from '@components/Head/Head';
 import useWalletContext from '@hooks/useWalletContext';
 import ClaimForm from '@steps/ClaimForm';
+import ClaimFormBulk from '@steps/ClaimFormBulk';
 
 type ActionPageProps = {
   actionData: ACTION;
@@ -62,14 +63,14 @@ const ActionExecution: NextPage<ActionPageProps> = ({ actionData }) => {
             header={action?.name}
           />
         );
-      // case STEPS.claim_form_bulk:
-      //   return (
-      //     <ClaimFormBulk
-      //       onSuccess={handleOnNext<STEPS.claim_form_bulk>}
-      //       data={step.data as StepDataType<STEPS.claim_form_bulk>}
-      //       header={action?.name}
-      //     />
-      //   );
+      case STEPS.claim_form_bulk:
+        return (
+          <ClaimFormBulk
+            onSuccess={handleOnNext<STEPS.claim_form_bulk>}
+            data={step.data as StepDataType<STEPS.claim_form_bulk>}
+            header={action?.name}
+          />
+        );
       default:
         return <EmptySteps loading={true} />;
     }

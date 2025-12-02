@@ -3,7 +3,6 @@ import cls from 'classnames';
 
 import utilsStyles from '@styles/utils.module.scss';
 import styles from '@styles/stepsPages.module.scss';
-import Button, { BUTTON_BG_COLOR, BUTTON_BORDER_COLOR, BUTTON_SIZE } from '@components/Button/Button';
 import MultiSendBottomSheet from '../components/MultiSendBottomSheet/MultiSendBottomSheet';
 import ButtonRound, { BUTTON_ROUND_SIZE } from '@components/ButtonRound/ButtonRound';
 import ValidatorListItem from '@components/ValidatorListItem/ValidatorListItem';
@@ -14,34 +13,23 @@ import Header from '@components/Header/Header';
 import Footer from '@components/Footer/Footer';
 import Loader from '@components/Loader/Loader';
 import Input from '@components/Input/Input';
-import Anchor from '@components/Anchor/Anchor';
 import Success from '@icons/success.svg';
 import Plus from '@icons/plus.svg';
 import { getDenomFromCurrencyToken, getDisplayDenomFromCurrencyToken } from '@utils/currency';
 import { broadCastMessages, shortenAddress } from '@utils/wallets';
 import { getMicroAmount } from '@utils/encoding';
 import { ReviewStepsTypes, STEP, StepDataType, STEPS } from 'types/steps';
-import { KEPLR_CHAIN_INFO_TYPE } from 'types/chain';
 import { VALIDATOR } from 'types/validators';
 import { TRX_MSG } from 'types/transactions';
 import {
-  defaultTrxFeeOption,
   generateBankMultiSendTrx,
   generateBankSendTrx,
   generateDelegateTrx,
   generateRedelegateTrx,
-  generateSubmitProposalTrx,
   generateUndelegateTrx,
-  generateVoteTrx,
 } from '@utils/transactions';
 import { WalletContext } from '@contexts/wallet';
 import { CURRENCY_TOKEN } from 'types/wallet';
-import Proposal from '@components/Proposal/Proposal';
-import useChainContext from '@hooks/useChainContext';
-import useGovContext from '@hooks/useGovContext';
-import { PROPOSAL_DATA, VoteOptions } from 'types/proposals';
-import VoteButton from '@components/VoteButton/VoteButton';
-import TextArea from '@components/TextArea/TextArea';
 
 type ReviewAndSignProps = {
   onSuccess: (data: StepDataType<STEPS.review_and_sign>) => void;
@@ -71,13 +59,8 @@ const ReviewAndSign: FC<ReviewAndSignProps> = ({
   const [srcAddress, setSrcAddress] = useState<string>(''); // source address
   const [dstValidator, setDstValidator] = useState<VALIDATOR | undefined>(); // destination validator
   const [srcValidator, setSrcValidator] = useState<VALIDATOR | undefined>(); // source validator
-  const [proposal, setProposal] = useState<PROPOSAL_DATA | undefined>();
-  const [voteOption, setVoteOption] = useState<VoteOptions | undefined>();
-  const [title, setTitle] = useState<string | undefined>();
-  const [description, setDescription] = useState<string | undefined>();
 
   const [trxCancelId, setTrxCancelId] = useState<number | undefined>();
-  const { getProposal } = useGovContext();
 
   const showCancelTransactionModal = (index: number) => () => {
     setTrxCancelId(index);
@@ -135,16 +118,6 @@ const ReviewAndSign: FC<ReviewAndSignProps> = ({
       if (s.id === STEPS.get_delegated_validator_redelegate) {
         setSrcAddress((s.data as StepDataType<STEPS.get_validator_delegate>)?.validator?.address ?? '');
         setSrcValidator((s.data as StepDataType<STEPS.get_validator_delegate>)?.validator);
-      }
-      if (s.id === STEPS.select_proposal) {
-        const proposal = getProposal((s.data as StepDataType<STEPS.select_proposal>)?.proposalId);
-        setProposal(proposal);
-      }
-      if (s.id === STEPS.define_proposal_title) {
-        setTitle((s.data as StepDataType<STEPS.define_proposal_title>)?.title);
-      }
-      if (s.id === STEPS.define_proposal_description) {
-        setDescription((s.data as StepDataType<STEPS.define_proposal_description>)?.description);
       }
       if (s.id === STEPS.define_proposal_deposit) {
         setToken((s.data as StepDataType<STEPS.define_proposal_deposit>)?.token);
@@ -206,27 +179,6 @@ const ReviewAndSign: FC<ReviewAndSignProps> = ({
               validatorDstAddress: dstAddress as string,
               denom: getDenomFromCurrencyToken(token as CURRENCY_TOKEN),
               amount: getMicroAmount(amount.toString()),
-            }),
-          );
-          break;
-        case STEPS.gov_MsgVote:
-          if (voteOption && proposal)
-            trxMsgs.push(
-              generateVoteTrx({
-                proposalId: proposal?.proposalId!,
-                voterAddress: wallet.user!.address,
-                option: voteOption as any,
-              }),
-            );
-          break;
-        case STEPS.gov_MsgSubmitProposal:
-          trxMsgs.push(
-            generateSubmitProposalTrx({
-              proposer: wallet.user!.address,
-              title: title!,
-              description: description!,
-              depositAmount: ((token as CURRENCY_TOKEN).amount ?? '').toString() ?? undefined,
-              depositDenom: token ? getDenomFromCurrencyToken((token ?? '') as CURRENCY_TOKEN) : undefined,
             }),
           );
           break;
@@ -361,49 +313,6 @@ const ReviewAndSign: FC<ReviewAndSignProps> = ({
             <p>to</p>
             <ValidatorListItem validator={dstValidator!} onClick={() => () => {}} />
           </form>
-        ) : message === STEPS.gov_MsgVote ? (
-          <form className={cls(styles.stepsForm, utilsStyles.center)} autoComplete='none'>
-            {proposal ? (
-              <Proposal
-                key={proposal.proposalId}
-                proposalId={proposal.proposalId}
-                status={proposal.status}
-                votingEndTime={proposal.votingEndTime}
-                depositEndTime={proposal.depositEndTime}
-                title={proposal.title}
-                description={proposal.description}
-                yesVotes={proposal.yesVotes}
-                noVotes={proposal.noVotes}
-                abstainVotes={proposal.abstainVotes}
-                vetoVotes={proposal.vetoVotes}
-                totalVotes={proposal.totalVotes}
-                vote={proposal.vote}
-              />
-            ) : (
-              <Loader />
-            )}
-          </form>
-        ) : message === STEPS.gov_MsgSubmitProposal ? (
-          <form className={styles.stepsForm} autoComplete='none'>
-            <p className={utilsStyles.label}>I am submitting a text proposal:</p>
-            <Input name='title' required value={title ?? ''} className={styles.stepInput} align='center' disabled />
-            <br />
-            <TextArea
-              name='description'
-              required
-              value={description ?? ''}
-              className={styles.stepInput}
-              align='center'
-              disabled
-            />
-            {!!(token as CURRENCY_TOKEN)?.denom && (
-              <>
-                <br />
-                <p className={utilsStyles.label}>with an initial deposit of</p>
-                <AmountAndDenom token={token as CURRENCY_TOKEN} />
-              </>
-            )}
-          </form>
         ) : (
           <p>Unsupported review type</p>
         )}
@@ -412,19 +321,9 @@ const ReviewAndSign: FC<ReviewAndSignProps> = ({
       <Footer
         onBack={loading || successHash ? null : onBack}
         onBackUrl={onBack ? undefined : ''}
-        onCorrect={
-          loading || !!successHash || (message === STEPS.gov_MsgVote && (!voteOption || !proposal)) ? null : signTX
-        }
+        onCorrect={loading || !!successHash ? null : signTX}
         correctLabel={loading ? 'Signing' : !successHash ? 'Sign' : undefined}
-      >
-        {message === STEPS.gov_MsgVote && !loading && (
-          <VoteButton
-            voteOption={voteOption}
-            onVoteClick={setVoteOption}
-            disabled={proposal?.status !== 'VOTING' || (proposal?.votingEndTime ?? 0) <= Date.now()}
-          />
-        )}
-      </Footer>
+      />
     </>
   );
 };

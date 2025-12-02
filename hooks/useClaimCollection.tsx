@@ -3,12 +3,12 @@ import { Collection } from '@ixo/impactxclient-sdk/types/codegen/ixo/claims/v1be
 import { Grant } from '@ixo/impactxclient-sdk/types/codegen/cosmos/authz/v1beta1/authz';
 import { IidDocument } from '@ixo/impactxclient-sdk/types/codegen/ixo/iid/v1beta1/iid';
 import { Entity } from '@ixo/impactxclient-sdk/types/codegen/ixo/entity/v1beta1/entity';
-import { BID_BOT_URLS } from '@constants/urls';
 import { createRegistry } from '@ixo/impactxclient-sdk';
 import { DecodeObject } from '@cosmjs/proto-signing';
 
 import useChainContext from './useChainContext';
 import useWalletContext from './useWalletContext';
+import { MATRIX_BID_BOT_URL } from '@constants/env';
 
 type CacheData = Record<
   string,
@@ -237,7 +237,7 @@ function useClaimCollection(collectionId: string) {
   const [step, setStep] = useState<CLAIM_COLLECTION_STEP>(CLAIM_COLLECTION_STEP.LOAD_COLLECTION);
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
 
-  const { queryClient, chain } = useChainContext();
+  const { queryClient } = useChainContext();
   const { wallet } = useWalletContext();
 
   const loadingCollectionIdRef = useRef<string | undefined>(undefined);
@@ -440,7 +440,7 @@ function useClaimCollection(collectionId: string) {
       if (!collectionId || typeof collectionId !== 'string') {
         throw new Error('Collection ID is required');
       }
-      const baseUrl = BID_BOT_URLS[chain?.chainNetwork];
+      const baseUrl = MATRIX_BID_BOT_URL;
       if (!baseUrl) {
         throw new Error('Bid bot URL not found');
       }

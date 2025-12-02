@@ -1,7 +1,5 @@
 import { DelegationResponse, Validator } from '@ixo/impactxclient-sdk/types/codegen/cosmos/staking/v1beta1/staking';
-import { ProposalStatus } from '@ixo/impactxclient-sdk/types/codegen/cosmos/gov/v1beta1/gov';
-import { cosmos, createQueryClient, customQueries } from '@ixo/impactxclient-sdk';
-import { longify } from '@cosmjs/stargate/build/queryclient';
+import { createQueryClient, customQueries } from '@ixo/impactxclient-sdk';
 
 import { VALIDATOR_FILTER_KEYS as FILTERS } from '@constants/filters';
 import {
@@ -27,6 +25,7 @@ export const queryAllBalances = async (
   address: string,
 ): Promise<CURRENCY_TOKEN[]> => {
   try {
+    // @ts-ignore
     const response = await queryClient.cosmos.bank.v1beta1.allBalances({ address });
     let balances: CURRENCY_TOKEN[] = [];
     for (const balance of response.balances) {
@@ -208,47 +207,5 @@ export const queryValidators = async (queryClient: QUERY_CLIENT) => {
   } catch (error) {
     console.error('queryValidators::', error);
     return [];
-  }
-};
-
-export const queryProposals = async (
-  queryClient: QUERY_CLIENT,
-  proposalStatus: ProposalStatus,
-  voter: string,
-  depositor: string,
-  offset = 0,
-  limit: 50,
-) => {
-  const result = await queryClient.cosmos.gov.v1beta1.proposals({
-    proposalStatus: proposalStatus ?? cosmos.gov.v1beta1.ProposalStatus.PROPOSAL_STATUS_UNSPECIFIED,
-    voter: voter ?? '',
-    depositor: depositor ?? '',
-    pagination: cosmos.base.query.v1beta1.PageRequest.fromPartial({
-      limit: longify(limit),
-      offset: longify(offset),
-      reverse: true,
-    }),
-  });
-
-  return result?.proposals ?? [];
-};
-
-export const queryVote = async (queryClient: QUERY_CLIENT, address: string, proposalId: number) => {
-  try {
-    const { vote } = await queryClient.cosmos.gov.v1beta1.vote({ voter: address, proposalId: longify(proposalId) });
-    return vote;
-  } catch (error) {
-    console.error('queryVote::', error);
-    return;
-  }
-};
-
-export const queryGovParams = async (queryClient: QUERY_CLIENT, paramsType: 'voting' | 'tallying' | 'deposit') => {
-  try {
-    const params = await queryClient.cosmos.gov.v1beta1.params({ paramsType });
-    return params;
-  } catch (error) {
-    console.error('queryGovParams::', error);
-    return;
   }
 };
