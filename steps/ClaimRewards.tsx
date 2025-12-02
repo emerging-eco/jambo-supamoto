@@ -6,22 +6,18 @@ import styles from '@styles/stepsPages.module.scss';
 import ValidatorListItem from '@components/ValidatorListItem/ValidatorListItem';
 import AmountAndDenom from '@components/AmountAndDenom/AmountAndDenom';
 import { CARD_BG_COLOR, CARD_COLOR } from '@components/Card/Card';
-import { ViewOnExplorerButton } from '@components/Button/Button';
 import IconText from '@components/IconText/IconText';
 import Header from '@components/Header/Header';
 import Loader from '@components/Loader/Loader';
 import Footer from '@components/Footer/Footer';
-import Anchor from '@components/Anchor/Anchor';
 import SadFace from '@icons/sad_face.svg';
 import Success from '@icons/success.svg';
-import { defaultTrxFeeOption, generateWithdrawRewardTrx } from '@utils/transactions';
+import { generateWithdrawRewardTrx } from '@utils/transactions';
 import { broadCastMessages } from '@utils/wallets';
 import { ReviewStepsTypes, StepDataType, STEPS } from 'types/steps';
-import { KEPLR_CHAIN_INFO_TYPE } from 'types/chain';
 import { TRX_MSG } from 'types/transactions';
 import useGlobalValidators from '@hooks/useGlobalValidators';
 import { WalletContext } from '@contexts/wallet';
-import { ChainContext } from '@contexts/chain';
 
 type ValidatorAddressProps = {
   onSuccess: (data: StepDataType<STEPS.review_and_sign>) => void;
@@ -36,7 +32,6 @@ const ClaimRewards: FC<ValidatorAddressProps> = ({ onSuccess, onBack, header, me
   const [loading, setLoading] = useState(true);
   const { wallet } = useContext(WalletContext);
   const { validators, validatorsLoading } = useGlobalValidators({ rewardedValidatorsOnly: true });
-  const { chainInfo } = useContext(ChainContext);
 
   useEffect(() => {
     if (loading && validators !== null) setLoading(false);
@@ -51,14 +46,7 @@ const ClaimRewards: FC<ValidatorAddressProps> = ({ onSuccess, onBack, header, me
         validatorAddress: validator.address,
       }),
     );
-    const hash = await broadCastMessages(
-      wallet,
-      trxs,
-      undefined,
-      defaultTrxFeeOption,
-      '',
-      chainInfo as KEPLR_CHAIN_INFO_TYPE,
-    );
+    const hash = await broadCastMessages(wallet, trxs, undefined);
     if (hash) setSuccessHash(hash);
 
     setLoading(false);
@@ -71,11 +59,11 @@ const ClaimRewards: FC<ValidatorAddressProps> = ({ onSuccess, onBack, header, me
 
         <main className={cls(utilsStyles.main, utilsStyles.columnJustifyCenter, styles.stepContainer)}>
           <IconText title='Your transaction was successful!' Img={Success} imgSize={50}>
-            {chainInfo?.txExplorer && (
+            {/* {chainInfo?.txExplorer && (
               <Anchor active openInNewTab href={`${chainInfo.txExplorer.txUrl.replace(/\${txHash}/i, successHash)}`}>
                 <ViewOnExplorerButton explorer={chainInfo.txExplorer.name} />
               </Anchor>
-            )}
+            )} */}
           </IconText>
         </main>
 

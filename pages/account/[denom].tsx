@@ -15,15 +15,14 @@ import { formatTokenAmount, getDecimalsFromCurrencyToken, getDisplayDenomFromCur
 import { urlDecodeIbcDenom } from '@utils/encoding';
 import { groupWalletAssets } from '@utils/wallets';
 import { WalletContext } from '@contexts/wallet';
-import { ChainContext } from '@contexts/chain';
 import config from '@constants/config.json';
+import { chainSymbolImageUrl } from '@constants/chains';
 
 // TODO: add dollar values;
 
 const Denom: NextPage = () => {
   const { query, replace } = useRouter();
   const { wallet } = useContext(WalletContext);
-  const { chainInfo } = useContext(ChainContext);
   const assets = groupWalletAssets(
     wallet.balances?.data ?? [],
     wallet.delegations?.data ?? [],
@@ -45,7 +44,7 @@ const Denom: NextPage = () => {
         <div className={utilsStyles.usernameWrapper} onClick={backToAccount}>
           <ImageWithFallback
             fallbackSrc={'/images/chain-logos/fallback.png'}
-            src={chainInfo?.chainSymbolImageUrl ?? ''}
+            src={chainSymbolImageUrl ?? ''}
             width={32}
             height={32}
             alt='account'

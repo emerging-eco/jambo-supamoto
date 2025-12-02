@@ -6,7 +6,7 @@ type ToggleSwitchProps = {
   name: string;
   toggled: boolean;
   onToggle: (e: ChangeEvent<HTMLInputElement>) => void;
-} & HTMLAttributes<HTMLInputElement>;
+} & Omit<HTMLAttributes<HTMLInputElement>, 'onToggle'>;
 
 const ToggleSwitch = ({ name, toggled, onToggle }: ToggleSwitchProps) => {
   return (

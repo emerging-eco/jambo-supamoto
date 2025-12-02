@@ -64,7 +64,7 @@ export default Modal;
  * @param onClose Function to execute when manually close the modal through clicking the close button or backdrop
  * @returns Function to close the modal, only removing the React component, not executing the onClose function
  */
-export const renderModal = (content: ReactNode, onClose: () => void) => {
+export const renderModal = (content: ReactNode, onClose: () => void, title?: string) => {
   const modalDiv = document.getElementById('custom-root') as HTMLElement;
   const root = createRoot(modalDiv);
 
@@ -79,7 +79,11 @@ export const renderModal = (content: ReactNode, onClose: () => void) => {
   };
 
   // Render your Modal component into the div
-  root.render(<Modal onClose={handleManualClose}>{content}</Modal>);
+  root.render(
+    <Modal onClose={handleManualClose} title={title}>
+      {content}
+    </Modal>,
+  );
 
   return handleClose;
 };

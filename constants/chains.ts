@@ -26,8 +26,8 @@ export const DefaultChainNetwork =
   process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK === 'mainnet'
     ? process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NETWORK
     : EnableDeveloperMode
-    ? 'testnet'
-    : 'mainnet';
+      ? 'testnet'
+      : 'mainnet';
 
 export const LocalChainMode = Number(process.env.NEXT_PUBLIC_USE_LOCAL_BLOCKCHAIN_PORT || 0);
 export const EnableLocalChainMode = !!LocalChainMode;
@@ -231,3 +231,21 @@ export const getLocalChainInfo = (port = LocalChainMode): CHAIN_INFO_REQUEST[] =
     },
   },
 ];
+
+// ================================================
+export const chainSymbolImageUrl =
+  'https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/main/images/ixo/chain.png';
+
+export const feeCurrency = {
+  coinDenom: 'IXO',
+  coinMinimalDenom: 'uixo',
+  coinDecimals: 6,
+  coinImageUrl: 'https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/main/images/ixo/chain.png',
+  gasPriceStep: {
+    low: 0.015,
+    average: 0.025,
+    high: 0.04,
+  },
+  isStakeCurrency: true,
+  isFeeCurrency: true,
+};

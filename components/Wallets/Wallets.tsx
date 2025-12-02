@@ -59,6 +59,11 @@ const Wallets = ({ onSelected, className, ...other }: WalletsProps) => {
             />
           )} */}
           <WalletCard name={WALLETS.signX.name} img={WALLETS.signX.img} onClick={() => onSelected(WALLET_TYPE.signX)} />
+          <WalletCard
+            name={WALLETS.mnemonic.name}
+            img={WALLETS.mnemonic.img}
+            onClick={() => onSelected(WALLET_TYPE.mnemonic)}
+          />
         </>
       ) : (
         <>

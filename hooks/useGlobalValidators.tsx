@@ -4,7 +4,7 @@ import { VALIDATOR_FILTER_KEYS as FILTERS } from '@constants/filters';
 import { VALIDATOR, VALIDATOR_FILTER_TYPE } from 'types/validators';
 import { filterValidators } from '@utils/filters';
 import { WalletContext } from '@contexts/wallet';
-import { ChainContext } from '@contexts/chain';
+import useChainContext from './useChainContext';
 
 type GlobalValidators = {
   search?: string;
@@ -35,7 +35,7 @@ const useGlobalValidators = ({
   const [searchFilter, setSearchFilter] = useState<string>(search);
   const [loading, setLoading] = useState<boolean>(true);
   const { updateValidators, validators, fetchAssets } = useContext(WalletContext);
-  const { queryClient } = useContext(ChainContext);
+  const { queryClient } = useChainContext();
 
   useEffect(() => {
     if (queryClient) {

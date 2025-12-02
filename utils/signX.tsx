@@ -8,46 +8,38 @@ import {
   SIGN_X_TRANSACT_SUCCESS,
 } from '@ixo/signx-sdk';
 
-import * as Toast from '@components/Toast/Toast';
-import { TRX_FEE_OPTION, TRX_MSG } from 'types/transactions';
+import { TRX_MSG } from 'types/transactions';
 import { USER } from 'types/user';
 import { WALLET } from 'types/wallet';
 import { renderModal } from '@components/Modal/Modal';
 import SignXModal from '@components/SignX/SignX';
 import { EVENT_LISTENER_TYPE } from '@constants/events';
-import { KEPLR_CHAIN_INFO_TYPE } from 'types/chain';
 import config from '@constants/config.json';
-import { SIGN_X_RELAYERS } from '@constants/urls';
+import { CHAIN_ID, CHAIN_NETWORK, SIGN_X_RELAYER_URL } from '@constants/env';
 
 let signXClient: SignX;
 
 let signXInitializing = false;
-export const initializeSignX = async (
-  chainInfo: KEPLR_CHAIN_INFO_TYPE,
-  walletUser?: USER,
-): Promise<USER | undefined> => {
+export const initializeSignX = async (walletUser?: USER): Promise<USER | undefined> => {
   if (signXInitializing) return;
   signXInitializing = true;
 
   let removeModal: () => void;
   try {
-    if (walletUser?.chainId && walletUser?.chainId !== chainInfo.chainId)
-      throw new Error('Chains changed, please logout and login again');
-    if (!chainInfo || !chainInfo.chainId) throw new Error('No chain info found to initialize SignX');
-    if (chainInfo.chainName !== 'ixo') throw new Error('SignX only works on ixo chain');
+    if (!CHAIN_ID || !CHAIN_NETWORK) throw new Error('No chain info found to initialize SignX');
 
     signXClient = new SignX({
-      endpoint: SIGN_X_RELAYERS[chainInfo.chainNetwork || 'mainnet'],
+      endpoint: SIGN_X_RELAYER_URL as string,
       // endpoint: 'http://localhost:8000',
-      network: chainInfo.chainNetwork || 'mainnet',
-      sitename: config.siteName ?? 'JAMBO dApp',
+      network: CHAIN_NETWORK as any,
+      sitename: config.siteName ?? 'Supamoto JAMBO dApp',
     });
 
     // if user already has an address or pubkey, return
     if (walletUser?.address || walletUser?.pubKey) return walletUser;
 
     // get login data from client to display QR code and start polling
-    const data = await signXClient.login({ pollingInterval: 1000 });
+    const data = await signXClient.login({ pollingInterval: 1000, matrix: true });
 
     // callback for when modal is closed manually
     const onManualCloseModal = () => {
@@ -57,6 +49,7 @@ export const initializeSignX = async (
     removeModal = renderModal(
       <SignXModal title='SignX Login' data={data} timeout={signXClient.timeout} transactSequence={1} />,
       onManualCloseModal,
+      'SignX Login',
     );
 
     const eventData: any = await new Promise((resolve, reject) => {
@@ -73,7 +66,8 @@ export const initializeSignX = async (
       pubKey: fromHex(eventData.data.pubKey),
       did: eventData.data.did,
       algo: eventData.data.algo,
-      chainId: chainInfo.chainId,
+      chainId: CHAIN_ID,
+      matrix: eventData.data.matrix,
     };
   } catch (e) {
     console.error('ERROR::initializeSignX::', e);
@@ -90,14 +84,7 @@ export const initializeSignX = async (
 };
 
 let signXBroadCastMessageBusy = false;
-export const signXBroadCastMessage = async (
-  msgs: TRX_MSG[],
-  memo = '',
-  fee: TRX_FEE_OPTION,
-  feeDenom: string,
-  chainInfo: KEPLR_CHAIN_INFO_TYPE,
-  wallet: WALLET,
-): Promise<string | null> => {
+export const signXBroadCastMessage = async (msgs: TRX_MSG[], memo = '', wallet: WALLET): Promise<string | null> => {
   if (signXBroadCastMessageBusy) return null;
   signXBroadCastMessageBusy = true;
 
@@ -108,8 +95,7 @@ export const signXBroadCastMessage = async (
   };
 
   try {
-    if (!chainInfo || !chainInfo.chainId) throw new Error('No chain info found');
-    if (chainInfo.chainName !== 'ixo') throw new Error('SignX only works on ixo chain');
+    if (!CHAIN_ID || !CHAIN_NETWORK) throw new Error('No chain info found to broadcast transaction');
 
     if (!wallet.user) throw new Error('No user found to broadcast transaction');
     if (!signXClient) throw new Error('No signXClient found to broadcast transaction');
@@ -132,13 +118,9 @@ export const signXBroadCastMessage = async (
     }
 
     removeModal = renderModal(
-      <SignXModal
-        title='SignX Transaction'
-        data={data}
-        timeout={signXClient.timeout}
-        transactSequence={signXClient.transactSequence}
-      />,
+      <SignXModal data={data} timeout={signXClient.timeout} transactSequence={signXClient.transactSequence} />,
       onManualCloseModal,
+      'SignX Transaction',
     );
 
     // wait for transaction to be broadcasted and SignX to emit success or fail event
@@ -152,7 +134,6 @@ export const signXBroadCastMessage = async (
     return eventData.data?.transactionHash;
   } catch (e) {
     console.error('ERROR::signXBroadCastMessage::', e);
-    Toast.errorToast(`Transaction Failed`);
     return null;
   } finally {
     signXBroadCastMessageBusy = false;
@@ -165,3 +146,14 @@ export const signXBroadCastMessage = async (
     signXClient.removeAllListeners(SIGN_X_TRANSACT_SUCCESS);
   }
 };
+
+// Attach methods to window object to avoid require cycles
+if (typeof window !== 'undefined') {
+  if (!window._signX) {
+    window._signX = {} as any;
+  }
+  if (window._signX) {
+    window._signX.initializeSignX = initializeSignX;
+    window._signX.signXBroadCastMessage = signXBroadCastMessage;
+  }
+}

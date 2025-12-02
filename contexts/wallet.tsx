@@ -1,12 +1,10 @@
-import { createContext, useState, useEffect, HTMLAttributes, useContext, useRef } from 'react';
-import { ChainNetwork } from '@ixo/impactxclient-sdk/types/custom_queries/chain.types';
+import { createContext, useState, useEffect, HTMLAttributes, useRef } from 'react';
 import cls from 'classnames';
 
 import utilsStyles from '@styles/utils.module.scss';
 import { SiteHeader } from '@components/Header/Header';
 import Loader from '@components/Loader/Loader';
 import { WALLET, WALLET_TYPE, WALLET_DELEGATIONS, WALLET_DELEGATION_REWARDS } from 'types/wallet';
-import { KEPLR_CHAIN_INFO_TYPE } from 'types/chain';
 import { VALIDATOR } from 'types/validators';
 import { getLocalStorage, setLocalStorage } from '@utils/persistence';
 import { generateValidators } from '@utils/validators';
@@ -20,15 +18,16 @@ import {
 } from '@utils/query';
 import { EVENT_LISTENER_TYPE } from '@constants/events';
 import useWalletData from '@hooks/useWalletData';
-import { ChainContext } from './chain';
+import useChainContext from '@hooks/useChainContext';
+
+// Import mnemonic to ensure window._mnemonic is initialized
+import '@utils/mnemonic';
 
 export const WalletContext = createContext({
   wallet: {} as WALLET,
   updateWalletType: (newWalletType: WALLET_TYPE) => {},
   fetchAssets: () => {},
   clearAssets: () => {},
-  updateChainId: (chainId: string) => {},
-  updateChainNetwork: (chainNetwork: ChainNetwork) => {},
   logoutWallet: () => {},
   validators: [] as VALIDATOR[],
   updateValidators: async () => {},
@@ -45,7 +44,7 @@ export const WalletProvider = ({ children }: HTMLAttributes<HTMLDivElement>) => 
   const [wallet, setWallet] = useState<WALLET>(DEFAULT_WALLET);
   const [loaded, setLoaded] = useState<boolean>(false);
   const [validators, setValidators] = useState<VALIDATOR[]>();
-  const { chain, chainInfo, queryClient, updateChainId, updateChainNetwork } = useContext(ChainContext);
+  const { chain, queryClient } = useChainContext();
   const [balances, fetchBalances, clearBalances] = useWalletData(queryAllBalances, wallet?.user?.address);
   const [delegations, fetchDelegations, clearDelegations] = useWalletData(
     queryDelegatorDelegations,
@@ -69,7 +68,7 @@ export const WalletProvider = ({ children }: HTMLAttributes<HTMLDivElement>) => 
 
   const initializeWallets = async () => {
     try {
-      const user = await initializeWallet(wallet.walletType, chainInfo as KEPLR_CHAIN_INFO_TYPE, wallet.user);
+      const user = await initializeWallet(wallet.walletType, wallet.user);
       updateWallet({ user });
     } catch (error) {
       console.error('Initializing wallets error:', error);
@@ -179,10 +178,22 @@ export const WalletProvider = ({ children }: HTMLAttributes<HTMLDivElement>) => 
 
     // Comment out below to reset config
     // setLocalStorage('wallet', {});
-    const persistedWallet = getLocalStorage<WALLET>('wallet');
+    let persistedWallet = getLocalStorage<WALLET>('wallet');
+    if (persistedWallet?.walletType === (WALLET_TYPE as any).mnemonic) {
+      setLocalStorage('wallet', {});
+      persistedWallet = getLocalStorage<WALLET>('wallet');
+    }
+    // If the wallet type is set but the user address is not set, clear the wallet
+    if (persistedWallet?.walletType && !persistedWallet?.user?.address) {
+      setLocalStorage('wallet', {});
+      persistedWallet = getLocalStorage<WALLET>('wallet');
+    }
+
     const pubKey = persistedWallet?.user?.pubKey && new Uint8Array(Object.values(persistedWallet.user.pubKey));
-    if (persistedWallet)
+    if (persistedWallet) {
       setWallet({ ...persistedWallet, user: pubKey ? ({ ...persistedWallet.user, pubKey } as any) : undefined });
+    }
+
     setTimeout(() => setLoaded(true), 500);
     window.addEventListener(EVENT_LISTENER_TYPE.wallet_logout, logoutWallet);
   }, []);
@@ -204,8 +215,6 @@ export const WalletProvider = ({ children }: HTMLAttributes<HTMLDivElement>) => 
     updateWalletType,
     fetchAssets,
     clearAssets,
-    updateChainId: updateChainId(clearAssets),
-    updateChainNetwork: updateChainNetwork(clearAssets),
     logoutWallet,
     updateValidators,
     updateValidatorAvatar,

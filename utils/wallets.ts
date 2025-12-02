@@ -1,18 +1,10 @@
 // A file to combine all wallet types methods into one callback function
-import { ChainInfo } from '@keplr-wallet/types';
 
-import { TRX_FEE_OPTION, TRX_MSG } from 'types/transactions';
-import { KEPLR_CHAIN_INFO_TYPE } from 'types/chain';
+import { TRX_MSG } from 'types/transactions';
 import { TOKEN_BALANCE, WALLET, WALLET_TYPE, CURRENCY_TOKEN } from 'types/wallet';
 import { USER } from 'types/user';
-import { initializeWC, WCBroadCastMessage } from './walletConnect';
-import { initializeKeplr, keplrBroadCastMessage } from './keplr';
-import { initializeOpera, operaBroadCastMessage } from './opera';
-import { initializeImpactsX, impactsXBroadCastMessage } from './impactsX';
-import { getFeeDenom, TOKEN_ASSET } from './currency';
 import { DELEGATION, UNBONDING_DELEGATION } from 'types/validators';
 import { sumArray } from './misc';
-import { initializeSignX, signXBroadCastMessage } from './signX';
 
 // TODO: add address regex validations
 export const shortenAddress = (address: string) =>
@@ -82,22 +74,29 @@ export const groupWalletAssets = (
 
 export const initializeWallet = async (
   walletType: WALLET_TYPE | undefined,
-  chain: KEPLR_CHAIN_INFO_TYPE,
   walletUser?: USER,
 ): Promise<USER | undefined> => {
-  if (!chain) return;
   switch (walletType) {
-    case WALLET_TYPE.keplr:
-      return await initializeKeplr(chain);
-    case WALLET_TYPE.opera:
-      return await initializeOpera(chain);
-    case WALLET_TYPE.impactsX:
-      return await initializeImpactsX(chain as ChainInfo);
-    case WALLET_TYPE.walletConnect:
-      return await initializeWC(chain);
+    // case WALLET_TYPE.keplr:
+    //   return await initializeKeplr(chain);
+    // case WALLET_TYPE.opera:
+    //   return await initializeOpera(chain);
+    // case WALLET_TYPE.impactsX:
+    //   return await initializeImpactsX(chain as ChainInfo);
+    // case WALLET_TYPE.walletConnect:
+    //   return await initializeWC(chain);
     case WALLET_TYPE.signX:
-      return await initializeSignX(chain, walletUser);
+      if (!window._signX?.initializeSignX) {
+        throw new Error('SignX wallet methods not available');
+      }
+      return await window._signX.initializeSignX(walletUser);
+    case WALLET_TYPE.mnemonic:
+      if (!window._mnemonic?.initializeMnemonic) {
+        throw new Error('Mnemonic wallet methods not available');
+      }
+      return await window._mnemonic.initializeMnemonic(walletUser);
     default:
+      throw new Error('Unsupported wallet type to initialize');
       return;
   }
 };
@@ -106,24 +105,28 @@ export const broadCastMessages = async (
   wallet: WALLET,
   msgs: TRX_MSG[],
   memo: string | undefined,
-  fee: TRX_FEE_OPTION,
-  suggestedFeeDenom: string,
-  chain: KEPLR_CHAIN_INFO_TYPE,
 ): Promise<string | null> => {
-  if (!chain) return null;
-  const feeDenom = getFeeDenom(suggestedFeeDenom, chain.feeCurrencies as TOKEN_ASSET[]);
   switch (wallet.walletType) {
-    case WALLET_TYPE.keplr:
-      return await keplrBroadCastMessage(msgs, memo, fee, feeDenom, chain);
-    case WALLET_TYPE.impactsX:
-      return await impactsXBroadCastMessage(msgs, memo, fee, feeDenom, chain as ChainInfo);
-    case WALLET_TYPE.opera:
-      return await operaBroadCastMessage(msgs, memo, fee, feeDenom, chain);
-    case WALLET_TYPE.walletConnect:
-      return await WCBroadCastMessage(msgs, memo, fee, feeDenom, chain);
+    // case WALLET_TYPE.keplr:
+    //   return await keplrBroadCastMessage(msgs, memo, fee, feeDenom, chain);
+    // case WALLET_TYPE.impactsX:
+    //   return await impactsXBroadCastMessage(msgs, memo, fee, feeDenom, chain as ChainInfo);
+    // case WALLET_TYPE.opera:
+    //   return await operaBroadCastMessage(msgs, memo, fee, feeDenom, chain);
+    // case WALLET_TYPE.walletConnect:
+    //   return await WCBroadCastMessage(msgs, memo, fee, feeDenom, chain);
     case WALLET_TYPE.signX:
-      return await signXBroadCastMessage(msgs, memo, fee, feeDenom, chain, wallet);
+      if (!window._signX?.signXBroadCastMessage) {
+        throw new Error('SignX wallet methods not available');
+      }
+      return await window._signX.signXBroadCastMessage(msgs, memo || '', wallet);
+    case WALLET_TYPE.mnemonic:
+      if (!window._mnemonic?.mnemonicBroadCastMessage) {
+        throw new Error('Mnemonic wallet methods not available');
+      }
+      return await window._mnemonic.mnemonicBroadCastMessage(msgs, memo || '', wallet);
     default:
+      throw new Error('Unsupported wallet type to broadcast messages');
       return null;
   }
 };

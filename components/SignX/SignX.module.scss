@@ -1,19 +1,44 @@
-.signx {
-  padding: 15px;
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 400px;
+  align-items: center;
+}
 
-  h2 {
-    color: var(--primary-color);
-    margin-bottom: 0;
-  }
+.controlLabel {
+  color: var(--main-font-color);
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  margin: 0;
+}
 
-  p {
-    margin-top: 10px;
-  }
+.description {
+  color: var(--main-font-color);
+  font-size: 0.9rem;
+  text-align: center;
+  margin: 0;
+  line-height: 1.5;
 
   a {
     color: var(--primary-color);
     text-decoration: none;
+    font-weight: 500;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
+}
+
+.timeWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0;
 }
 
 .time {
@@ -21,24 +46,47 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  // margin-bottom: 10px;
-
-  p {
-    margin: 0;
-    padding: 0;
-    font-size: 12px;
-  }
 }
 
-.timeWrapper {
-  margin-bottom: 18px;
+.timeValue {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.timeLabel {
+  margin: 4px 0 0 0;
+  padding: 0;
+  font-size: 0.75rem;
+  text-transform: lowercase;
+  opacity: 0.8;
+}
+
+.qrWrapper {
   display: flex;
-  flex-direction: row;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-color: var(--bg-color);
+  border-radius: var(--card-border-radius);
+  border: 1px solid var(--light-grey-color);
 }
 
 .deeplink {
-  padding-top: 0px;
-  font-size: 12px;
+  color: var(--main-font-color);
+  font-size: 0.85rem;
+  text-align: center;
+  margin: 0;
+  line-height: 1.5;
+  padding: 0 10px;
+
+  a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }

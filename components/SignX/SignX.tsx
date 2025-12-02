@@ -8,7 +8,6 @@ import styles from './SignX.module.scss';
 import { getCSSVariable } from '@utils/styles';
 
 type SignXProps = {
-  title: string;
   subtitle?: string;
   data: any;
   timeout: number;
@@ -16,7 +15,7 @@ type SignXProps = {
   isNewSession?: boolean;
 } & HTMLAttributes<HTMLDivElement>;
 
-const SignX: FC<SignXProps> = ({ title, subtitle, data, timeout, transactSequence }) => {
+const SignX: FC<SignXProps> = ({ subtitle, data, timeout, transactSequence }) => {
   const isNewSession = transactSequence === 1;
   const firstLoad = useRef(false);
   const timeoutFull = (timeout - 1000) / 1000;
@@ -41,10 +40,9 @@ const SignX: FC<SignXProps> = ({ title, subtitle, data, timeout, transactSequenc
   }, []);
 
   return (
-    <div className={styles.signx}>
-      <h2>{title}</h2>
+    <div className={styles.container}>
       {!isNewSession ? (
-        <p>
+        <p className={styles.description}>
           Please open your{' '}
           <a href={downloadLink} rel='noopener noreferrer' target='_blank'>
             Impacts X App
@@ -52,35 +50,39 @@ const SignX: FC<SignXProps> = ({ title, subtitle, data, timeout, transactSequenc
           and sign transaction #{transactSequence}
         </p>
       ) : subtitle ? (
-        <p>{subtitle}</p>
+        <p className={styles.description}>{subtitle}</p>
       ) : (
-        <p>
+        <p className={styles.description}>
           Scan QR with your{' '}
           <a href={downloadLink} rel='noopener noreferrer' target='_blank'>
             Impacts X App
           </a>
         </p>
       )}
+
       <div className={styles.timeWrapper}>
         <CountdownCircleTimer
           isPlaying
           duration={timeoutFull}
           colors={[getCSSVariable('--primary-color') || ('#004777' as any), '#F7B801', '#A30000']}
           colorsTime={[timeoutFull, timeoutThird, 0]}
-          size={75}
-          strokeWidth={5}
+          size={90}
+          strokeWidth={6}
         >
           {({ remainingTime, color }) => (
             <div className={styles.time} style={{ color: color }}>
-              <div>{remainingTime}</div>
-              <p>seconds</p>
+              <div className={styles.timeValue}>{remainingTime}</div>
+              <p className={styles.timeLabel}>seconds</p>
             </div>
           )}
         </CountdownCircleTimer>
       </div>
+
       {isNewSession && (
         <>
-          <QRCode value={JSON.stringify(data)} size={250} />
+          <div className={styles.qrWrapper}>
+            <QRCode value={JSON.stringify(data)} size={250} />
+          </div>
           <p className={styles.deeplink}>
             If you are on a mobile device please install the{' '}
             <a href={downloadLink} rel='noopener noreferrer' target='_blank'>

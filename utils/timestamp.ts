@@ -127,3 +127,5 @@ export const calculateTimeRemaining = (targetDate: Date | string | number) => {
     isComplete: false,
   };
 };
+
+export const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

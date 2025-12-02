@@ -10,7 +10,6 @@ import AddressActionButton from '@components/AddressActionButton/AddressActionBu
 import BottomSheetAddress from '@components/BottomSheetAddress/BottomSheetAddress';
 import BottomSheetLogout from '@components/BottomSheetLogout/BottomSheetLogout';
 import ImageWithFallback from '@components/ImageFallback/ImageFallback';
-import KadoModal from '@components/KadoModal/KadoModal';
 import TokenList from '@components/TokenList/TokenList';
 import Wallets from '@components/Wallets/Wallets';
 import Header from '@components/Header/Header';
@@ -26,21 +25,11 @@ import { WALLETS } from '@constants/wallet';
 const Account: NextPage = () => {
   const [QRVisible, showQR, hideQR] = useModalState(false);
   const [logoutVisible, showLogout, hideLogout] = useModalState(false);
-  const [kadoVisible, showKado, hideKado] = useModalState(false);
 
   const { wallet, updateWalletType } = useContext(WalletContext);
 
   const { push, query, replace } = useRouter();
   const handleTokenClick = (denom: string) => push(`/account/${urlEncodeIbcDenom(denom)}`);
-
-  useEffect(() => {
-    if (query?.kado && !kadoVisible) {
-      showKado();
-    }
-    if (!query?.kado && kadoVisible) {
-      hideKado();
-    }
-  }, [query?.kado]);
 
   return (
     <>
@@ -75,18 +64,6 @@ const Account: NextPage = () => {
             <div className={utilsStyles.spacer3} />
             <TokenList onTokenClick={handleTokenClick} displayGradient />
             <div style={{ flex: 1 }} />
-            <Button
-              rounded
-              label='Buy Tokens'
-              textCentered
-              className={styles.button}
-              color={query.kado ? BUTTON_COLOR.white : BUTTON_COLOR.primary}
-              size={BUTTON_SIZE.mediumLarge}
-              bgColor={query.kado ? BUTTON_BG_COLOR.primary : BUTTON_BG_COLOR.lightGrey}
-              onClick={() => {
-                replace('/account?kado=true');
-              }}
-            />
             {QRVisible && <BottomSheetAddress show={QRVisible} onClose={hideQR} />}
             {logoutVisible && <BottomSheetLogout show={logoutVisible} onClose={hideLogout} />}
           </>
@@ -98,13 +75,6 @@ const Account: NextPage = () => {
         ) : (
           <Wallets onSelected={updateWalletType} />
         )}
-        <KadoModal
-          allowClose
-          visible={!!query.kado}
-          onClose={() => {
-            replace('/account');
-          }}
-        />
       </main>
       <Footer showAccountButton showActionsButton />
     </>
