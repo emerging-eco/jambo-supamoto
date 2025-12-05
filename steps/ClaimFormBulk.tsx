@@ -101,8 +101,6 @@ const BulkClaims: FC<BulkClaimsProps> = ({ collection, surveyTemplate, title }) 
     if (!baseUrl) {
       throw new Error('Failed to load the claim bot URL');
     }
-    await delay(500);
-    return Math.random().toString(36).substring(2, 15);
     const saveClaimResponse = await fetch(`${baseUrl}/action`, {
       method: 'POST',
       headers: {
