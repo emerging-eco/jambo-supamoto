@@ -25,58 +25,35 @@ const Wallets = ({ onSelected, className, ...other }: WalletsProps) => {
 
   return (
     <div className={cls(styles.wallets, className)} {...other}>
-      {operaWallet || keplrWallet || walletConnect ? (
-        <>
-          <div className={utilsStyles.spacer3} />
-          <h3>Choose your wallet</h3>
-          <div className={utilsStyles.spacer3} />
-          {!!keplrWallet && (
-            <WalletCard
-              name={WALLETS.keplr.name}
-              img={WALLETS.keplr.img}
-              onClick={() => onSelected(WALLET_TYPE.keplr)}
-            />
-          )}
-          {!!operaWallet && (
-            <WalletCard
-              name={WALLETS.opera.name}
-              img={WALLETS.opera.img}
-              onClick={() => onSelected(WALLET_TYPE.opera)}
-            />
-          )}
-          {!!impactsXWallet && (
-            <WalletCard
-              name={WALLETS.impactsX.name}
-              img={WALLETS.impactsX.img}
-              onClick={() => onSelected(WALLET_TYPE.impactsX)}
-            />
-          )}
-          {/* {!!walletConnect && (
+      <div className={utilsStyles.spacer3} />
+      <h3>Choose your wallet</h3>
+      <div className={utilsStyles.spacer3} />
+      {!!keplrWallet && (
+        <WalletCard name={WALLETS.keplr.name} img={WALLETS.keplr.img} onClick={() => onSelected(WALLET_TYPE.keplr)} />
+      )}
+      {!!operaWallet && (
+        <WalletCard name={WALLETS.opera.name} img={WALLETS.opera.img} onClick={() => onSelected(WALLET_TYPE.opera)} />
+      )}
+      {!!impactsXWallet && (
+        <WalletCard
+          name={WALLETS.impactsX.name}
+          img={WALLETS.impactsX.img}
+          onClick={() => onSelected(WALLET_TYPE.impactsX)}
+        />
+      )}
+      {/* {!!walletConnect && (
             <WalletCard
               name={WALLETS.walletConnect.name}
               img={WALLETS.walletConnect.img}
               onClick={() => onSelected(WALLET_TYPE.walletConnect)}
             />
           )} */}
-          <WalletCard name={WALLETS.signX.name} img={WALLETS.signX.img} onClick={() => onSelected(WALLET_TYPE.signX)} />
-          <WalletCard
-            name={WALLETS.mnemonic.name}
-            img={WALLETS.mnemonic.img}
-            onClick={() => onSelected(WALLET_TYPE.mnemonic)}
-          />
-        </>
-      ) : (
-        <>
-          <div className={utilsStyles.spacer3} />
-          <div className={utilsStyles.rowJustifyCenter}>
-            <ColoredIcon icon={WalletImg} size={58} color={ICON_COLOR.lightGrey} />
-          </div>
-          <div className={utilsStyles.spacer1} />
-          <h3>No Wallet Detected</h3>
-          <div className={utilsStyles.spacer2} />
-          <p>This app works best in an Opera mobile browser on Android</p>
-        </>
-      )}
+      <WalletCard name={WALLETS.signX.name} img={WALLETS.signX.img} onClick={() => onSelected(WALLET_TYPE.signX)} />
+      <WalletCard
+        name={WALLETS.mnemonic.name}
+        img={WALLETS.mnemonic.img}
+        onClick={() => onSelected(WALLET_TYPE.mnemonic)}
+      />
     </div>
   );
 };

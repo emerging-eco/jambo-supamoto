@@ -1,0 +1,254 @@
+.tableContainer {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  border-radius: var(--card-border-radius);
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  overflow-y: visible;
+  width: 100%;
+  border-radius: var(--card-border-radius);
+  background-color: var(--bg-color);
+  border: 1px solid var(--light-grey-color);
+}
+
+.table {
+  width: auto;
+  min-width: 100%;
+  border-collapse: collapse;
+  background-color: var(--bg-color);
+  color: var(--main-font-color);
+  font-size: var(--main-font-size);
+  table-layout: auto;
+}
+
+.headerCell {
+  background-color: var(--light-grey-color);
+  color: var(--main-font-color);
+  padding: 0.75rem 0.5rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-bottom: 2px solid var(--grey-color);
+  position: relative;
+  white-space: nowrap;
+  width: fit-content;
+
+  &:hover {
+    background-color: var(--grey-color);
+  }
+
+  &:last-child {
+    border-top-right-radius: var(--card-border-radius);
+  }
+}
+
+.rowNumberHeader {
+  position: sticky;
+  left: 0;
+  z-index: 10;
+  width: 40px !important;
+  min-width: 40px !important;
+  max-width: 40px !important;
+  text-align: center;
+  border-top-left-radius: var(--card-border-radius);
+  padding: 0.75rem 0.25rem;
+
+  &:hover {
+    background-color: var(--grey-color);
+  }
+}
+
+.tableRow {
+  border-bottom: 1px solid var(--light-grey-color);
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: var(--light-grey-color);
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.tableCell {
+  padding: 0.75rem 0.5rem;
+  text-align: left;
+  word-wrap: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.85rem;
+  width: fit-content;
+
+  &.tableCellEmpty {
+    color: var(--grey-color);
+  }
+}
+
+.rowNumberCell {
+  position: sticky;
+  left: 0;
+  z-index: 9;
+  background-color: var(--bg-color);
+  width: 40px !important;
+  min-width: 40px !important;
+  max-width: 40px !important;
+  text-align: center;
+  font-weight: 500;
+  border-right: 1px solid var(--light-grey-color);
+  padding: 0.75rem 0.25rem;
+  transition: background-color 0.2s ease;
+
+  .tableRow:hover & {
+    background-color: var(--grey-color);
+  }
+}
+
+.rowNumber {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+}
+
+.loaderContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.rowNumberSuccess {
+  background-color: #4caf50;
+  color: white;
+  border-radius: 4px;
+  padding: 2px 4px;
+  font-weight: 600;
+}
+
+.rowNumberError {
+  background-color: #f44336;
+  color: white;
+  border-radius: 4px;
+  padding: 2px 4px;
+  font-weight: 600;
+}
+
+.emptyValue {
+  color: var(--grey-color);
+  font-style: italic;
+}
+
+.emptyMessage {
+  text-align: center;
+  padding: 2rem;
+  color: var(--lighter-font-color);
+  font-size: 1rem;
+}
+
+.rowCountSelector {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.rowCountSelector > * {
+  flex-shrink: 0;
+}
+
+.rowCountLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: var(--main-font-color);
+  font-weight: 500;
+}
+
+.rowCountSelect {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--light-grey-color);
+  border-radius: var(--card-border-radius);
+  background-color: var(--bg-color);
+  color: var(--main-font-color);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: var(--primary-color);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary-color);
+  }
+}
+
+.rowCountInfo {
+  font-size: 0.95rem;
+  color: var(--main-font-color);
+  font-weight: 500;
+}
+
+.paginationSection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--grey-color);
+}
+
+.pageInfo {
+  font-size: 0.95rem;
+  color: var(--main-font-color);
+  font-weight: 500;
+  min-width: 100px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .tableContainer {
+    max-width: 100%;
+    padding: 1rem;
+  }
+
+  .headerCell,
+  .tableCell {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  .rowCountSelector {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .pagination {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .pageInfo {
+    min-width: auto;
+  }
+}

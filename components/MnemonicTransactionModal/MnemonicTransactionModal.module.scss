@@ -1,0 +1,181 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.controlLabel {
+  color: var(--main-font-color);
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+
+.dataDisplay {
+  background-color: var(--bg-color);
+  border: 1px solid var(--grey-color);
+  border-radius: var(--card-border-radius);
+  padding: 12px;
+  font-size: 0.8rem;
+  color: var(--main-font-color);
+  margin: 0;
+  max-height: 300px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: 'Courier New', monospace;
+}
+
+.memoSection {
+  display: flex;
+  flex-direction: column;
+  padding-top: 8px;
+  border-bottom: 1px solid var(--light-grey-color);
+  padding-bottom: 8px;
+}
+
+.memoLabel {
+  color: var(--main-font-color);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.memoText {
+  background-color: var(--bg-color);
+  border: 1px solid var(--light-grey-color);
+  border-radius: var(--card-border-radius);
+  padding: 12px;
+  font-size: 0.85rem;
+  color: var(--main-font-color);
+  margin: 0;
+  word-wrap: break-word;
+}
+
+.countdownMessage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  background-color: var(--bg-color);
+  border: 1px solid var(--primary-color);
+  border-radius: var(--card-border-radius);
+  margin-top: 8px;
+}
+
+.countdownText {
+  color: var(--primary-color);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0;
+  text-align: center;
+}
+
+.countdownTimerWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.countdownTimerContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.countdownTimerValue {
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.autoApproveRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+}
+
+.autoApproveContent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.autoApproveHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.autoApproveIcon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.autoApproveTitle {
+  color: var(--main-font-color);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.autoApproveDescription {
+  color: var(--main-font-color);
+  font-size: 0.8rem;
+  margin: 0;
+  opacity: 0.7;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding-top: 8px;
+  // border-top: 1px solid var(--light-grey-color);
+}
+
+.actionButton {
+  width: 100%;
+}
+
+.successMessage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  min-height: 140px;
+}
+
+.successText {
+  color: var(--success-color, #28a745);
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.errorMessage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  min-height: 140px;
+}
+
+.errorText {
+  color: var(--error-color);
+  font-size: 0.9rem;
+  margin: 0;
+  text-align: center;
+  line-height: 1.4;
+}

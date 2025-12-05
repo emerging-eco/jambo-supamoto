@@ -271,6 +271,12 @@
   font-weight: 600;
 }
 
+.requiredIndicator {
+  color: var(--primary-color);
+  font-weight: 700;
+  margin-left: 4px;
+}
+
 .modeSelect,
 .select,
 .input {

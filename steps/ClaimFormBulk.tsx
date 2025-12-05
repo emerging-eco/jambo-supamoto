@@ -16,12 +16,14 @@ import { Collection } from '@ixo/impactxclient-sdk/types/codegen/ixo/claims/v1be
 import { generateExecTrx, generateSubmitTrx } from '@utils/transactions';
 import { broadCastMessages } from '@utils/wallets';
 import Button, { BUTTON_BG_COLOR, BUTTON_COLOR, BUTTON_SIZE } from '@components/Button/Button';
-import DataTable from '@components/DataTable/DataTable';
+// import DataTable from '@components/DataTable/DataTable'; // Old table - kept for reference
+import ClaimFormBulkDataTable from '@components/ClaimFormBulkDataTable/ClaimFormBulkDataTable';
+import ClaimFormBulkSubmissionSummary from '@components/ClaimFormBulkSubmissionSummary/ClaimFormBulkSubmissionSummary';
 import CSVImporter from '@components/CSVImporter/CSVImporter';
 import useWindowDimensions from '@hooks/useWindowDimensions';
 import { TRX_MSG } from 'types/transactions';
 import { delay } from '@utils/timestamp';
-import { MATRIX_BID_BOT_URL } from '@constants/env';
+import { MATRIX_BID_BOT_URL, MATRIX_CLAIM_BOT_URL } from '@constants/env';
 
 type ClaimFormBulkProps = {
   onSuccess: (data: StepDataType<STEPS.claim_form_bulk>) => void;
@@ -76,7 +78,7 @@ interface BulkClaimsProps {
   surveyTemplate: any;
   title: string;
 }
-type RowStatus = 'pending' | 'uploading' | 'success' | 'failed' | 'failed-twice';
+type RowStatus = 'pending' | 'uploading' | 'submitting' | 'success' | 'failed' | 'failed-twice' | 'error';
 
 const BulkClaims: FC<BulkClaimsProps> = ({ collection, surveyTemplate, title }) => {
   const { wallet } = useWalletContext();
@@ -91,98 +93,137 @@ const BulkClaims: FC<BulkClaimsProps> = ({ collection, surveyTemplate, title }) 
   const [originalRowIndexMap, setOriginalRowIndexMap] = useState<number[]>([]); // Maps csvData[i] to originalCsv.rows[j] index
   const [rowStatuses, setRowStatuses] = useState<Record<number, RowStatus>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submissionStopped, setSubmissionStopped] = useState(false);
+  const [submissionComplete, setSubmissionComplete] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   async function uploadClaimData(data: any) {
-    await delay(100);
+    const baseUrl = MATRIX_CLAIM_BOT_URL;
+    if (!baseUrl) {
+      throw new Error('Failed to load the claim bot URL');
+    }
+    await delay(500);
     return Math.random().toString(36).substring(2, 15);
-    // const baseUrl = CLAIM_BOT_URLS[CHAIN_NETWORK];
-    // if (!baseUrl) {
-    //   throw new Error('Failed to load the claim bot URL');
-    // }
-    // const saveClaimResponse = await fetch(`${baseUrl}/action`, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     Authorization: `Bearer ${wallet?.user?.matrix?.accessToken}`,
-    //   },
-    //   body: JSON.stringify({
-    //     action: 'save-claim',
-    //     flags: {
-    //       collection: collection.id,
-    //       data: typeof data === 'string' ? data : JSON.stringify(data),
-    //     },
-    //   }),
-    // });
-    // if (!saveClaimResponse.ok) {
-    //   let errorData: any;
-    //   try {
-    //     errorData = await saveClaimResponse.json();
-    //   } catch {
-    //     throw new Error(`Failed to save claim - ${saveClaimResponse.statusText}`);
-    //   }
-    //   throw new Error(
-    //     errorData?.data?.error ??
-    //       errorData?.error ??
-    //       errorData?.data?.message ??
-    //       errorData?.message ??
-    //       `Failed to save claim - ${saveClaimResponse.statusText}`,
-    //   );
-    // }
-    // const saveClaimResponseData = await saveClaimResponse.json();
-    // return saveClaimResponseData?.data?.cid;
+    const saveClaimResponse = await fetch(`${baseUrl}/action`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${wallet?.user?.matrix?.accessToken}`,
+      },
+      body: JSON.stringify({
+        action: 'save-claim',
+        flags: {
+          collection: collection.id,
+          data: typeof data === 'string' ? data : JSON.stringify(data),
+        },
+      }),
+    });
+    if (!saveClaimResponse.ok) {
+      let errorData: any;
+      try {
+        errorData = await saveClaimResponse.json();
+      } catch {
+        throw new Error(`Failed to save claim - ${saveClaimResponse.statusText}`);
+      }
+      throw new Error(
+        errorData?.data?.error ??
+          errorData?.error ??
+          errorData?.data?.message ??
+          errorData?.message ??
+          `Failed to save claim - ${saveClaimResponse.statusText}`,
+      );
+    }
+    const saveClaimResponseData = await saveClaimResponse.json();
+    return saveClaimResponseData?.data?.cid;
   }
 
-  // const mnemonicSessionRef = useRef<MnemonicApprovalSession | null>(null);
-
-  // Lazy initialization of mnemonic session to avoid circular dependency
-  // const getMnemonicSession = async () => {
-  //   if (!mnemonicSessionRef.current) {
-  //     const { createMnemonicApprovalSession } = await import('@utils/mnemonic');
-  //     mnemonicSessionRef.current = createMnemonicApprovalSession();
-  //   }
-  //   return mnemonicSessionRef.current;
-  // };
-
-  async function submitChunk(chunkRows: Array<{ index: number; data: any }>) {
-    const submitMsgs: TRX_MSG[] = [];
-
-    // Upload all claims in chunk first
-    for (const row of chunkRows) {
-      try {
-        setRowStatuses((prev) => ({ ...prev, [row.index]: 'uploading' }));
-        const cid = await uploadClaimData(row.data);
-        submitMsgs.push(
-          generateSubmitTrx(
-            {
-              adminAddress: collection?.admin,
-              agentAddress: wallet?.user?.address!,
-              agentDid: wallet?.user?.did!,
-              claimId: cid,
-              collectionId: collection.id,
-            },
-            true,
-          ),
-        );
-      } catch (error) {
-        console.error(`Failed to upload claim for row ${row.index}:`, error);
-        setRowStatuses((prev) => ({ ...prev, [row.index]: 'failed' }));
-        throw error;
-      }
+  async function signAndBroadcast(execTrx: any): Promise<string | null> {
+    if (!wallet) {
+      throw new Error('Wallet not available');
     }
+    // Broadcast transaction (auto-approve feature is always available for mnemonic transactions)
+    return await broadCastMessages(wallet, [execTrx], undefined);
+  }
 
-    // Broadcast transaction with all submit messages
-    const execTrx = generateExecTrx({
-      grantee: wallet?.user?.address!,
-      msgs: submitMsgs as any[],
-    });
+  async function handleBatchSubmission() {
+    if (isSubmitting || csvData.length === 0) return;
 
-    // if (wallet?.walletType === WALLET_TYPE.mnemonic) {
-    //   // const mnemonicSession = await getMnemonicSession();
-    //   // await mnemonicSession.sign([execTrx], undefined, wallet);
-    // } else {
-    await broadCastMessages(wallet, [execTrx], undefined);
-    // }
+    setIsSubmitting(true);
+    setSubmissionComplete(false);
+    setErrorMessage(null);
+
+    const BATCH_SIZE = 2;
+    const rowsToSubmit = csvData
+      .map((data, idx) => ({ index: idx, data }))
+      .filter(({ index }) => rowStatuses[index] !== 'success');
+
+    try {
+      // Process in batches of 2
+      for (let i = 0; i < rowsToSubmit.length; i += BATCH_SIZE) {
+        const batch = rowsToSubmit.slice(i, i + BATCH_SIZE);
+        const batchIndices = batch.map((r) => r.index);
+
+        try {
+          // Step 1: Upload each claim to matrix claim bot (sequentially)
+          const cids: string[] = [];
+          for (const row of batch) {
+            setRowStatuses((prev) => ({ ...prev, [row.index]: 'uploading' }));
+            const cid = await uploadClaimData(row.data);
+            cids.push(cid);
+          }
+
+          // Step 2: Generate transactions for each claim (sequentially)
+          const submitMsgs: TRX_MSG[] = [];
+          for (let j = 0; j < batch.length; j++) {
+            const row = batch[j];
+            const cid = cids[j];
+            setRowStatuses((prev) => ({ ...prev, [row.index]: 'submitting' }));
+            submitMsgs.push(
+              generateSubmitTrx(
+                {
+                  adminAddress: collection?.admin,
+                  agentAddress: wallet?.user?.address!,
+                  agentDid: wallet?.user?.did!,
+                  claimId: cid,
+                  collectionId: collection.id,
+                },
+                true,
+              ),
+            );
+          }
+
+          // Step 3: Sign and broadcast both transactions together
+          const execTrx = generateExecTrx({
+            grantee: wallet?.user?.address!,
+            msgs: submitMsgs as any[],
+          });
+
+          const transactionHash = await signAndBroadcast(execTrx);
+          if (!transactionHash) {
+            throw new Error('Transaction failed - no transaction hash returned');
+          }
+
+          // Step 4: Update status to success for this batch
+          batchIndices.forEach((idx) => {
+            setRowStatuses((prev) => ({ ...prev, [idx]: 'success' }));
+          });
+        } catch (error) {
+          // If batch fails, update status to error and stop processing
+          console.error('Batch submission failed:', error);
+          const errorMsg = error instanceof Error ? error.message : 'Unknown error occurred';
+          setErrorMessage(errorMsg);
+          batchIndices.forEach((idx) => {
+            setRowStatuses((prev) => ({ ...prev, [idx]: 'failed' }));
+          });
+          // Stop processing - don't continue to next batch
+          break;
+        }
+      }
+    } catch (error) {
+      console.error('Submission error:', error);
+    } finally {
+      setIsSubmitting(false);
+      setSubmissionComplete(true);
+    }
   }
 
   function exportToCSVTableFormat(rows: any[], filename: string) {
@@ -262,117 +303,32 @@ const BulkClaims: FC<BulkClaimsProps> = ({ collection, surveyTemplate, title }) 
     const failedIndices = csvData
       .map((_, idx) => idx)
       .filter(
-        (idx) =>
-          rowStatuses[idx] === 'failed' ||
-          rowStatuses[idx] === 'failed-twice' ||
-          !rowStatuses[idx] ||
-          rowStatuses[idx] === 'pending',
+        (idx) => rowStatuses[idx] === 'failed' || rowStatuses[idx] === 'failed-twice' || rowStatuses[idx] === 'error',
       );
-    exportToCSVOriginalFormat(failedIndices, `failed_pending_claims_${new Date().toISOString().split('T')[0]}.csv`);
+    exportToCSVOriginalFormat(failedIndices, `failed_claims_${new Date().toISOString().split('T')[0]}.csv`);
   }
 
-  async function handleSubmitAll(selectedRows?: Array<{ data: Record<string, any>; index: number }>) {
-    if (isSubmitting) return;
-    setIsSubmitting(true);
-    setSubmissionStopped(false);
-
-    const rowsToSubmit =
-      selectedRows?.map((r) => ({ index: r.index, data: r.data })) ??
-      csvData.map((data, idx) => ({ index: idx, data })).filter(({ index }) => rowStatuses[index] !== 'success');
-
-    // Initialize pending rows
-    rowsToSubmit.forEach(({ index }) => {
-      if (!rowStatuses[index] || rowStatuses[index] === 'pending') {
-        setRowStatuses((prev) => ({ ...prev, [index]: 'pending' }));
-      }
-    });
-
-    const CHUNK_SIZE = 15;
-
-    // Local failure tracking to avoid stale state reads
-    const failureCounts = new Map<number, number>();
-    let stopProcessing = false;
-
-    // Process chunks
-    for (let i = 0; i < rowsToSubmit.length; i += CHUNK_SIZE) {
-      if (stopProcessing) break;
-
-      const chunk = rowsToSubmit.slice(i, i + CHUNK_SIZE);
-      const chunkIndices = chunk.map((r) => r.index);
-
-      try {
-        await submitChunk(chunk);
-        chunkIndices.forEach((idx) => {
-          setRowStatuses((prev) => ({ ...prev, [idx]: 'success' }));
-        });
-      } catch (error: any) {
-        console.error('Chunk submission failed:', error);
-        // If user rejected signing, stop immediately and mark rows as failed-twice
-        if (error && (error.message === 'User rejected' || String(error).includes('User rejected'))) {
-          chunkIndices.forEach((idx) => {
-            failureCounts.set(idx, 2);
-            setRowStatuses((prev) => ({ ...prev, [idx]: 'failed-twice' }));
-          });
-          stopProcessing = true;
-          try {
-            // mnemonicSessionRef.current?.stop();
-          } catch {}
-          break;
-        }
-        // Mark failed and count failures
-        chunkIndices.forEach((idx) => {
-          const nextCount = (failureCounts.get(idx) ?? 0) + 1;
-          failureCounts.set(idx, nextCount);
-          if (nextCount >= 2) {
-            stopProcessing = true;
-            setRowStatuses((prev) => ({ ...prev, [idx]: 'failed-twice' }));
-          } else {
-            setRowStatuses((prev) => ({ ...prev, [idx]: 'failed' }));
-          }
-        });
-
-        if (stopProcessing) break;
-
-        // Retry failed rows individually (only those that failed once)
-        for (const row of chunk) {
-          if (stopProcessing) break;
-          if ((failureCounts.get(row.index) ?? 0) === 1) {
-            try {
-              await submitChunk([row]);
-              setRowStatuses((prev) => ({ ...prev, [row.index]: 'success' }));
-              failureCounts.delete(row.index);
-            } catch (retryError: any) {
-              console.error(`Retry failed for row ${row.index}:`, retryError);
-              // If user rejected signing, stop immediately
-              if (
-                retryError &&
-                (retryError.message === 'User rejected' || String(retryError).includes('User rejected'))
-              ) {
-                setRowStatuses((prev) => ({ ...prev, [row.index]: 'failed-twice' }));
-                stopProcessing = true;
-                break;
-              }
-              const nextCount = (failureCounts.get(row.index) ?? 1) + 1;
-              failureCounts.set(row.index, nextCount);
-              setRowStatuses((prev) => ({ ...prev, [row.index]: 'failed-twice' }));
-              stopProcessing = true;
-              try {
-                // mnemonicSessionRef.current?.stop();
-              } catch {}
-              break;
-            }
-          }
-        }
-      }
-    }
-
-    if (stopProcessing) setSubmissionStopped(true);
-    setIsSubmitting(false);
+  function handleExportPending() {
+    const pendingIndices = csvData
+      .map((_, idx) => idx)
+      .filter(
+        (idx) =>
+          !rowStatuses[idx] ||
+          rowStatuses[idx] === 'pending' ||
+          (rowStatuses[idx] !== 'success' &&
+            rowStatuses[idx] !== 'failed' &&
+            rowStatuses[idx] !== 'failed-twice' &&
+            rowStatuses[idx] !== 'error'),
+      );
+    exportToCSVOriginalFormat(pendingIndices, `pending_claims_${new Date().toISOString().split('T')[0]}.csv`);
   }
 
-  const onClose = () => {
-    setIsOpen(false);
-  };
+  // Calculate counts for summary overlay
+  const succeededCount = csvData.filter((_, idx) => rowStatuses[idx] === 'success').length;
+  const failedCount = csvData.filter(
+    (_, idx) => rowStatuses[idx] === 'failed' || rowStatuses[idx] === 'failed-twice' || rowStatuses[idx] === 'error',
+  ).length;
+  const pendingCount = csvData.length - succeededCount - failedCount;
 
   return (
     <>
@@ -404,6 +360,7 @@ const BulkClaims: FC<BulkClaimsProps> = ({ collection, surveyTemplate, title }) 
                   ?.map((element: any) => ({
                     name: element.name,
                     title: element.title || element.name,
+                    isRequired: element.isRequired === true,
                   })) ?? []
               }
               onImport={(data, originalCsvData) => {
@@ -419,7 +376,7 @@ const BulkClaims: FC<BulkClaimsProps> = ({ collection, surveyTemplate, title }) 
                   setOriginalRowIndexMap([]);
                 }
                 setRowStatuses({});
-                setSubmissionStopped(false);
+                setSubmissionComplete(false);
                 setIsOpen(false);
               }}
               onCancel={() => setIsOpen(false)}
@@ -428,91 +385,18 @@ const BulkClaims: FC<BulkClaimsProps> = ({ collection, surveyTemplate, title }) 
         ) : csvData.length > 0 ? (
           <>
             <div className={utilsStyles.spacer2} />
-            {submissionStopped && (
-              <div style={{ padding: '12px', marginBottom: '12px', background: '#fff3cd', borderRadius: '6px' }}>
-                <p style={{ margin: 0, fontWeight: 500 }}>Submission stopped due to repeated failures.</p>
-                <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-                  <Button
-                    label='Export Successful'
-                    size={BUTTON_SIZE.small}
-                    bgColor={BUTTON_BG_COLOR.primary}
-                    color={BUTTON_COLOR.white}
-                    onClick={handleExportSuccessful}
-                  />
-                  <Button
-                    label='Export Failed/Pending'
-                    size={BUTTON_SIZE.small}
-                    bgColor={BUTTON_BG_COLOR.white}
-                    color={BUTTON_COLOR.primary}
-                    onClick={handleExportFailed}
-                  />
-                </div>
-              </div>
-            )}
+
             <div className={styles.fullWidthContainer}>
-              <DataTable
+              {/* New simplified ClaimFormBulkDataTable */}
+              <ClaimFormBulkDataTable
                 data={csvData}
-                itemsPerPage={15}
                 columns={
                   surveyTemplate?.pages
                     ?.flatMap((page: any) => page?.elements)
                     ?.map((element: any) => element.name)
                     ?.filter((name: string) => name) ?? undefined
                 }
-                surveyTemplate={surveyTemplate}
                 rowStatuses={rowStatuses}
-                onRowSubmit={async (rowData, rowIndex) => {
-                  if (rowStatuses[rowIndex] === 'success') return;
-                  try {
-                    await submitChunk([{ index: rowIndex, data: rowData }]);
-                    setRowStatuses((prev) => ({ ...prev, [rowIndex]: 'success' }));
-                  } catch (error) {
-                    setRowStatuses((prev) => {
-                      const current = prev[rowIndex];
-                      if (current === 'failed') {
-                        return { ...prev, [rowIndex]: 'failed-twice' };
-                      }
-                      return { ...prev, [rowIndex]: 'failed' };
-                    });
-                    throw error;
-                  }
-                }}
-                onRowDelete={(rowIndex) => {
-                  setCsvData((prev) => prev.filter((_, index: number) => index !== rowIndex));
-                  setOriginalRowIndexMap((prev) => prev.filter((_, index) => index !== rowIndex));
-                  setRowStatuses((prev) => {
-                    const next = { ...prev };
-                    delete next[rowIndex];
-                    const reindexed: Record<number, RowStatus> = {};
-                    Object.keys(next).forEach((key) => {
-                      const idx = parseInt(key);
-                      if (idx > rowIndex) {
-                        reindexed[idx - 1] = next[idx];
-                      } else {
-                        reindexed[idx] = next[idx];
-                      }
-                    });
-                    return reindexed;
-                  });
-                }}
-                onSubmitAll={handleSubmitAll}
-                isSubmitting={isSubmitting}
-                onImportAnother={() => {
-                  setIsOpen(true);
-                  setRowStatuses({});
-                  setSubmissionStopped(false);
-                  setOriginalCsv(null);
-                  setOriginalRowIndexMap([]);
-                }}
-                onClearData={() => {
-                  setCsvData([]);
-                  setRowStatuses({});
-                  setSubmissionStopped(false);
-                  setOriginalCsv(null);
-                  setOriginalRowIndexMap([]);
-                }}
-                onExportSuccessful={handleExportSuccessful}
-                onExportFailed={handleExportFailed}
               />
             </div>
             <div className={utilsStyles.spacer2} />
@@ -528,7 +412,29 @@ const BulkClaims: FC<BulkClaimsProps> = ({ collection, surveyTemplate, title }) 
         )}
       </main>
 
-      <Footer onBackUrl='/' backLabel='Home' forwardLabel='Continue' />
+      <Footer
+        onBackUrl='/'
+        backLabel='Home'
+        forwardLabel='Continue'
+        onForward={csvData.length > 0 && !isSubmitting ? handleBatchSubmission : undefined}
+      />
+
+      {submissionComplete && (
+        <ClaimFormBulkSubmissionSummary
+          totalRows={csvData.length}
+          succeededCount={succeededCount}
+          failedCount={failedCount}
+          pendingCount={pendingCount}
+          errorMessage={errorMessage}
+          onExportSuccessful={handleExportSuccessful}
+          onExportFailed={handleExportFailed}
+          onExportPending={handleExportPending}
+          onClose={() => {
+            setSubmissionComplete(false);
+            setErrorMessage(null);
+          }}
+        />
+      )}
     </>
   );
 };

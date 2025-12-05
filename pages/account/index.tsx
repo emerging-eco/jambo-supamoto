@@ -4,8 +4,6 @@ import type { NextPage } from 'next';
 import cls from 'classnames';
 
 import utilsStyles from '@styles/utils.module.scss';
-import styles from '@styles/accountPage.module.scss';
-import Button, { BUTTON_BG_COLOR, BUTTON_COLOR, BUTTON_SIZE } from '@components/Button/Button';
 import AddressActionButton from '@components/AddressActionButton/AddressActionButton';
 import BottomSheetAddress from '@components/BottomSheetAddress/BottomSheetAddress';
 import BottomSheetLogout from '@components/BottomSheetLogout/BottomSheetLogout';
