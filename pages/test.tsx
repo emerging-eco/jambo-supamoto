@@ -230,10 +230,10 @@ const Test: NextPage = () => {
     }
 
     setIsRejecting(true);
-    const BATCH_SIZE = 40;
+    const BATCH_SIZE = 20;
 
     try {
-      // Process in batches of 40
+      // Process in batches of 20
       for (let i = 0; i < pendingClaims.length; i += BATCH_SIZE) {
         const batch = pendingClaims.slice(i, i + BATCH_SIZE);
 
