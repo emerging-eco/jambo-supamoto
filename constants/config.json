@@ -77,7 +77,7 @@
           "id": "claim_form",
           "name": "Enter Lead Details",
           "data": {
-            "collectionId": "410"
+            "collectionId": "231"
           }
         }
       ],
@@ -92,7 +92,7 @@
           "id": "claim_form_bulk",
           "name": "Bulk Submission",
           "data": {
-            "collectionId": "410"
+            "collectionId": "231"
           }
         }
       ],

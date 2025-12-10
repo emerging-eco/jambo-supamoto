@@ -13,6 +13,7 @@ import { isAuthenticated, secret } from './secrets';
 import { cacheSecretStorageKey, clearSecretStorageKeys, getSecretStorageKey } from './secretStorageKeys';
 import { delay } from './timestamp';
 import { cons } from '@constants/matrix';
+import { MATRIX_HOMESERVER_URL } from '@constants/env';
 
 const WELL_KNOWN_URI = '/.well-known/matrix/client';
 
@@ -260,11 +261,10 @@ export async function mxRegisterWithPasskey(
     }
 
     // Now login to get the access token
-    const homeServerUrl = process.env.NEXT_PUBLIC_MATRIX_HOMESERVER_URL as string;
     const username = generateUsernameFromAddress(address);
 
     const loginResult = await mxLogin({
-      homeServerUrl,
+      homeServerUrl: MATRIX_HOMESERVER_URL,
       username,
       password,
     });
@@ -301,11 +301,10 @@ export async function mxRegisterWithSecp(
     }
 
     // Now login to get the access token
-    const homeServerUrl = process.env.NEXT_PUBLIC_MATRIX_HOMESERVER_URL as string;
     const username = generateUsernameFromAddress(address);
 
     const loginResult = await mxLogin({
-      homeServerUrl,
+      homeServerUrl: MATRIX_HOMESERVER_URL,
       username,
       password,
     });
