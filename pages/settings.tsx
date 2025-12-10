@@ -12,6 +12,7 @@ import Anchor from '@components/Anchor/Anchor';
 import Footer from '@components/Footer/Footer';
 import Head from '@components/Head/Head';
 import Document from '@icons/document.svg';
+import User from '@icons/user.svg';
 import config from '@constants/config.json';
 import { ThemeContext } from '@contexts/theme';
 import { validateUrl } from '@utils/misc';
@@ -47,6 +48,13 @@ const Settings: NextPage = () => {
           <Card className={utilsStyles.rowAlignCenter} size={CARD_SIZE.large}>
             <ColoredIcon icon={Document} size={24} color={ICON_COLOR.primary} className={styles.icon} />
             <p className={styles.settingLabel}>Terms & Conditions</p>
+          </Card>
+        </Anchor>
+        <div className={utilsStyles.spacer2} />
+        <Anchor active href={'/test'} openInNewTab={false}>
+          <Card className={utilsStyles.rowAlignCenter} size={CARD_SIZE.large}>
+            <ColoredIcon icon={User} size={24} color={ICON_COLOR.primary} className={styles.icon} />
+            <p className={styles.settingLabel}>Test</p>
           </Card>
         </Anchor>
         <>

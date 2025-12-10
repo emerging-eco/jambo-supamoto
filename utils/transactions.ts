@@ -184,6 +184,47 @@ export const generateSubmitTrx = (
   };
 };
 
+export const generateEvaluateTrx = (
+  {
+    claimId,
+    collectionId,
+    adminAddress,
+    agentAddress,
+    agentDid,
+    status, // 1 = APPROVED, 2 = REJECTED
+    verificationProof,
+  }: {
+    claimId: string;
+    collectionId: string;
+    adminAddress: string;
+    agentAddress: string;
+    agentDid: string;
+    status: number; // 1 = APPROVED, 2 = REJECTED
+    verificationProof?: string;
+  },
+  encode = true,
+) => {
+  const msgValue = ixo.claims.v1beta1.MsgEvaluateClaim.fromPartial({
+    adminAddress,
+    agentAddress,
+    agentDid,
+    oracle: agentDid,
+    claimId,
+    collectionId,
+    status, // 1 = APPROVED, 2 = REJECTED
+    reason: 1,
+    verificationProof: verificationProof || claimId || '',
+    amount: [],
+    cw20Payment: [],
+    cw1155Payment: [],
+  });
+
+  return {
+    typeUrl: '/ixo.claims.v1beta1.MsgEvaluateClaim',
+    value: encode ? ixo.claims.v1beta1.MsgEvaluateClaim.encode(msgValue).finish() : msgValue,
+  };
+};
+
 export const generateExecTrx = ({
   grantee,
   msgs,

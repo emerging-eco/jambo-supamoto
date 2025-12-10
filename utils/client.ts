@@ -40,7 +40,7 @@ export const sendTransaction = async (
   try {
     const gasUsed =
       payload.feeDenom === 'uixo'
-        ? 500000
+        ? 1000000
         : await client.simulate(delegatorAddress, payload.msgs as EncodeObject[], payload.memo);
     const gas = gasUsed * 1.3;
     const gasOptions = calculateGasOptions(gas);

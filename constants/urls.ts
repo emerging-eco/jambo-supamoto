@@ -33,3 +33,9 @@ export const ROOM_BOT_URLS = {
   testnet: 'https://rooms.bot.testmx.ixo.earth',
   mainnet: 'https://rooms.bot.mx.ixo.earth',
 };
+
+export const BLOCKSYNC_GRAPHQL_URLS = {
+  mainnet: 'https://blocksync-graphql.ixo.earth/graphql',
+  testnet: 'https://testnet-blocksync-graphql.ixo.earth/graphql',
+  devnet: 'https://devnet-blocksync-graphql.ixo.earth/graphql',
+};
