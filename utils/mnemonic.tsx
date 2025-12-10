@@ -126,7 +126,6 @@ export const mnemonicBroadCastMessage = async (msgs: TRX_MSG[], memo = '', walle
 
   // Multi-transaction session management - always enabled for mnemonic transactions
   const currentTime = Date.now();
-  let isFirstInSession = false;
   let shouldAutoApprove = false;
 
   // Check if session is still valid (within 1 minute of last transaction)
@@ -137,7 +136,6 @@ export const mnemonicBroadCastMessage = async (msgs: TRX_MSG[], memo = '', walle
     multiTrxActive = true;
     multiTrxAutoApprove = false;
     lastMultiTrxTimestamp = currentTime;
-    isFirstInSession = true;
   } else {
     // Continue existing session
     lastMultiTrxTimestamp = currentTime;
@@ -222,7 +220,6 @@ export const mnemonicBroadCastMessage = async (msgs: TRX_MSG[], memo = '', walle
           onComplete={handleComplete}
           onError={handleError}
           isMultiTrxActive={multiTrxActive && shouldAutoApprove}
-          isFirstInSession={isFirstInSession}
           onApproveAll={handleApproveAll}
           onStopAutoApprove={handleStopAutoApprove}
         />,

@@ -42,6 +42,7 @@ class ClaimCollectionCache {
     return this.cache[collectionId];
   }
   public set(collectionId: string, data: CacheData[string]) {
+    console.log('set', collectionId, data);
     this.cache[collectionId] = data;
   }
   // collection
@@ -52,6 +53,7 @@ class ClaimCollectionCache {
     return this.cache[collectionId]?.collection;
   }
   public setCollection(collectionId: string, collection: Collection) {
+    console.log('setCollection', collectionId, collection);
     if (!this.cache[collectionId]) {
       this.cache[collectionId] = { collection };
     }
@@ -65,6 +67,7 @@ class ClaimCollectionCache {
     return this.cache[collectionId]?.grants;
   }
   public setGrants(collectionId: string, grants: Grant[]) {
+    console.log('setGrants', collectionId, grants);
     if (!this.cache[collectionId]?.collection) {
       throw new Error(`Collection ${collectionId} not found - cannot set grants`);
     }
@@ -78,6 +81,7 @@ class ClaimCollectionCache {
     return this.cache[collectionId]?.protocol;
   }
   public setProtocol(collectionId: string, protocol: { entity?: Entity; iidDocument?: IidDocument }) {
+    console.log('setProtocol', collectionId, protocol);
     if (!this.cache[collectionId]?.collection) {
       throw new Error(`Collection ${collectionId} not found - cannot set protocol`);
     }
@@ -133,6 +137,7 @@ class ClaimCollectionCache {
     return this.cache[collectionId]?.vctServiceEndpoint;
   }
   public setVctServiceEndpoint(collectionId: string, vctServiceEndpoint: string) {
+    console.log('setVctServiceEndpoint', collectionId, vctServiceEndpoint);
     if (!this.cache[collectionId]?.protocol?.iidDocument?.linkedResource?.length) {
       throw new Error(`Protocol for collection ${collectionId} not found - cannot set vct service endpoint`);
     }
@@ -146,6 +151,7 @@ class ClaimCollectionCache {
     return this.cache[collectionId]?.vctEncrypted;
   }
   public setVctEncrypted(collectionId: string, vctEncrypted: boolean) {
+    console.log('setVctEncrypted', collectionId, vctEncrypted);
     if (!this.cache[collectionId]?.vctServiceEndpoint) {
       throw new Error(`VCT service endpoint for collection ${collectionId} not found - cannot set vct encrypted`);
     }
@@ -159,6 +165,7 @@ class ClaimCollectionCache {
     return this.cache[collectionId]?.vctSurveyTemplate;
   }
   public setVctSurveyTemplate(collectionId: string, vctSurveyTemplate: string) {
+    console.log('setVctSurveyTemplate', collectionId, vctSurveyTemplate);
     if (!this.cache[collectionId]?.vctServiceEndpoint) {
       throw new Error(`VCT service endpoint for collection ${collectionId} not found - cannot set vct survey template`);
     }
@@ -172,6 +179,7 @@ class ClaimCollectionCache {
     return this.cache[collectionId]?.bcoServiceEndpoint;
   }
   public setBcoServiceEndpoint(collectionId: string, bcoServiceEndpoint: string) {
+    console.log('setBcoServiceEndpoint', collectionId, bcoServiceEndpoint);
     if (!this.cache[collectionId]?.protocol?.iidDocument?.linkedResource?.length) {
       throw new Error(`Protocol for collection ${collectionId} not found - cannot set bco service endpoint`);
     }
@@ -185,6 +193,7 @@ class ClaimCollectionCache {
     return this.cache[collectionId]?.bcoEncrypted;
   }
   public setBcoEncrypted(collectionId: string, bcoEncrypted: boolean) {
+    console.log('setBcoEncrypted', collectionId, bcoEncrypted);
     if (!this.cache[collectionId]?.bcoServiceEndpoint) {
       throw new Error(`Bco service endpoint for collection ${collectionId} not found - cannot set bco encrypted`);
     }
@@ -198,6 +207,7 @@ class ClaimCollectionCache {
     return this.cache[collectionId]?.bcoSurveyTemplate;
   }
   public setBcoSurveyTemplate(collectionId: string, bcoSurveyTemplate: string) {
+    console.log('setBcoSurveyTemplate', collectionId, bcoSurveyTemplate);
     if (!this.cache[collectionId]?.bcoServiceEndpoint) {
       throw new Error(`Bco service endpoint for collection ${collectionId} not found - cannot set bco survey template`);
     }
@@ -211,6 +221,7 @@ class ClaimCollectionCache {
     return this.cache[collectionId]?.bids;
   }
   public setBids(collectionId: string, bids: any[]) {
+    console.log('setBids', collectionId, bids);
     if (!this.cache[collectionId]?.collection) {
       throw new Error(`Collection ${collectionId} not found - cannot set bids`);
     }
@@ -287,6 +298,8 @@ function useClaimCollection(collectionId: string) {
   }
 
   async function loadCollection({ collectionId }: { collectionId: string }) {
+    console.log('loadCollection', collectionId);
+
     try {
       if (!collectionId || typeof collectionId !== 'string') {
         throw new Error('Collection ID is required');
@@ -310,6 +323,8 @@ function useClaimCollection(collectionId: string) {
   }
 
   async function loadGrants({ collectionId }: { collectionId: string }) {
+    console.log('loadGrants', collectionId);
+
     try {
       if (!collectionId || typeof collectionId !== 'string') {
         throw new Error('Collection ID is required');
@@ -350,6 +365,8 @@ function useClaimCollection(collectionId: string) {
   }
 
   async function loadProtocol({ collectionId }: { collectionId: string }) {
+    console.log('loadProtocol', collectionId);
+
     try {
       if (!collectionId || typeof collectionId !== 'string') {
         throw new Error('Collection ID is required');
@@ -380,6 +397,8 @@ function useClaimCollection(collectionId: string) {
   }
 
   async function loadVct({ collectionId }: { collectionId: string }) {
+    console.log('loadVct', collectionId);
+
     try {
       if (!collectionId || typeof collectionId !== 'string') {
         throw new Error('Collection ID is required');
@@ -408,6 +427,8 @@ function useClaimCollection(collectionId: string) {
   }
 
   async function loadBco({ collectionId }: { collectionId: string }) {
+    console.log('loadBco', collectionId);
+
     try {
       if (!collectionId || typeof collectionId !== 'string') {
         throw new Error('Collection ID is required');
@@ -436,6 +457,8 @@ function useClaimCollection(collectionId: string) {
   }
 
   async function loadBids({ collectionId }: { collectionId: string }) {
+    console.log('loadBids', collectionId);
+
     try {
       if (!collectionId || typeof collectionId !== 'string') {
         throw new Error('Collection ID is required');
@@ -550,10 +573,13 @@ function useClaimCollection(collectionId: string) {
     hasGrants: CACHE.hasGrants(collectionId),
     loadGrants: loadGrants,
     hasVctSurveyTemplate: CACHE.hasVctSurveyTemplate(collectionId),
-    vctSurveyTemplate: CACHE.getVctSurveyTemplate(collectionId),
+    vctSurveyTemplate:
+      (CACHE.getVctSurveyTemplate(collectionId) as any)?.question ?? CACHE.getVctSurveyTemplate(collectionId),
     loadVct: loadVct,
-    hasBcoSurveyTemplate: CACHE.hasBcoSurveyTemplate(collectionId),
-    bcoSurveyTemplate: CACHE.getBcoSurveyTemplate(collectionId),
+    hasBcoSurveyTemplate:
+      (CACHE.getBcoSurveyTemplate(collectionId) as any)?.question ?? CACHE.hasBcoSurveyTemplate(collectionId),
+    bcoSurveyTemplate:
+      (CACHE.getBcoSurveyTemplate(collectionId) as any)?.question ?? CACHE.getBcoSurveyTemplate(collectionId),
     loadBco: loadBco,
     hasBids: CACHE.hasBids(collectionId),
     bids: CACHE.getBids(collectionId),

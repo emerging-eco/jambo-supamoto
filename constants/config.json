@@ -39,6 +39,66 @@
       "name": "Existing Customers",
       "description": "Submit details of multiple existing customers",
       "image": "customer.svg"
+    },
+    {
+      "id": "eKXPPhewkJDLbE1bq1ibog",
+      "steps": [
+        {
+          "id": "claim_form",
+          "name": "Enter 1000 Day Household Details",
+          "data": {
+            "collectionId": "479"
+          }
+        }
+      ],
+      "name": "1000 Day Households",
+      "description": "Submit details of a 1000 day household claim",
+      "image": "customer.svg"
+    },
+    {
+      "id": "eKXPPhewkJDLbE1bq1ibogs",
+      "steps": [
+        {
+          "id": "claim_form_bulk",
+          "name": "Bulk Submission",
+          "data": {
+            "collectionId": "479"
+          }
+        }
+      ],
+      "name": "1000 Day Household",
+      "description": "Submit details of multiple 1000 day household claims",
+      "image": "customer.svg"
+    },
+    {
+      "id": "eKXPPhewkJDLbE1bq1ibol",
+      "steps": [
+        {
+          "id": "claim_form",
+          "name": "Enter Lead Details",
+          "data": {
+            "collectionId": "410"
+          }
+        }
+      ],
+      "name": "Lead Creation",
+      "description": "Submit details of a lead",
+      "image": "customer.svg"
+    },
+    {
+      "id": "eKXPPhewkJDLbE1bq1ibols",
+      "steps": [
+        {
+          "id": "claim_form_bulk",
+          "name": "Bulk Submission",
+          "data": {
+            "collectionId": "410"
+          }
+        }
+      ],
+      "name": "Lead Creations",
+      "description": "Submit details of multiple leads",
+      "image": "customer.svg"
     }
   ]
 }

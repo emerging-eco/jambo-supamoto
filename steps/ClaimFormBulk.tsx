@@ -82,7 +82,6 @@ type RowStatus = 'pending' | 'uploading' | 'submitting' | 'success' | 'failed' |
 
 const BulkClaims: FC<BulkClaimsProps> = ({ collection, surveyTemplate, title }) => {
   const { wallet } = useWalletContext();
-  const { chain } = useChainContext();
   const { width } = useWindowDimensions();
 
   const [isOpen, setIsOpen] = useState(true);

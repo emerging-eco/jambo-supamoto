@@ -17,7 +17,6 @@ type MnemonicTransactionModalProps = {
   onComplete: (transactionHash: string) => void;
   onError: (error: Error) => void;
   isMultiTrxActive?: boolean;
-  isFirstInSession?: boolean;
   onApproveAll?: () => void;
   onStopAutoApprove?: () => void;
 };
@@ -32,7 +31,6 @@ const MnemonicTransactionModal = ({
   onComplete,
   onError,
   isMultiTrxActive = false,
-  isFirstInSession = false,
   onApproveAll,
   onStopAutoApprove,
 }: MnemonicTransactionModalProps) => {
