@@ -17,7 +17,7 @@
           "id": "claim_form",
           "name": "Enter Customer Details",
           "data": {
-            "collectionId": "478"
+            "collectionId": "265"
           }
         }
       ],
@@ -32,7 +32,7 @@
           "id": "claim_form_bulk",
           "name": "Bulk Submission",
           "data": {
-            "collectionId": "478"
+            "collectionId": "265"
           }
         }
       ],
@@ -47,7 +47,7 @@
           "id": "claim_form",
           "name": "Enter 1000 Day Household Details",
           "data": {
-            "collectionId": "479"
+            "collectionId": "266"
           }
         }
       ],
@@ -62,7 +62,7 @@
           "id": "claim_form_bulk",
           "name": "Bulk Submission",
           "data": {
-            "collectionId": "479"
+            "collectionId": "266"
           }
         }
       ],
