@@ -58,8 +58,21 @@ export const applyTransform = (
       const idx = headerMap[fm.source];
       return idx != null ? (row[idx] ?? null) : null;
     }
-    case 'static':
-      return fm.staticValue ?? null;
+    case 'static': {
+      const value = fm.staticValue ?? null;
+      if (value && typeof value === 'string') {
+        // Try to parse JSON array strings (for checkbox fields with multiple selections)
+        try {
+          const parsed = JSON.parse(value);
+          if (Array.isArray(parsed)) {
+            return parsed;
+          }
+        } catch {
+          // Not a JSON string, return as-is
+        }
+      }
+      return value;
+    }
     case 'concat': {
       const parts = (fm.sources ?? []).map((src) => {
         const idx = headerMap[src];

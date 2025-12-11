@@ -358,6 +358,9 @@ const BulkClaims: FC<BulkClaimsProps> = ({ collection, surveyTemplate, title }) 
                     name: element.name,
                     title: element.title || element.name,
                     isRequired: element.isRequired === true,
+                    type: element.type,
+                    inputType: element.inputType,
+                    choices: element.choices,
                   })) ?? []
               }
               onImport={(data, originalCsvData) => {

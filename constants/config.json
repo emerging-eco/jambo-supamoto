@@ -51,7 +51,7 @@
           }
         }
       ],
-      "name": "1000 Day Households",
+      "name": "1000 Day Household",
       "description": "Submit details of a 1000 day household claim",
       "image": "customer.svg"
     },
@@ -66,7 +66,7 @@
           }
         }
       ],
-      "name": "1000 Day Household",
+      "name": "1000 Day Households",
       "description": "Submit details of multiple 1000 day household claims",
       "image": "customer.svg"
     },

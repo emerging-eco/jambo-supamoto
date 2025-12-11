@@ -387,3 +387,165 @@
   grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
+
+.multiSelectWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.multiSelectButton {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 8px;
+  border: 1px solid var(--light-grey-color);
+  border-radius: var(--card-border-radius);
+  background-color: var(--bg-color);
+  color: var(--main-font-color);
+  cursor: pointer;
+  font-size: 0.9rem;
+  text-align: left;
+
+  &:hover {
+    border-color: var(--primary-color);
+  }
+
+  &:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+  }
+}
+
+.multiSelectButtonText {
+  flex: 1;
+  min-width: 0; // Allows flex item to shrink below content size
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.multiSelectArrow {
+  margin-left: 8px;
+  font-size: 0.7rem;
+  color: var(--lighter-font-color);
+  flex-shrink: 0;
+}
+
+.multiSelectDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  background-color: var(--bg-color);
+  border: 1px solid var(--light-grey-color);
+  border-radius: var(--card-border-radius);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.multiSelectOption {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: var(--main-font-color);
+
+  &:hover {
+    background-color: var(--light-grey-color);
+  }
+
+  input[type='checkbox'] {
+    margin-right: 8px;
+    cursor: pointer;
+  }
+
+  span {
+    flex: 1;
+  }
+}
+
+.booleanSwitchContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.booleanSwitchLabel {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--main-font-color);
+  min-width: 40px;
+  text-align: center;
+}
+
+.booleanSwitchLabelBlurred {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--lighter-font-color);
+  opacity: 0.5;
+  min-width: 40px;
+  text-align: center;
+}
+
+.booleanSwitch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+
+  input[type='checkbox'] {
+    opacity: 0;
+    width: 0;
+    height: 0;
+
+    &:checked + .booleanSwitchSlider {
+      background-color: var(--primary-color);
+
+      &:before {
+        transform: translateX(24px);
+      }
+    }
+
+    &:focus + .booleanSwitchSlider {
+      box-shadow: 0 0 1px var(--primary-color);
+    }
+  }
+}
+
+.booleanSwitchSlider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--light-grey-color);
+  transition: 0.3s;
+  border-radius: 26px;
+
+  &:before {
+    position: absolute;
+    content: '';
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  &:hover {
+    background-color: var(--grey-color);
+  }
+}

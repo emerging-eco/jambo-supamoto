@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useState, useRef, useEffect, useMemo } from 'react';
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import styles from './CSVImporter.module.scss';
 import Button, { BUTTON_BG_COLOR, BUTTON_COLOR, BUTTON_SIZE } from '@components/Button/Button';
@@ -9,7 +9,14 @@ import DroppableField from './DroppableField';
 import { TransformMode, FieldMapping } from './types';
 
 type CSVImporterMappingProps = {
-  surveyFields: Array<{ name: string; title: string; isRequired?: boolean }>;
+  surveyFields: Array<{
+    name: string;
+    title: string;
+    isRequired?: boolean;
+    type?: string;
+    inputType?: string;
+    choices?: Array<{ value: string; text: string }> | string[];
+  }>;
   headers: string[];
   mappingsByField: Record<string, FieldMapping>;
   headerSamples: Record<string, string[]>;
@@ -17,6 +24,255 @@ type CSVImporterMappingProps = {
   onClearMapping: (fieldName: string) => void;
   onCancel: () => void;
   onPreview: () => void;
+};
+
+/**
+ * Normalizes choices to a consistent format (array of objects with value and text).
+ * Handles both string arrays and object arrays.
+ */
+const normalizeChoices = (
+  choices?: Array<{ value: string; text: string }> | string[],
+): Array<{ value: string; text: string }> => {
+  if (!choices || choices.length === 0) return [];
+
+  // If first item is a string, treat all as strings
+  if (typeof choices[0] === 'string') {
+    return (choices as string[]).map((choice) => ({
+      value: choice,
+      text: choice,
+    }));
+  }
+
+  // Otherwise, assume they're already objects
+  return choices as Array<{ value: string; text: string }>;
+};
+
+/**
+ * Determines the appropriate HTML input type based on the field's type and inputType properties.
+ * This helps provide the correct input control for static values in CSV import mapping.
+ */
+const getInputTypeForField = (field: { type?: string; inputType?: string }): string => {
+  // Check inputType first (more specific, e.g., 'number', 'email', 'date', etc.)
+  if (field.inputType) {
+    const inputType = field.inputType.toLowerCase();
+    // Map common input types
+    if (['number', 'numeric'].includes(inputType)) return 'number';
+    if (['email'].includes(inputType)) return 'email';
+    if (['date'].includes(inputType)) return 'date';
+    if (['datetime', 'datetime-local'].includes(inputType)) return 'datetime-local';
+    if (['time'].includes(inputType)) return 'time';
+    if (['url'].includes(inputType)) return 'url';
+    if (['tel', 'phone'].includes(inputType)) return 'tel';
+    if (['password'].includes(inputType)) return 'password';
+    if (['text'].includes(inputType)) return 'text';
+  }
+
+  // Check type property (SurveyJS question type)
+  if (field.type) {
+    const type = field.type.toLowerCase();
+    // Map SurveyJS question types to input types
+    if (['text', 'comment', 'multipletext'].includes(type)) return 'text';
+    if (['number', 'expression'].includes(type)) return 'number';
+    if (['boolean'].includes(type)) return 'checkbox';
+    if (['dropdown', 'radiogroup', 'checkbox', 'tagbox'].includes(type)) return 'text';
+    if (['date', 'datepicker'].includes(type)) return 'date';
+    if (['datetime', 'datetimepicker'].includes(type)) return 'datetime-local';
+    if (['time', 'timepicker'].includes(type)) return 'time';
+    if (['email'].includes(type)) return 'email';
+    if (['url'].includes(type)) return 'url';
+  }
+
+  // Default to text
+  return 'text';
+};
+
+/**
+ * Determines if the field expects a boolean value and returns appropriate props for checkbox input.
+ */
+const getBooleanInputProps = (field: { type?: string; inputType?: string }) => {
+  const isBoolean = field.type?.toLowerCase() === 'boolean' || field.inputType?.toLowerCase() === 'boolean';
+  return isBoolean;
+};
+
+/**
+ * Determines if the field is a checkbox type with multiple choices.
+ */
+const isCheckboxWithChoices = (field: {
+  type?: string;
+  choices?: Array<{ value: string; text: string }> | string[];
+}): boolean => {
+  return field.type?.toLowerCase() === 'checkbox' && !!field.choices && field.choices.length > 0;
+};
+
+/**
+ * Determines if the field is a radiogroup type with choices.
+ */
+const isRadiogroupWithChoices = (field: {
+  type?: string;
+  choices?: Array<{ value: string; text: string }> | string[];
+}): boolean => {
+  return field.type?.toLowerCase() === 'radiogroup' && !!field.choices && field.choices.length > 0;
+};
+
+/**
+ * Parses a JSON array string or comma-separated string into an array of values.
+ */
+const parseSelectedValues = (value: string | undefined): string[] => {
+  if (!value) return [];
+  try {
+    // Try parsing as JSON array first
+    const parsed = JSON.parse(value);
+    if (Array.isArray(parsed)) return parsed;
+  } catch {
+    // If not JSON, try comma-separated
+    if (value.includes(',')) {
+      return value
+        .split(',')
+        .map((v) => v.trim())
+        .filter((v) => v);
+    }
+  }
+  // Single value
+  return value ? [value] : [];
+};
+
+/**
+ * Converts an array of values to a JSON array string for storage.
+ */
+const stringifySelectedValues = (values: string[]): string => {
+  return JSON.stringify(values);
+};
+
+/**
+ * Custom multi-select dropdown component for checkbox fields
+ */
+const MultiSelectDropdown: FC<{
+  choices: Array<{ value: string; text: string }>;
+  selectedValues: string[];
+  onChange: (values: string[]) => void;
+  placeholder?: string;
+}> = ({ choices, selectedValues, onChange, placeholder = 'Select options...' }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
+  const toggleOption = (value: string) => {
+    if (selectedValues.includes(value)) {
+      onChange(selectedValues.filter((v) => v !== value));
+    } else {
+      onChange([...selectedValues, value]);
+    }
+  };
+
+  const getDisplayText = () => {
+    if (selectedValues.length === 0) return placeholder;
+    return `${selectedValues.length} selected`;
+  };
+
+  return (
+    <div className={styles.multiSelectWrapper} ref={dropdownRef}>
+      <button type='button' className={styles.multiSelectButton} onClick={() => setIsOpen(!isOpen)}>
+        <span className={styles.multiSelectButtonText}>{getDisplayText()}</span>
+        <span className={styles.multiSelectArrow}>{isOpen ? '▲' : '▼'}</span>
+      </button>
+      {isOpen && (
+        <div className={styles.multiSelectDropdown} onClick={(e) => e.stopPropagation()}>
+          {choices.map((choice) => (
+            <label key={choice.value} className={styles.multiSelectOption}>
+              <input
+                type='checkbox'
+                checked={selectedValues.includes(choice.value)}
+                onChange={() => toggleOption(choice.value)}
+              />
+              <span>{choice.text}</span>
+            </label>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+/**
+ * Custom single-select dropdown component for radiogroup fields
+ */
+const SingleSelectDropdown: FC<{
+  choices: Array<{ value: string; text: string }>;
+  selectedValue: string | undefined;
+  onChange: (value: string) => void;
+  placeholder?: string;
+}> = ({ choices, selectedValue, onChange, placeholder = 'Select option...' }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const radioGroupName = useMemo(() => `radio-group-${Math.random().toString(36).substr(2, 9)}`, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
+  const selectOption = (value: string) => {
+    onChange(value);
+    setIsOpen(false);
+  };
+
+  const getDisplayText = () => {
+    if (!selectedValue) return placeholder;
+    const choice = choices.find((c) => c.value === selectedValue);
+    return choice?.text || selectedValue;
+  };
+
+  return (
+    <div className={styles.multiSelectWrapper} ref={dropdownRef}>
+      <button type='button' className={styles.multiSelectButton} onClick={() => setIsOpen(!isOpen)}>
+        <span className={styles.multiSelectButtonText}>{getDisplayText()}</span>
+        <span className={styles.multiSelectArrow}>{isOpen ? '▲' : '▼'}</span>
+      </button>
+      {isOpen && (
+        <div className={styles.multiSelectDropdown} onClick={(e) => e.stopPropagation()}>
+          {choices.map((choice) => (
+            <label key={choice.value} className={styles.multiSelectOption}>
+              <input
+                type='radio'
+                name={radioGroupName}
+                checked={selectedValue === choice.value}
+                onChange={() => selectOption(choice.value)}
+              />
+              <span>{choice.text}</span>
+            </label>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 };
 
 const CSVImporterMapping: FC<CSVImporterMappingProps> = ({
@@ -148,18 +404,103 @@ const CSVImporterMapping: FC<CSVImporterMappingProps> = ({
                     <DroppableField fieldName={field.name} mapping={fm} onRemoveChip={handleRemoveChip} />
                   )}
 
-                  {fm?.mode === 'static' && (
-                    <Input
-                      placeholder='Type value'
-                      value={fm.staticValue ?? ''}
-                      onChange={(e) =>
-                        onFieldMappingChange(field.name, (prev) => ({
-                          ...(prev ?? { mode: 'static' }),
-                          staticValue: e.target.value,
-                        }))
+                  {fm?.mode === 'static' &&
+                    (() => {
+                      const inputType = getInputTypeForField(field);
+                      const isBoolean = getBooleanInputProps(field);
+                      const isCheckboxMulti = isCheckboxWithChoices(field);
+                      const isRadiogroupSingle = isRadiogroupWithChoices(field);
+
+                      if (isCheckboxMulti) {
+                        const selectedValues = parseSelectedValues(fm.staticValue);
+                        const normalizedChoices = normalizeChoices(field.choices);
+                        return (
+                          <div className={styles.stack}>
+                            <label className={styles.inlineLabel}>Select one or more options:</label>
+                            <MultiSelectDropdown
+                              choices={normalizedChoices}
+                              selectedValues={selectedValues}
+                              onChange={(newSelected) => {
+                                onFieldMappingChange(field.name, (prev) => ({
+                                  ...(prev ?? { mode: 'static' }),
+                                  staticValue: stringifySelectedValues(newSelected),
+                                }));
+                              }}
+                              placeholder='Select options...'
+                            />
+                          </div>
+                        );
                       }
-                    />
-                  )}
+
+                      if (isRadiogroupSingle) {
+                        const normalizedChoices = normalizeChoices(field.choices);
+                        return (
+                          <div className={styles.stack}>
+                            <label className={styles.inlineLabel}>Select an option:</label>
+                            <SingleSelectDropdown
+                              choices={normalizedChoices}
+                              selectedValue={fm.staticValue}
+                              onChange={(value) => {
+                                onFieldMappingChange(field.name, (prev) => ({
+                                  ...(prev ?? { mode: 'static' }),
+                                  staticValue: value,
+                                }));
+                              }}
+                              placeholder='Select option...'
+                            />
+                          </div>
+                        );
+                      }
+
+                      if (isBoolean) {
+                        const isChecked = fm.staticValue === 'true';
+                        return (
+                          <div className={styles.booleanSwitchContainer}>
+                            <span className={isChecked ? styles.booleanSwitchLabelBlurred : styles.booleanSwitchLabel}>
+                              false
+                            </span>
+                            <label className={styles.booleanSwitch}>
+                              <input
+                                type='checkbox'
+                                checked={isChecked}
+                                onChange={(e) =>
+                                  onFieldMappingChange(field.name, (prev) => ({
+                                    ...(prev ?? { mode: 'static' }),
+                                    staticValue: String(e.target.checked),
+                                  }))
+                                }
+                              />
+                              <span className={styles.booleanSwitchSlider}></span>
+                            </label>
+                            <span className={isChecked ? styles.booleanSwitchLabel : styles.booleanSwitchLabelBlurred}>
+                              true
+                            </span>
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <Input
+                          type={inputType}
+                          placeholder={
+                            inputType === 'number'
+                              ? 'Enter number'
+                              : inputType === 'date'
+                                ? 'Select date'
+                                : inputType === 'email'
+                                  ? 'Enter email'
+                                  : 'Type value'
+                          }
+                          value={fm.staticValue ?? ''}
+                          onChange={(e) =>
+                            onFieldMappingChange(field.name, (prev) => ({
+                              ...(prev ?? { mode: 'static' }),
+                              staticValue: e.target.value,
+                            }))
+                          }
+                        />
+                      );
+                    })()}
 
                   {fm?.mode === 'concat' && (
                     <div className={styles.row}>

@@ -14,7 +14,14 @@ export type FieldMapping = {
 };
 
 export type CSVImporterProps = {
-  surveyFields: Array<{ name: string; title: string; isRequired?: boolean }>;
+  surveyFields: Array<{
+    name: string;
+    title: string;
+    isRequired?: boolean;
+    type?: string;
+    inputType?: string;
+    choices?: Array<{ value: string; text: string }> | string[];
+  }>;
   onImport: (
     data: Record<string, any>[],
     originalCsv?: { headers: string[]; rows: string[][]; hasHeaders: boolean },
