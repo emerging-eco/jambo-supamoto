@@ -115,6 +115,16 @@ const isRadiogroupWithChoices = (field: {
 };
 
 /**
+ * Determines if the field is a dropdown type with choices.
+ */
+const isDropdownWithChoices = (field: {
+  type?: string;
+  choices?: Array<{ value: string; text: string }> | string[];
+}): boolean => {
+  return field.type?.toLowerCase() === 'dropdown' && !!field.choices && field.choices.length > 0;
+};
+
+/**
  * Parses a JSON array string or comma-separated string into an array of values.
  */
 const parseSelectedValues = (value: string | undefined): string[] => {
@@ -410,6 +420,7 @@ const CSVImporterMapping: FC<CSVImporterMappingProps> = ({
                       const isBoolean = getBooleanInputProps(field);
                       const isCheckboxMulti = isCheckboxWithChoices(field);
                       const isRadiogroupSingle = isRadiogroupWithChoices(field);
+                      const isDropdownSingle = isDropdownWithChoices(field);
 
                       if (isCheckboxMulti) {
                         const selectedValues = parseSelectedValues(fm.staticValue);
@@ -432,7 +443,7 @@ const CSVImporterMapping: FC<CSVImporterMappingProps> = ({
                         );
                       }
 
-                      if (isRadiogroupSingle) {
+                      if (isRadiogroupSingle || isDropdownSingle) {
                         const normalizedChoices = normalizeChoices(field.choices);
                         return (
                           <div className={styles.stack}>
