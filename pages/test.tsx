@@ -154,10 +154,10 @@ const Test: NextPage = () => {
     }
 
     setIsApproving(true);
-    const BATCH_SIZE = 40;
+    const BATCH_SIZE = 20;
 
     try {
-      // Process in batches of 40
+      // Process in batches of 20
       for (let i = 0; i < pendingClaims.length; i += BATCH_SIZE) {
         const batch = pendingClaims.slice(i, i + BATCH_SIZE);
 
@@ -180,9 +180,9 @@ const Test: NextPage = () => {
         });
 
         // Broadcast the transaction with gas scaled to batch size
-        const GAS_PER_CLAIM = 50000;
-        const BASE_GAS = 30000;
-        const batchGas = BASE_GAS + batch.length * GAS_PER_CLAIM;
+        const GAS_PER_CLAIM = 100_000;
+        const BASE_GAS = 1_000_000;
+        const batchGas = BASE_GAS + (batch.length * GAS_PER_CLAIM);
         const hash = await broadCastMessages(wallet, [execTrx], `Approve batch ${Math.floor(i / BATCH_SIZE) + 1}`, { gasOverride: batchGas });
         if (hash) {
           toast.success(`Batch ${Math.floor(i / BATCH_SIZE) + 1} approved (${hash})`);
@@ -259,9 +259,9 @@ const Test: NextPage = () => {
         });
 
         // Broadcast the transaction with gas scaled to batch size
-        const GAS_PER_CLAIM = 50000;
-        const BASE_GAS = 30000;
-        const batchGas = BASE_GAS + batch.length * GAS_PER_CLAIM;
+        const GAS_PER_CLAIM = 100_000;
+        const BASE_GAS = 1_000_000;
+        const batchGas = BASE_GAS + (batch.length * GAS_PER_CLAIM);
         const hash = await broadCastMessages(wallet, [execTrx], `Reject batch ${Math.floor(i / BATCH_SIZE) + 1}`, { gasOverride: batchGas });
         if (hash) {
           toast.success(`Batch ${Math.floor(i / BATCH_SIZE) + 1} rejected (${hash})`);
