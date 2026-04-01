@@ -180,7 +180,7 @@ const Test: NextPage = () => {
         });
 
         // Broadcast the transaction with gas scaled to batch size
-        const GAS_PER_CLAIM = 18000;
+        const GAS_PER_CLAIM = 20000;
         const BASE_GAS = 30000;
         const batchGas = BASE_GAS + batch.length * GAS_PER_CLAIM;
         const hash = await broadCastMessages(wallet, [execTrx], `Approve batch ${Math.floor(i / BATCH_SIZE) + 1}`, { gasOverride: batchGas });
@@ -259,7 +259,7 @@ const Test: NextPage = () => {
         });
 
         // Broadcast the transaction with gas scaled to batch size
-        const GAS_PER_CLAIM = 18000;
+        const GAS_PER_CLAIM = 20000;
         const BASE_GAS = 30000;
         const batchGas = BASE_GAS + batch.length * GAS_PER_CLAIM;
         const hash = await broadCastMessages(wallet, [execTrx], `Reject batch ${Math.floor(i / BATCH_SIZE) + 1}`, { gasOverride: batchGas });
