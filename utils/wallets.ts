@@ -105,6 +105,7 @@ export const broadCastMessages = async (
   wallet: WALLET,
   msgs: TRX_MSG[],
   memo: string | undefined,
+  options?: { gasOverride?: number },
 ): Promise<string | null> => {
   switch (wallet.walletType) {
     // case WALLET_TYPE.keplr:
@@ -124,7 +125,7 @@ export const broadCastMessages = async (
       if (!window._mnemonic?.mnemonicBroadCastMessage) {
         throw new Error('Mnemonic wallet methods not available');
       }
-      return await window._mnemonic.mnemonicBroadCastMessage(msgs, memo || '', wallet);
+      return await window._mnemonic.mnemonicBroadCastMessage(msgs, memo || '', wallet, options);
     default:
       throw new Error('Unsupported wallet type to broadcast messages');
       return null;

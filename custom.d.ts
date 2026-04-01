@@ -20,7 +20,7 @@ declare global {
   interface Window {
     _mnemonic?: {
       initializeMnemonic: (walletUser?: USER) => Promise<USER | undefined>;
-      mnemonicBroadCastMessage: (msgs: TRX_MSG[], memo: string, wallet: WALLET) => Promise<string | null>;
+      mnemonicBroadCastMessage: (msgs: TRX_MSG[], memo: string, wallet: WALLET, options?: { gasOverride?: number }) => Promise<string | null>;
     };
     _signX?: {
       initializeSignX: (walletUser?: USER) => Promise<USER | undefined>;

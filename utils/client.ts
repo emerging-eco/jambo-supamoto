@@ -35,14 +35,16 @@ export const sendTransaction = async (
     memo: string;
     fee: TRX_FEE_OPTION;
     feeDenom: string;
+    gasOverride?: number;
   },
 ): Promise<any> => {
   try {
-    const gasUsed =
-      payload.feeDenom === 'uixo'
+    const gasUsed = payload.gasOverride
+      ? payload.gasOverride
+      : payload.feeDenom === 'uixo'
         ? 500000
         : await client.simulate(delegatorAddress, payload.msgs as EncodeObject[], payload.memo);
-    const gas = gasUsed * 1.3;
+    const gas = payload.gasOverride ? payload.gasOverride : gasUsed * 1.3;
     const gasOptions = calculateGasOptions(gas);
     const fee: TRX_FEE = {
       amount: [
