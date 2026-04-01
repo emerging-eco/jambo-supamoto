@@ -116,7 +116,7 @@ let multiTrxAutoApprove = false;
 
 const MULTI_TRX_SESSION_TIMEOUT = 60 * 1000; // 1 minute in milliseconds
 
-export const mnemonicBroadCastMessage = async (msgs: TRX_MSG[], memo = '', wallet: WALLET): Promise<string | null> => {
+export const mnemonicBroadCastMessage = async (msgs: TRX_MSG[], memo = '', wallet: WALLET, options?: { gasOverride?: number }): Promise<string | null> => {
   if (mnemonicBroadCastMessageBusy) return null;
   mnemonicBroadCastMessageBusy = true;
 
@@ -173,6 +173,7 @@ export const mnemonicBroadCastMessage = async (msgs: TRX_MSG[], memo = '', walle
           memo,
           fee: defaultTrxFeeOption,
           feeDenom: 'uixo',
+          gasOverride: options?.gasOverride,
         });
 
         if (!result || !result.transactionHash) {
